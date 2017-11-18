@@ -3,7 +3,7 @@ package t7.galacticfoundations;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-//Jake was here
+//Jake was here2
 public class MainActivity extends AppCompatActivity {
 
     @Override
