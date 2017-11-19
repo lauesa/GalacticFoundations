@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
         super(activityManager);
         viewport.apply();
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
-        bg = new Texture("badlogic.jpg");
+        bg = new Texture("pixel_mars.jpg");
         atlas = new TextureAtlas("skin\\quantum-horizon-ui.atlas");
         skin = new Skin(Gdx.files.internal("skin\\quantum-horizon-ui.json"), atlas);
         stage = new Stage(viewport);
