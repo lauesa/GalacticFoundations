@@ -27,7 +27,7 @@ public class GameboardActivity extends Activity {
     public GameboardActivity(ActivityManager activityManager) {
         super(activityManager);
         viewport.apply();
-        bg = new Texture("badlogic.jpg");
+        bg = new Texture("gameboard_background.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
         stage = new Stage();

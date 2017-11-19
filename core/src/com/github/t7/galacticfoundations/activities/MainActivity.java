@@ -4,14 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Scaling;
 import com.github.t7.galacticfoundations.galacticfoundations;
 
 /**
@@ -28,7 +32,7 @@ public class MainActivity extends Activity {
         super(activityManager);
         viewport.apply();
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
-        bg = new Texture("badlogic.jpg");
+        bg = new Texture("pixel_mars.jpg");
         atlas = new TextureAtlas("skin\\quantum-horizon-ui.atlas");
         skin = new Skin(Gdx.files.internal("skin\\quantum-horizon-ui.json"), atlas);
         stage = new Stage(viewport);
@@ -47,7 +51,13 @@ public class MainActivity extends Activity {
         });
         TextButton tutorialButton = new TextButton("Tutorial", skin);
         TextButton creditsButton = new TextButton("Credits", skin);
-        
+
+        Image imageLogo = new Image();
+        imageLogo.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Title.png")))));
+        imageLogo.setScaling(Scaling.fit);
+
+        mainTable.add(imageLogo).center().colspan(2);
+        mainTable.row();
 
         mainTable.add(resumeButton);
         mainTable.row();
