@@ -31,73 +31,7 @@ public class GameboardActivity extends Activity {
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
         stage = new Stage();
-//        gestureListener = new GestureDetector.GestureListener() {
-//            @Override
-//            public boolean touchDown(float x, float y, int pointer, int button) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean tap(float x, float y, int count, int button) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean longPress(float x, float y) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean fling(float velocityX, float velocityY, int button) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean pan(float x, float y, float deltaX, float deltaY) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean panStop(float x, float y, int pointer, int button) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean zoom(float initialDistance, float distance) {
-//                //float amount = (initialDistance - distance)/100;
-//                float amount = distance / 100;
-//                System.out.printf("Pinch level: %f\n", distance);
-//                if(cam.zoom > 0.5 && cam.zoom < 1){
-//                    cam.zoom = (float)(0.05*(amount));
-//                }
-//                else{
-//                    if(cam.zoom >= 1f){
-//                        if(amount < 0){
-//                            cam.zoom += 0.05*amount;
-//                        }
-//                    }
-//                    if(cam.zoom <= 0.5){
-//                        if(amount > 0){
-//                            cam.zoom += 0.05*amount;
-//                        }
-//                    }
-//                }
-//
-//
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void pinchStop() {
-//
-//
-//            }
-//        };
+
         GestureDetector gestureDetector = new GestureDetector(new GestureDetector.GestureAdapter(){
             private Vector2 oldInitialFirstPointer=null, oldInitialSecondPointer=null;
             private float oldScale;
@@ -105,60 +39,42 @@ public class GameboardActivity extends Activity {
             public boolean pan(float x, float y, float deltaX, float deltaY) {
                 cam.update();
                 System.out.printf("Cam X: %f, Cam Y: %f\n", cam.position.x, cam.position.y);
-                if((cam.position.x > 0 && cam.position.x < 500) && cam.position.y > 0 && cam.position.y < 500) {
+
+                if((cam.position.x > 0 && cam.position.x < 500) && (cam.position.y > 0 && cam.position.y < 500)) {
                     cam.position.add(
                             cam.unproject(new Vector3(0, 0, 0))
                                     .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                     );
                 }
-                else if((cam.position.x <= 0 && cam.position.y <= 0) || (cam.position.x <= 0 && cam.position.y >= 500) || (cam.position.x >= 500 && cam.position.y <= 0) || (cam.position.x >= 500 && cam.position.y >= 500)){
-                    if(deltaX < 0 && deltaY > 0) {
-                        cam.position.add(
-                                cam.unproject(new Vector3(0, 0, 0))
-                                        .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
-                        );
-                    }
-                    if(deltaX < 0 && deltaY < 0){
-                        cam.position.add(
-                                cam.unproject(new Vector3(0, 0, 0))
-                                        .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
-                        );
-                    }
-                    if(deltaX > 0 && deltaY > 0){
-                        cam.position.add(
-                                cam.unproject(new Vector3(0, 0, 0))
-                                        .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
-                        );
-                    }
-                    if(deltaX > 0 && deltaY < 0){
-                        cam.position.add(
-                                cam.unproject(new Vector3(0, 0, 0))
-                                        .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
-                        );
-                    }
 
-                }
                 else{
                     if(cam.position.x <= 0){
-                        if(deltaX < 0){
+
+
+                        if(deltaX <= 0 && (cam.position.y > 0 && cam.position.y < 500)){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        } else{
+                        }else if(cam.position.y > 0 && cam.position.y < 500){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(0, deltaY, 0)).scl(-1f))
                             );
                         }
+
+
+
+
                     }
                     if(cam.position.x >= 500){
-                        if(deltaX > 0){
+
+                        if(deltaX >= 0 && (cam.position.y > 0 && cam.position.y < 500)){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        } else{
+                        } else if(cam.position.y > 0 && cam.position.y < 500){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(0, deltaY, 0)).scl(-1f))
@@ -166,12 +82,13 @@ public class GameboardActivity extends Activity {
                         }
                     }
                     if(cam.position.y <= 0){
-                        if(deltaY > 0){
+
+                        if(deltaY >= 0 ){//&& (cam.position.x > 0 && cam.position.x < 500)){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        } else{
+                        } else if(cam.position.x > 0 && cam.position.x < 500){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, 0, 0)).scl(-1f))
@@ -179,12 +96,13 @@ public class GameboardActivity extends Activity {
                         }
                     }
                     if(cam.position.y >= 500){
-                        if(deltaY < 0){
+
+                        if(deltaY <= 0){// && (cam.position.x > 0 && cam.position.x < 500)){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        }else{
+                        }else if(cam.position.x > 0 && cam.position.x < 500){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, 0, 0)).scl(-1f))
