@@ -4,10 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.github.t7.galacticfoundations.galacticfoundations;
 
 /**
@@ -20,7 +24,7 @@ public class MainActivity extends Activity {
     private Skin skin;
     private Stage stage;
 
-    public MainActivity(ActivityManager activityManager){
+    public MainActivity(final ActivityManager activityManager){
         super(activityManager);
         viewport.apply();
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
@@ -32,11 +36,26 @@ public class MainActivity extends Activity {
 
         Table mainTable = new Table();
         mainTable.setFillParent(true);
-        mainTable.top();
-        TextButton playButton = new TextButton("Play", skin);
+        mainTable.center();
+        TextButton resumeButton = new TextButton("Resume Game", skin);
+        TextButton newGameButton = new TextButton("New Game", skin);
+        newGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                activityManager.set(new GameboardActivity(activityManager));
+            }
+        });
+        TextButton tutorialButton = new TextButton("Tutorial", skin);
+        TextButton creditsButton = new TextButton("Credits", skin);
         
 
-        mainTable.add(playButton);
+        mainTable.add(resumeButton);
+        mainTable.row();
+        mainTable.add(newGameButton);
+        mainTable.row();
+        mainTable.add(tutorialButton);
+        mainTable.row();
+        mainTable.add(creditsButton);
         stage.addActor(mainTable);
 
     }
