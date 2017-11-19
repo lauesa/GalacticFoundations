@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
         imageLogo.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Title.png")))));
         imageLogo.setScaling(Scaling.fit);
 
-        mainTable.add(imageLogo).center().colspan(2);
+        mainTable.add(imageLogo).center();
         mainTable.row();
 
         mainTable.add(resumeButton);
