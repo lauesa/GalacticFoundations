@@ -14,7 +14,7 @@ public class galacticfoundations extends ApplicationAdapter {
 
 	public static final String TITLE = "Galactic Foundations";
 	private ActivityManager activityManager;
-	private SpriteBatch batch;
+	public static SpriteBatch batch;
 	
 	@Override
 	public void create () {

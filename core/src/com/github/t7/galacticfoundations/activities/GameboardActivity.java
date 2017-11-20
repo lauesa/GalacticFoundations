@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.github.t7.galacticfoundations.galacticfoundations;
+import com.github.t7.galacticfoundations.hud.GameboardHUD;
 
 /**
  * Created by Warren on 11/19/2017.
@@ -22,6 +23,7 @@ public class GameboardActivity extends Activity {
     private Stage stage;
     private GestureDetector gestureDetector;
     private InputListener inputListener;
+    private GameboardHUD gameboardHUD;
 
 
     public GameboardActivity(ActivityManager activityManager) {
@@ -31,6 +33,9 @@ public class GameboardActivity extends Activity {
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
         stage = new Stage();
+
+        //Initiate gameboardHUD
+        gameboardHUD = new GameboardHUD(galacticfoundations.batch);
 //        gestureListener = new GestureDetector.GestureListener() {
 //            @Override
 //            public boolean touchDown(float x, float y, int pointer, int button) {
@@ -251,6 +256,8 @@ public class GameboardActivity extends Activity {
         multiplexer.addProcessor(gestureDetector);
         multiplexer.addProcessor(stage);
 
+
+
     }
 
     @Override
@@ -272,6 +279,9 @@ public class GameboardActivity extends Activity {
         sb.draw(bg, 0, 0);
         sb.end();
         stage.act();
+
+        galacticfoundations.batch.setProjectionMatrix(gameboardHUD.stage.getCamera().combined);
+        gameboardHUD.stage.draw();
 
     }
 
