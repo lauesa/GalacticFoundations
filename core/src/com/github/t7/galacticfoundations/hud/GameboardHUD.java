@@ -43,7 +43,7 @@ public class GameboardHUD implements Disposable{
         //add labels to table, padding the bottom, and giving them all equal width with expandX
         table.add(currentPointsTitleLabel).expandX();
         table.row();
-        table.add(pointsLabel).expandX().padBottom(10);
+        table.add(pointsLabel).expandX().padBottom(5);
 
 
         //add table to the stage
