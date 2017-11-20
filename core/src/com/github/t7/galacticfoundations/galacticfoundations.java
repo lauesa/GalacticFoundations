@@ -20,7 +20,7 @@ public class galacticfoundations extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		activityManager = new ActivityManager();
-		Gdx.gl.glClearColor(1,0,0,1);
+		Gdx.gl.glClearColor(1,1,1,1);
 		activityManager.push(new MainActivity(activityManager));
 
 	}

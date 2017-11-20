@@ -29,7 +29,7 @@ public class GameboardActivity extends Activity {
     public GameboardActivity(ActivityManager activityManager) {
         super(activityManager);
         viewport.apply();
-        bg = new Texture("gameboard_background.png");
+        bg = new Texture("gameboard_bg.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
         stage = new Stage();
@@ -103,6 +103,7 @@ public class GameboardActivity extends Activity {
 //
 //            }
 //        };
+
         GestureDetector gestureDetector = new GestureDetector(new GestureDetector.GestureAdapter(){
             private Vector2 oldInitialFirstPointer=null, oldInitialSecondPointer=null;
             private float oldScale;
@@ -110,60 +111,42 @@ public class GameboardActivity extends Activity {
             public boolean pan(float x, float y, float deltaX, float deltaY) {
                 cam.update();
                 System.out.printf("Cam X: %f, Cam Y: %f\n", cam.position.x, cam.position.y);
-                if((cam.position.x > 0 && cam.position.x < 500) && cam.position.y > 0 && cam.position.y < 500) {
+
+                if((cam.position.x > 0 && cam.position.x < 500) && (cam.position.y > 0 && cam.position.y < 500)) {
                     cam.position.add(
                             cam.unproject(new Vector3(0, 0, 0))
                                     .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                     );
                 }
-                else if((cam.position.x <= 0 && cam.position.y <= 0) || (cam.position.x <= 0 && cam.position.y >= 500) || (cam.position.x >= 500 && cam.position.y <= 0) || (cam.position.x >= 500 && cam.position.y >= 500)){
-                    if(deltaX < 0 && deltaY > 0) {
-                        cam.position.add(
-                                cam.unproject(new Vector3(0, 0, 0))
-                                        .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
-                        );
-                    }
-                    if(deltaX < 0 && deltaY < 0){
-                        cam.position.add(
-                                cam.unproject(new Vector3(0, 0, 0))
-                                        .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
-                        );
-                    }
-                    if(deltaX > 0 && deltaY > 0){
-                        cam.position.add(
-                                cam.unproject(new Vector3(0, 0, 0))
-                                        .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
-                        );
-                    }
-                    if(deltaX > 0 && deltaY < 0){
-                        cam.position.add(
-                                cam.unproject(new Vector3(0, 0, 0))
-                                        .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
-                        );
-                    }
 
-                }
                 else{
                     if(cam.position.x <= 0){
-                        if(deltaX < 0){
+
+
+                        if(deltaX <= 0 && (cam.position.y > 0 && cam.position.y < 500)){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        } else{
+                        }else if(cam.position.y > 0 && cam.position.y < 500){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(0, deltaY, 0)).scl(-1f))
                             );
                         }
+
+
+
+
                     }
                     if(cam.position.x >= 500){
-                        if(deltaX > 0){
+
+                        if(deltaX >= 0 && (cam.position.y > 0 && cam.position.y < 500)){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        } else{
+                        } else if(cam.position.y > 0 && cam.position.y < 500){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(0, deltaY, 0)).scl(-1f))
@@ -171,12 +154,13 @@ public class GameboardActivity extends Activity {
                         }
                     }
                     if(cam.position.y <= 0){
-                        if(deltaY > 0){
+
+                        if(deltaY >= 0 ){//&& (cam.position.x > 0 && cam.position.x < 500)){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        } else{
+                        } else if(cam.position.x > 0 && cam.position.x < 500){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, 0, 0)).scl(-1f))
@@ -184,12 +168,13 @@ public class GameboardActivity extends Activity {
                         }
                     }
                     if(cam.position.y >= 500){
-                        if(deltaY < 0){
+
+                        if(deltaY <= 0){// && (cam.position.x > 0 && cam.position.x < 500)){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        }else{
+                        }else if(cam.position.x > 0 && cam.position.x < 500){
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, 0, 0)).scl(-1f))
@@ -255,8 +240,6 @@ public class GameboardActivity extends Activity {
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(gestureDetector);
         multiplexer.addProcessor(stage);
-
-
 
     }
 
