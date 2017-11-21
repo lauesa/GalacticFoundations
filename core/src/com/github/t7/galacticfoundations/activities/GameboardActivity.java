@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.github.t7.galacticfoundations.actors.Hex;
+import com.github.t7.galacticfoundations.actors.PlayerHex;
 import com.github.t7.galacticfoundations.galacticfoundations;
 import com.github.t7.galacticfoundations.hud.GameboardHUD;
 
@@ -32,77 +34,11 @@ public class GameboardActivity extends Activity {
         bg = new Texture("gameboard_bg.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
-        stage = new Stage();
+        stage = new Stage(viewport);
 
         //Initiate gameboardHUD
         gameboardHUD = new GameboardHUD(galacticfoundations.batch);
-//        gestureListener = new GestureDetector.GestureListener() {
-//            @Override
-//            public boolean touchDown(float x, float y, int pointer, int button) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean tap(float x, float y, int count, int button) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean longPress(float x, float y) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean fling(float velocityX, float velocityY, int button) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean pan(float x, float y, float deltaX, float deltaY) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean panStop(float x, float y, int pointer, int button) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean zoom(float initialDistance, float distance) {
-//                //float amount = (initialDistance - distance)/100;
-//                float amount = distance / 100;
-//                System.out.printf("Pinch level: %f\n", distance);
-//                if(cam.zoom > 0.5 && cam.zoom < 1){
-//                    cam.zoom = (float)(0.05*(amount));
-//                }
-//                else{
-//                    if(cam.zoom >= 1f){
-//                        if(amount < 0){
-//                            cam.zoom += 0.05*amount;
-//                        }
-//                    }
-//                    if(cam.zoom <= 0.5){
-//                        if(amount > 0){
-//                            cam.zoom += 0.05*amount;
-//                        }
-//                    }
-//                }
-//
-//
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void pinchStop() {
-//
-//
-//            }
-//        };
+
 
         GestureDetector gestureDetector = new GestureDetector(new GestureDetector.GestureAdapter(){
             private Vector2 oldInitialFirstPointer=null, oldInitialSecondPointer=null;
@@ -241,6 +177,14 @@ public class GameboardActivity extends Activity {
         multiplexer.addProcessor(gestureDetector);
         multiplexer.addProcessor(stage);
 
+        //Toss in actors
+        Hex hex1 = new PlayerHex(Hex.HexType.GENERAL, 0,0);
+        hex1.setName("Hex1");
+        Hex hex2 = new PlayerHex(Hex.HexType.GENERAL, 20,40);
+        hex2.setName("Hex2");
+        stage.addActor(hex1);
+        stage.addActor(hex2);
+
     }
 
     @Override
@@ -262,6 +206,7 @@ public class GameboardActivity extends Activity {
         sb.draw(bg, 0, 0);
         sb.end();
         stage.act();
+        stage.draw();
 
         galacticfoundations.batch.setProjectionMatrix(gameboardHUD.stage.getCamera().combined);
         gameboardHUD.stage.draw();
