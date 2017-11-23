@@ -13,20 +13,7 @@ public class PlayerHex extends Hex {
     public PlayerHex(HexType type, float x, float y) {
         super(type, x, y);
         setState(HexState.PLAYER_ACTIVE);
-        //listen for down click and verifies that it is the lowest level actor.
-        addListener(new InputListener(){
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
-                //if(getParent().hit(x, y, true).equals(event.getTarget())){
-                if(checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)){
-                    System.out.printf("%s\n", event.getTarget().getName());
-                    setState(HexState.UNOWNED);
-                    return true;
-                }else{
-                    return false;
-                }
 
-            }
-        });
     }
 
     @Override

@@ -4,6 +4,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 
 /**
  * Created by Warren on 11/20/2017.
@@ -28,6 +32,7 @@ public class Hex extends Actor {
         AI_INACTIVE;
     };
     protected HexState hexState;
+    protected boolean dragged;
 
 
     public Hex(HexType type, float x, float y) {
@@ -37,6 +42,48 @@ public class Hex extends Actor {
         setPosition(x, y);
         setState(HexState.UNOWNED);
         setOrigin(texture.getWidth()/2, texture.getHeight()/2);
+        dragged = false;
+
+
+        //listen for down click and verifies that it is the lowest level actor and checks hex bounds.
+        addListener(new ClickListener(){
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+                if(checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)){
+                    dragged = false;;
+                    System.out.println("TouchDown");
+                    //System.out.printf("%s\n", event.getTarget().getName());
+                    return true;
+                }else{
+                    return false;
+                }
+
+            }
+        });
+
+        //If not dragged, select hex.
+        addListener(new ClickListener(){
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+                if(!dragged){
+                    //if(checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)) {
+                    //System.out.println("TouchUp");
+                    //System.out.printf("%s\n", event.getTarget().getName());
+                    setState(HexState.UNOWNED);
+                    //}
+                }
+                cancel();
+
+            }
+        });
+
+        //Do not select hex if dragged
+        addListener(new DragListener(){
+           public void touchDragged(InputEvent event, float x, float y, int pointer){
+               dragged = true;
+               //System.out.println("Dragged");
+
+           }
+        });
+
     }
 
     @Override
@@ -51,7 +98,7 @@ public class Hex extends Actor {
         hexState = state;
         switch (state){
             case UNOWNED:{
-                texture = new Texture("hexagontiles//Tiles//tileGrass_tile.png");
+                texture = new Texture("greentile.png");
                 break;
             }
             case PLAYER_ACTIVE:{

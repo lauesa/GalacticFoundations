@@ -20,6 +20,8 @@ import com.github.t7.galacticfoundations.hud.GameboardHUD;
  */
 
 public class GameboardActivity extends Activity {
+    public static final int TILE_WIDTH = 65;
+    public static final int TILE_HEIGHT = 55;
     private Texture bg;
     private float zoomScale;
     private Stage stage;
@@ -45,8 +47,9 @@ public class GameboardActivity extends Activity {
             private float oldScale;
             @Override
             public boolean pan(float x, float y, float deltaX, float deltaY) {
+
                 cam.update();
-                System.out.printf("Cam X: %f, Cam Y: %f\n", cam.position.x, cam.position.y);
+                //System.out.printf("Cam X: %f, Cam Y: %f\n", cam.position.x, cam.position.y);
 
                 if((cam.position.x > 0 && cam.position.x < 500) && (cam.position.y > 0 && cam.position.y < 500)) {
                     cam.position.add(
@@ -70,9 +73,6 @@ public class GameboardActivity extends Activity {
                                             .add(cam.unproject(new Vector3(0, deltaY, 0)).scl(-1f))
                             );
                         }
-
-
-
 
                     }
                     if(cam.position.x >= 500){
@@ -148,27 +148,27 @@ public class GameboardActivity extends Activity {
             }
         });
 
-        stage.addListener(new InputListener() {
-            public boolean scrolled(InputEvent event, float x, float y, int amount){
-                System.out.printf("Zoom:%f\n", cam.zoom);
-                if(cam.zoom > 0.5f && cam.zoom < 1f){
-                        cam.zoom += 0.05*amount;
-                }
-                else{
-                    if(cam.zoom > 1f){
-                        if(amount < 0){
-                            cam.zoom += 0.05*amount;
-                        }
-                    }
-                    if(cam.zoom < 0.5){
-                        if(amount > 0){
-                            cam.zoom += 0.05*amount;
-                        }
-                    }
-                }
-                return true;
-            }
-        });
+//        stage.addListener(new InputListener() {
+//            public boolean scrolled(InputEvent event, float x, float y, int amount){
+//                System.out.printf("Zoom:%f\n", cam.zoom);
+//                if(cam.zoom > 0.5f && cam.zoom < 1f){
+//                        cam.zoom += 0.05*amount;
+//                }
+//                else{
+//                    if(cam.zoom > 1f){
+//                        if(amount < 0){
+//                            cam.zoom += 0.05*amount;
+//                        }
+//                    }
+//                    if(cam.zoom < 0.5){
+//                        if(amount > 0){
+//                            cam.zoom += 0.05*amount;
+//                        }
+//                    }
+//                }
+//                return true;
+//            }
+//        });
 
 
         //Gdx.input.setInputProcessor(new GestureDetector(gestureListener));
@@ -176,14 +176,17 @@ public class GameboardActivity extends Activity {
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(gestureDetector);
         multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
 
         //Toss in actors
-        Hex hex1 = new PlayerHex(Hex.HexType.GENERAL, 0,0);
-        hex1.setName("Hex1");
-        Hex hex2 = new PlayerHex(Hex.HexType.GENERAL, 20,40);
-        hex2.setName("Hex2");
+        Hex hex1 = new PlayerHex(Hex.HexType.GENERAL, 130,100);
+//        hex1.setName("Hex1");
+        Hex hex2 = new PlayerHex(Hex.HexType.GENERAL, 20,120);
+//        hex2.setName("Hex2");
         stage.addActor(hex1);
         stage.addActor(hex2);
+
+        //generateBoard();
 
     }
 
@@ -221,5 +224,31 @@ public class GameboardActivity extends Activity {
     @Override
     public void resize(int width, int height) {
 
+    }
+
+    public void generateBoard(){
+        //stage.getActors().clear();
+        int xOffset = 20;
+        int yOffset = 120;
+        int boardWidth = 5;
+        int boardHeight = 21;
+        for(int i = 0; i < boardHeight; i++){
+            if(i % 2 == 0) {
+                for (int j = 0; j < boardWidth; j++) {
+                    float x = (float)1.5*TILE_WIDTH*j + xOffset;
+                    float y = (float)TILE_HEIGHT*i + yOffset;
+                    stage.addActor(new Hex(Hex.HexType.GENERAL, x, y));
+
+                }
+            }else{
+                for(int j = 0; i < boardWidth-1; j++){
+                    float x = (float)0.5*TILE_WIDTH*j + xOffset;
+                    float y = (float)(TILE_HEIGHT*i)/2 + yOffset;
+                    stage.addActor(new Hex(Hex.HexType.GENERAL, x, y));
+
+                }
+            }
+
+        }
     }
 }
