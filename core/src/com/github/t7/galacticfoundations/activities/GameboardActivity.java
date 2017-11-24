@@ -176,17 +176,16 @@ public class GameboardActivity extends Activity {
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(gestureDetector);
         multiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(multiplexer);
 
-        //Toss in actors
-        Hex hex1 = new PlayerHex(Hex.HexType.GENERAL, 130,100);
-//        hex1.setName("Hex1");
-        Hex hex2 = new PlayerHex(Hex.HexType.GENERAL, 20,120);
-//        hex2.setName("Hex2");
-        stage.addActor(hex1);
-        stage.addActor(hex2);
+//        //Toss in actors
+//        Hex hex1 = new PlayerHex(Hex.HexType.GENERAL, 130,100);
+////        hex1.setName("Hex1");
+//        Hex hex2 = new PlayerHex(Hex.HexType.GENERAL, 20,120);
+////        hex2.setName("Hex2");
+//        stage.addActor(hex1);
+//        stage.addActor(hex2);
 
-        //generateBoard();
+        generateBoard();
 
     }
 
@@ -228,22 +227,28 @@ public class GameboardActivity extends Activity {
 
     public void generateBoard(){
         //stage.getActors().clear();
-        int xOffset = 20;
-        int yOffset = 120;
+        float xOffset = 19.5f;
+        float yOffset = 120;
         int boardWidth = 5;
         int boardHeight = 21;
         for(int i = 0; i < boardHeight; i++){
+
             if(i % 2 == 0) {
+
                 for (int j = 0; j < boardWidth; j++) {
-                    float x = (float)1.5*TILE_WIDTH*j + xOffset;
-                    float y = (float)TILE_HEIGHT*i + yOffset;
+
+                    float x = (float)1.47*TILE_WIDTH*j + xOffset;
+                    float y = (float)TILE_HEIGHT*(i/2) + yOffset;
                     stage.addActor(new Hex(Hex.HexType.GENERAL, x, y));
 
                 }
             }else{
-                for(int j = 0; i < boardWidth-1; j++){
-                    float x = (float)0.5*TILE_WIDTH*j + xOffset;
-                    float y = (float)(TILE_HEIGHT*i)/2 + yOffset;
+                float oddXOffset = xOffset + TILE_WIDTH*0.74f;
+                float oddYOffset = yOffset + TILE_HEIGHT*0.49f;
+
+                for(int j = 0; j < (boardWidth-1); j++){
+                    float x = (float)(1.47*TILE_WIDTH*j) + oddXOffset;
+                    float y = (float)(TILE_HEIGHT*(i/2)) + oddYOffset;
                     stage.addActor(new Hex(Hex.HexType.GENERAL, x, y));
 
                 }

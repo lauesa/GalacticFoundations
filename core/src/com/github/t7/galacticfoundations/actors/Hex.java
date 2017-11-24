@@ -64,11 +64,22 @@ public class Hex extends Actor {
         addListener(new ClickListener(){
             public void touchUp(InputEvent event, float x, float y, int pointer, int button){
                 if(!dragged){
-                    //if(checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)) {
-                    //System.out.println("TouchUp");
-                    //System.out.printf("%s\n", event.getTarget().getName());
-                    setState(HexState.UNOWNED);
-                    //}
+                    System.out.println("TouchUp");
+                    if(hexState == HexState.UNOWNED){
+                        setState(HexState.PLAYER_ACTIVE);
+                    }
+                    else if(hexState == HexState.PLAYER_ACTIVE){
+                        setState(HexState.PLAYER_INACTIVE);
+                    }
+                    else if(hexState == HexState.PLAYER_INACTIVE){
+                        setState(HexState.AI_ACTIVE);
+                    }
+                    else if(hexState == HexState.AI_ACTIVE){
+                        setState(HexState.AI_INACTIVE);
+                    }
+                    else if(hexState == HexState.AI_INACTIVE){
+                        setState(HexState.UNOWNED);
+                    }
                 }
                 cancel();
 
@@ -98,23 +109,23 @@ public class Hex extends Actor {
         hexState = state;
         switch (state){
             case UNOWNED:{
-                texture = new Texture("greentile.png");
+                texture = new Texture("greytile.png");
                 break;
             }
             case PLAYER_ACTIVE:{
-                texture = new Texture("hexagontiles//Tiles//tileMagic_tile.png");
+                texture = new Texture("greentile.png");
                 break;
             }
             case PLAYER_INACTIVE:{
-                texture = new Texture("hexagontiles//Tiles//tileRock_tile.png");
+                texture = new Texture("darkgreentile.png");
                 break;
             }
             case AI_ACTIVE:{
-                texture = new Texture("hexagontiles//Tiles//tileLava_tile.png");
+                texture = new Texture("redtile.png");
                 break;
             }
             case AI_INACTIVE:{
-                texture = new Texture("hexagontiles//Tiles//tileSand_tile.png");
+                texture = new Texture("darkredtile.png");
                 break;
             }
         }

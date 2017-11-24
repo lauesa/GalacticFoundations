@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -42,7 +44,12 @@ public class MainActivity extends Activity {
         mainTable.setFillParent(true);
         mainTable.center();
         TextButton resumeButton = new TextButton("Resume Game", skin);
+
+        resumeButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.5f), Actions.fadeIn(0.25f)));
+
         TextButton newGameButton = new TextButton("New Game", skin);
+
+        newGameButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.75f), Actions.fadeIn(0.25f)));
         newGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -50,13 +57,23 @@ public class MainActivity extends Activity {
             }
         });
         TextButton tutorialButton = new TextButton("Tutorial", skin);
+
+        tutorialButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1f), Actions.fadeIn(0.25f)));
+
         TextButton creditsButton = new TextButton("Credits", skin);
+
+        creditsButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1.25f), Actions.fadeIn(0.25f)));
 
         Image imageLogo = new Image();
         imageLogo.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Title.png")))));
         imageLogo.setScaling(Scaling.fit);
 
+
+
         mainTable.add(imageLogo).center();
+
+
+
         mainTable.row();
 
         mainTable.add(resumeButton);
@@ -77,6 +94,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void update(float dt) {
+        //stage.act(dt);
 
     }
 
