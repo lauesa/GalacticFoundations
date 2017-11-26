@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.github.t7.galacticfoundations.actors.Hex;
 import com.github.t7.galacticfoundations.actors.PlayerHex;
 import com.github.t7.galacticfoundations.galacticfoundations;
@@ -187,6 +189,8 @@ public class GameboardActivity extends Activity {
 
         generateBoard();
 
+        //generateGameState();
+
     }
 
     @Override
@@ -225,6 +229,15 @@ public class GameboardActivity extends Activity {
 
     }
 
+    public void generateGameState(){
+        Array<Actor> listActors = stage.getActors();
+        int id = 0;
+        for (Actor hex: listActors) {
+            System.out.printf("%d:%s.\n",id, hex.toString());
+            id++;
+        }
+    }
+
     public void generateBoard(){
         //stage.getActors().clear();
         float xOffset = 19.5f;
@@ -246,6 +259,7 @@ public class GameboardActivity extends Activity {
                 float oddXOffset = xOffset + TILE_WIDTH*0.74f;
                 float oddYOffset = yOffset + TILE_HEIGHT*0.49f;
 
+                //this for loop generates all actors and adds them to the board
                 for(int j = 0; j < (boardWidth-1); j++){
                     float x = (float)(1.47*TILE_WIDTH*j) + oddXOffset;
                     float y = (float)(TILE_HEIGHT*(i/2)) + oddYOffset;

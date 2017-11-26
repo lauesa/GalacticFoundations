@@ -31,6 +31,13 @@ public class Hex extends Actor {
         AI_ACTIVE,
         AI_INACTIVE;
     };
+
+    @Override
+    public String toString() {
+        //function has been altered to return hexstate
+        return "" + "Hexstate: " + hexState + '}';
+    }
+
     protected HexState hexState;
     protected boolean dragged;
 
@@ -96,6 +103,7 @@ public class Hex extends Actor {
         });
 
     }
+
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
