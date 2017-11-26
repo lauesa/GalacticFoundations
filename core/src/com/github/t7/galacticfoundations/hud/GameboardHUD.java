@@ -45,8 +45,6 @@ public class GameboardHUD implements Disposable{
 
         //Create TextButtons
         TextButton attackButton = new TextButton("ATT", skin);
-        //attackButton.setTransform(true);
-        attackButton.setWidth(200);
         TextButton fortifyButton = new TextButton("DEF", skin);
         TextButton expandButton = new TextButton("EXP", skin);
         TextButton stockpileButton = new TextButton("STO", skin);
@@ -58,11 +56,6 @@ public class GameboardHUD implements Disposable{
                 super.tap(event, x, y, count, button);
                 System.out.println("Fortify button pressed.");
             }
-
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                System.out.println("Fortify button pressed.");
-//            }
         });
 
         //Setup new camera
@@ -82,19 +75,11 @@ public class GameboardHUD implements Disposable{
         table.add(currentPointsTitleLabel);//.expandX();
         table.add(pointsLabel).width(50);//.padBottom(5);
 
-
-
-
-
-
-        //add labels to table, padding the bottom, and giving them all equal width with expandX
-        table.row().padTop(galacticfoundations.HEIGHT*0.85f);
+        table.row().padTop(galacticfoundations.HEIGHT*0.87f);
         table.add(attackButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5).pad(5);
         table.add(fortifyButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5).pad(5);
         table.add(expandButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5);
         table.add(stockpileButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5);
-
-
 
         //add table to the stage
         stage.addActor(table);
