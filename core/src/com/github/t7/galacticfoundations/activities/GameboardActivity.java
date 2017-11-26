@@ -33,8 +33,7 @@ public class GameboardActivity extends Activity {
     private InputListener inputListener;
     private GameboardHUD gameboardHUD;
     private InputMultiplexer multiplexer;
-    private boolean pinch;
-    private boolean pan;
+
 
 
     public GameboardActivity(ActivityManager activityManager) {
@@ -44,8 +43,7 @@ public class GameboardActivity extends Activity {
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
         stage = new Stage(viewport);
-        pinch = false;
-        pan = false;
+
 
         //Initiate gameboardHUD
         gameboardHUD = new GameboardHUD(galacticfoundations.batch);
@@ -53,7 +51,7 @@ public class GameboardActivity extends Activity {
 
 
 
-        GestureDetector gestureDetector = new GestureDetector(new GestureDetector.GestureAdapter() {
+        final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.GestureAdapter() {
             private Vector2 oldInitialFirstPointer = null, oldInitialSecondPointer = null;
             private float oldScale;
 
@@ -129,7 +127,7 @@ public class GameboardActivity extends Activity {
                     }
                 }
 
-                pan = true;
+                stage.cancelTouchFocus();
                 return true;
             }
 
@@ -146,10 +144,9 @@ public class GameboardActivity extends Activity {
                         0
                 );
                 zoomCamera(center, oldScale * initialFirstPointer.dst(initialSecondPointer) / firstPointer.dst(secondPointer));
-                pinch = true;
+                stage.cancelTouchFocus();
                 return true;
             }
-
 
 
             private void zoomCamera(Vector3 origin, float scale) {
@@ -163,47 +160,10 @@ public class GameboardActivity extends Activity {
             }
 
 
-//            @Override
-//            public boolean touchDown(float x, float y, int pointer, int button) {
-//                Actor target = stage.hit(x, y, true);
-//                if (checkBounds(target.getOriginX(), target.getOriginY(), x, y)) {
-//                    dragged = false;
-//                    System.out.println("TouchDown");
-//                    //System.out.printf("%s\n", event.getTarget().getName());
-//                    return true;
-//                } else {
-//                    return false;
-//                }
-//
-//            }
-
 
         });
 
-//        stage.addListener(new InputListener() {
-//            public boolean scrolled(InputEvent event, float x, float y, int amount){
-//                System.out.printf("Zoom:%f\n", cam.zoom);
-//                if(cam.zoom > 0.5f && cam.zoom < 1f){
-//                        cam.zoom += 0.05*amount;
-//                }
-//                else{
-//                    if(cam.zoom > 1f){
-//                        if(amount < 0){
-//                            cam.zoom += 0.05*amount;
-//                        }
-//                    }
-//                    if(cam.zoom < 0.5){
-//                        if(amount > 0){
-//                            cam.zoom += 0.05*amount;
-//                        }
-//                    }
-//                }
-//                return true;
-//            }
-//        });
 
-
-        //Gdx.input.setInputProcessor(new GestureDetector(gestureListener));
         multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(gameboardHUD.getStage());
@@ -217,8 +177,7 @@ public class GameboardActivity extends Activity {
 
         generateBoard();
 
-       // generateGameState();
-      //  saveGameState();
+        
     }
 
     @Override
@@ -228,6 +187,7 @@ public class GameboardActivity extends Activity {
 
     @Override
     public void update(float dt) {
+
 
 
 

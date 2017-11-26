@@ -51,6 +51,7 @@ public class Hex extends Actor {
         setPosition(x, y);
         setState(HexState.UNOWNED);
         setOrigin(texture.getWidth()/2, texture.getHeight()/2);
+        setName("Hex");
         dragged = false;
 
         addListener( new ActorGestureListener() {
