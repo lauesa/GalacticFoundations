@@ -6,8 +6,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.github.t7.galacticfoundations.activities.GameboardActivity;
 
 /**
  * Created by Warren on 11/20/2017.
@@ -44,56 +46,71 @@ public class Hex extends Actor {
         setOrigin(texture.getWidth()/2, texture.getHeight()/2);
         dragged = false;
 
-
-        //listen for down click and verifies that it is the lowest level actor and checks hex bounds.
-        addListener(new ClickListener(){
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
-                if(checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)){
-                    dragged = false;;
-                    System.out.println("TouchDown");
+        addListener( new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                if (checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)) {
+                    //dragged = false;
+                    System.out.println("Tapped");
                     //System.out.printf("%s\n", event.getTarget().getName());
-                    return true;
-                }else{
-                    return false;
-                }
 
+                }
             }
         });
+
+      
+
+
+//        //listen for down click and verifies that it is the lowest level actor and checks hex bounds.
+//        addListener(new ClickListener(){
+//            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+//                if(checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)){
+//                    dragged = false;;
+//                    System.out.println("TouchDown");
+//                    //System.out.printf("%s\n", event.getTarget().getName());
+//                    return true;
+//                }else{
+//                    return false;
+//                }
+//
+//            }
+//        });
 
         //If not dragged, select hex.
-        addListener(new ClickListener(){
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
-                if(!dragged){
-                    System.out.println("TouchUp");
-                    if(hexState == HexState.UNOWNED){
-                        setState(HexState.PLAYER_ACTIVE);
-                    }
-                    else if(hexState == HexState.PLAYER_ACTIVE){
-                        setState(HexState.PLAYER_INACTIVE);
-                    }
-                    else if(hexState == HexState.PLAYER_INACTIVE){
-                        setState(HexState.AI_ACTIVE);
-                    }
-                    else if(hexState == HexState.AI_ACTIVE){
-                        setState(HexState.AI_INACTIVE);
-                    }
-                    else if(hexState == HexState.AI_INACTIVE){
-                        setState(HexState.UNOWNED);
-                    }
-                }
-                cancel();
-
-            }
-        });
+//        addListener(new ClickListener(){
+//            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+//                if(!GameboardActivity.zoomed && !GameboardActivity.panned){
+//                    System.out.println("TouchUp");
+//                    if(hexState == HexState.UNOWNED){
+//                        setState(HexState.PLAYER_ACTIVE);
+//                    }
+//                    else if(hexState == HexState.PLAYER_ACTIVE){
+//                        setState(HexState.PLAYER_INACTIVE);
+//                    }
+//                    else if(hexState == HexState.PLAYER_INACTIVE){
+//                        setState(HexState.AI_ACTIVE);
+//                    }
+//                    else if(hexState == HexState.AI_ACTIVE){
+//                        setState(HexState.AI_INACTIVE);
+//                    }
+//                    else if(hexState == HexState.AI_INACTIVE){
+//                        setState(HexState.UNOWNED);
+//                    }
+//                }
+//                cancel();
+//
+//            }
+//        });
 
         //Do not select hex if dragged
-        addListener(new DragListener(){
-           public void touchDragged(InputEvent event, float x, float y, int pointer){
-               dragged = true;
-               //System.out.println("Dragged");
-
-           }
-        });
+//        addListener(new DragListener(){
+//           public void touchDragged(InputEvent event, float x, float y, int pointer){
+//               dragged = true;
+//               //System.out.println("Dragged");
+//
+//           }
+//        });
 
     }
 
