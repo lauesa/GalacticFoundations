@@ -37,7 +37,7 @@ public class Hex extends Actor {
     @Override
     public String toString() {
         //function has been altered to return hexstate
-        return "" + "Hexstate: " + hexState + '}';
+        return "" + "" + hexState + " ";
     }
 
     protected HexState hexState;

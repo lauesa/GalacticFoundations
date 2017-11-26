@@ -2,6 +2,7 @@ package com.github.t7.galacticfoundations.activities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
@@ -212,8 +213,8 @@ public class GameboardActivity extends Activity {
 
         generateBoard();
 
-        //generateGameState();
-
+        generateGameState();
+        saveGameState();
     }
 
     @Override
@@ -253,7 +254,29 @@ public class GameboardActivity extends Activity {
 
     }
 
+    public void saveGameState(){
+
+        boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
+
+        if(isLocAvailable == true){
+            String locRoot = Gdx.files.getLocalStoragePath();
+            System.out.printf("%s", locRoot);
+        } else {
+            System.out.printf("No Local Path");
+            return;
+        }
+
+        FileHandle file = Gdx.files.local("gamestate.txt");
+        Gdx.files.local("gamestate.txt").delete();
+        Array<Actor> listActors = stage.getActors();
+
+        for (Actor hex: listActors) {
+            file.writeString(hex.toString(), true);
+        }
+    }
+
     public void generateGameState(){
+
         Array<Actor> listActors = stage.getActors();
         int id = 0;
         for (Actor hex: listActors) {
