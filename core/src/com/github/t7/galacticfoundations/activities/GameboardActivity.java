@@ -206,8 +206,12 @@ public class GameboardActivity extends Activity {
         //Gdx.input.setInputProcessor(new GestureDetector(gestureListener));
         multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
+        multiplexer.addProcessor(gameboardHUD.getStage());
         multiplexer.addProcessor(gestureDetector);
         multiplexer.addProcessor(stage);
+
+
+
 
 
 

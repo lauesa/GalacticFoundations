@@ -6,19 +6,22 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.t7.galacticfoundations.galacticfoundations;
 
 public class GameboardHUD implements Disposable{
-    private static final int BUTTON_WIDTH = 90;
+    private static final int BUTTON_WIDTH = 150;
     public Stage stage;
     private Viewport viewport;
 
@@ -37,29 +40,40 @@ public class GameboardHUD implements Disposable{
         currentPoints = 0;
 
         //Define button skin, textureAtlas
-        atlas = new TextureAtlas("skin\\quantum-horizon-ui.atlas");
-        skin = new Skin(Gdx.files.internal("skin\\quantum-horizon-ui.json"), atlas);
+        atlas = new TextureAtlas("skin\\GameBoardHUD_skin\\star-soldier-ui.atlas");
+        skin = new Skin(Gdx.files.internal("skin\\GameBoardHUD_skin\\star-soldier-ui.json"), atlas);
 
         //Create TextButtons
         TextButton attackButton = new TextButton("Attack", skin);
+        attackButton.setTransform(true);
         TextButton fortifyButton = new TextButton("Fortify", skin);
         TextButton expandButton = new TextButton("Expand", skin);
         TextButton stockpileButton = new TextButton("Stockpile", skin);
 
         //Add button listeners
-        fortifyButton.addListener(new ChangeListener() {
+        fortifyButton.addListener(new ActorGestureListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
                 System.out.println("Fortify button pressed.");
             }
+
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                System.out.println("Fortify button pressed.");
+//            }
         });
 
         //Setup new camera
-        viewport = new FitViewport(galacticfoundations.WIDTH, galacticfoundations.HEIGHT, new OrthographicCamera());
+        viewport = new StretchViewport(galacticfoundations.WIDTH + 100, galacticfoundations.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         //define a table used to organize GameboardHUD's labels
         Table table = new Table();
+        table.top();
+        table.add(currentPointsTitleLabel).expandX();
+        table.add(pointsLabel).width(50).padBottom(5);
+
         table.bottom();
         table.setFillParent(true);
 
@@ -70,13 +84,12 @@ public class GameboardHUD implements Disposable{
 
 
         //add labels to table, padding the bottom, and giving them all equal width with expandX
-        table.add(currentPointsTitleLabel).expandX();
         table.row();
         table.add(attackButton).width(BUTTON_WIDTH).padBottom(5);
         table.add(fortifyButton).width(BUTTON_WIDTH).padBottom(5);
         table.add(expandButton).width(BUTTON_WIDTH).padBottom(5);
         table.add(stockpileButton).width(BUTTON_WIDTH).padBottom(5);
-        table.add(pointsLabel).width(50).padBottom(5);
+
 
 
         //add table to the stage
@@ -89,4 +102,8 @@ public class GameboardHUD implements Disposable{
     //}
 
     public void dispose() { stage.dispose(); }
+
+    public Stage getStage(){
+        return stage;
+    }
 }
