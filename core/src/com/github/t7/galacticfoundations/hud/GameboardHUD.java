@@ -49,7 +49,22 @@ public class GameboardHUD implements Disposable{
         TextButton expandButton = new TextButton("EXP", skin);
         TextButton stockpileButton = new TextButton("STO", skin);
 
+        //define labels using the String, and a Label style consisting of a font and color
+        currentPointsTitleLabel = new Label("Current Points", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        pointsLabel = new Label(String.format("%d", currentPoints), new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+
         //Add button listeners
+        attackButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                System.out.println("Attack button pressed.");
+                currentPoints--;
+                System.out.printf("Current points: %d\n", currentPoints);
+                pointsLabel.setText(String.format("%d", currentPoints));
+            }
+        });
+
         fortifyButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
@@ -58,15 +73,25 @@ public class GameboardHUD implements Disposable{
             }
         });
 
+        expandButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                System.out.println("Expand button pressed.");
+            }
+        });
+
+        stockpileButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                System.out.println("Stockpile button pressed.");
+            }
+        });
+
         //Setup new camera
         viewport = new StretchViewport(galacticfoundations.WIDTH, galacticfoundations.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
-
-
-
-        //define labels using the String, and a Label style consisting of a font and color
-        currentPointsTitleLabel = new Label("Current Points", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
-        pointsLabel = new Label(String.format("%d", currentPoints), new Label.LabelStyle(new BitmapFont(), Color.BLACK));
 
         //define a table used to organize GameboardHUD's labels
         Table table = new Table();
