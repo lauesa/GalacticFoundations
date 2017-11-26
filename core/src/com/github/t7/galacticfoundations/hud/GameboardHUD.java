@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.t7.galacticfoundations.galacticfoundations;
 
 public class GameboardHUD implements Disposable{
-    private static final int BUTTON_WIDTH = 150;
+    private static final int BUTTON_WIDTH = 160;
     public Stage stage;
     private Viewport viewport;
 
@@ -44,11 +44,12 @@ public class GameboardHUD implements Disposable{
         skin = new Skin(Gdx.files.internal("skin\\GameBoardHUD_skin\\star-soldier-ui.json"), atlas);
 
         //Create TextButtons
-        TextButton attackButton = new TextButton("Attack", skin);
-        attackButton.setTransform(true);
-        TextButton fortifyButton = new TextButton("Fortify", skin);
-        TextButton expandButton = new TextButton("Expand", skin);
-        TextButton stockpileButton = new TextButton("Stockpile", skin);
+        TextButton attackButton = new TextButton("ATT", skin);
+        //attackButton.setTransform(true);
+        attackButton.setWidth(200);
+        TextButton fortifyButton = new TextButton("DEF", skin);
+        TextButton expandButton = new TextButton("EXP", skin);
+        TextButton stockpileButton = new TextButton("STO", skin);
 
         //Add button listeners
         fortifyButton.addListener(new ActorGestureListener() {
@@ -65,30 +66,33 @@ public class GameboardHUD implements Disposable{
         });
 
         //Setup new camera
-        viewport = new StretchViewport(galacticfoundations.WIDTH + 100, galacticfoundations.HEIGHT, new OrthographicCamera());
+        viewport = new StretchViewport(galacticfoundations.WIDTH, galacticfoundations.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
-        //define a table used to organize GameboardHUD's labels
-        Table table = new Table();
-        table.top();
-        table.add(currentPointsTitleLabel).expandX();
-        table.add(pointsLabel).width(50).padBottom(5);
 
-        table.bottom();
-        table.setFillParent(true);
 
         //define labels using the String, and a Label style consisting of a font and color
         currentPointsTitleLabel = new Label("Current Points", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         pointsLabel = new Label(String.format("%d", currentPoints), new Label.LabelStyle(new BitmapFont(), Color.BLACK));
 
+        //define a table used to organize GameboardHUD's labels
+        Table table = new Table();
+        table.setFillParent(true);
+        table.top().padTop(5);
+        table.add(currentPointsTitleLabel);//.expandX();
+        table.add(pointsLabel).width(50);//.padBottom(5);
+
+
+
+
 
 
         //add labels to table, padding the bottom, and giving them all equal width with expandX
-        table.row();
-        table.add(attackButton).width(BUTTON_WIDTH).padBottom(5);
-        table.add(fortifyButton).width(BUTTON_WIDTH).padBottom(5);
-        table.add(expandButton).width(BUTTON_WIDTH).padBottom(5);
-        table.add(stockpileButton).width(BUTTON_WIDTH).padBottom(5);
+        table.row().padTop(galacticfoundations.HEIGHT*0.85f);
+        table.add(attackButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5).pad(5);
+        table.add(fortifyButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5).pad(5);
+        table.add(expandButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5);
+        table.add(stockpileButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5);
 
 
 

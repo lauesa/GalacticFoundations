@@ -217,8 +217,8 @@ public class GameboardActivity extends Activity {
 
         generateBoard();
 
-        generateGameState();
-        saveGameState();
+       // generateGameState();
+      //  saveGameState();
     }
 
     @Override
