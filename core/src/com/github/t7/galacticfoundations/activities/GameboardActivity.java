@@ -2,8 +2,9 @@ package com.github.t7.galacticfoundations.activities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
+import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,15 +12,13 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.github.t7.galacticfoundations.actors.Hex;
-import com.github.t7.galacticfoundations.actors.PlayerHex;
 import com.github.t7.galacticfoundations.galacticfoundations;
 import com.github.t7.galacticfoundations.hud.GameboardHUD;
+import com.github.t7.galacticfoundations.states.GameState;
 
 /**
  * Created by Warren on 11/19/2017.
@@ -35,8 +34,8 @@ public class GameboardActivity extends Activity {
     private InputListener inputListener;
     private GameboardHUD gameboardHUD;
     private InputMultiplexer multiplexer;
-    private boolean pinch;
-    private boolean pan;
+    private StateMachine<GameboardActivity, GameState> stateMachine;
+
 
 
     public GameboardActivity(ActivityManager activityManager) {
@@ -45,9 +44,11 @@ public class GameboardActivity extends Activity {
         bg = new Texture("gameboard_bg.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
+
+        stateMachine = new DefaultStateMachine<GameboardActivity, GameState>(this, GameState.PLAYER_TURN);
+
         stage = new Stage(viewport);
-        pinch = false;
-        pan = false;
+
 
         //Initiate gameboardHUD
         gameboardHUD = new GameboardHUD(galacticfoundations.batch);
@@ -131,7 +132,7 @@ public class GameboardActivity extends Activity {
                     }
                 }
 
-                pan = true;
+
                 return true;
             }
 
@@ -148,7 +149,7 @@ public class GameboardActivity extends Activity {
                         0
                 );
                 zoomCamera(center, oldScale * initialFirstPointer.dst(initialSecondPointer) / firstPointer.dst(secondPointer));
-                pinch = true;
+
                 return true;
             }
 
@@ -351,6 +352,10 @@ public class GameboardActivity extends Activity {
             return false;
         }
 
+    }
+
+    public void initPlayerTurn(){
+        //Do Stuff Here
     }
 
 
