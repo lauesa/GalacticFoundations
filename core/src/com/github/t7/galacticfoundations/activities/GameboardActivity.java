@@ -1,6 +1,8 @@
 package com.github.t7.galacticfoundations.activities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -246,6 +248,11 @@ public class GameboardActivity extends Activity {
         galacticfoundations.batch.setProjectionMatrix(gameboardHUD.stage.getCamera().combined);
         gameboardHUD.stage.draw();
 
+        // Goes to main menu when back button pressed
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+            galacticfoundations.backpressed=true;
+            activityManager.set(new MainActivity(activityManager)); // go to main menu if back button pressed
+        }
     }
 
     @Override

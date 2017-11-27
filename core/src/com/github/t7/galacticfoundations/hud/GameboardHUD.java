@@ -101,10 +101,10 @@ public class GameboardHUD implements Disposable{
         table.add(pointsLabel).width(50);//.padBottom(5);
 
         table.row().padTop(galacticfoundations.HEIGHT*0.87f);
-        table.add(attackButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5).pad(5);
-        table.add(fortifyButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5).pad(5);
-        table.add(expandButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5);
-        table.add(stockpileButton).expandX().width(galacticfoundations.WIDTH/4);//.width(BUTTON_WIDTH).padBottom(5);
+        table.add(attackButton).expandX().width(galacticfoundations.WIDTH/4);
+        table.add(fortifyButton).expandX().width(galacticfoundations.WIDTH/4);
+        table.add(expandButton).expandX().width(galacticfoundations.WIDTH/4);
+        table.add(stockpileButton).expandX().width(galacticfoundations.WIDTH/4);
 
         //add table to the stage
         stage.addActor(table);

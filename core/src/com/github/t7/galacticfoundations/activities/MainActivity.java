@@ -1,6 +1,8 @@
 package com.github.t7.galacticfoundations.activities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -56,9 +58,16 @@ public class MainActivity extends Activity {
                 activityManager.set(new GameboardActivity(activityManager));
             }
         });
+
         TextButton tutorialButton = new TextButton("Tutorial", skin);
 
         tutorialButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1f), Actions.fadeIn(0.25f)));
+        tutorialButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                activityManager.set(new TutorialActivity(activityManager));
+            }
+        });
 
         TextButton creditsButton = new TextButton("Credits", skin);
 
@@ -108,6 +117,15 @@ public class MainActivity extends Activity {
         stage.act();
         stage.draw();
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            if(!galacticfoundations.backpressed){
+                galacticfoundations.backpressed = true;
+            }
+            else if(galacticfoundations.backpressed){
+                galacticfoundations.backpressed = false;
+                Gdx.app.exit();
+            }
+        }
     }
 
     @Override
