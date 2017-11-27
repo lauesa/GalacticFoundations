@@ -20,6 +20,10 @@ import com.github.t7.galacticfoundations.galacticfoundations;
 import com.github.t7.galacticfoundations.hud.GameboardHUD;
 import com.github.t7.galacticfoundations.states.GameState;
 
+import static com.github.t7.galacticfoundations.actors.Hex.HexType.BASE;
+import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
+import static com.github.t7.galacticfoundations.actors.Hex.HexType.SPECIAL;
+
 /**
  * Created by Warren on 11/19/2017.
  */
@@ -221,7 +225,7 @@ public class GameboardActivity extends Activity {
         generateBoard();
 
        // generateGameState();
-      //  saveGameState();
+       saveGameState();
     }
 
     @Override
@@ -264,6 +268,79 @@ public class GameboardActivity extends Activity {
     @Override
     public void resize(int width, int height) {
 
+    }
+
+    /*
+    * loadGameState()
+    *
+    * This function to be used on resume game. It will read from the gamestate.txt file and
+    * generate the board from that data.
+    *
+    * Create Array of x,y coords?
+    * */
+
+    public void loadGameState(){
+
+
+
+        boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
+
+        if(isLocAvailable == true){
+            String locRoot = Gdx.files.getLocalStoragePath();
+            System.out.printf("%s", locRoot);
+        } else {
+            System.out.printf("No Local Path");
+            return;
+        }
+
+        int i = 0;
+        FileHandle file = Gdx.files.local("gamestate.txt");
+        Hex newHex;
+        Hex.HexState state;
+        Hex.HexType type;
+        float x = 0;
+        float y = 0;
+
+        String text = file.readString();
+        String[] data = text.split("\\s+");
+
+        /*Formatting
+        * data[i] = Hextype
+        * data[i+1] = HexState
+        * data[i+2] = x
+        * data[i+3] = y
+        * */
+        for(i=0; i < 380 ;i = i + 4){
+
+            //read Hextype with string comp
+            if(data[i].equals("GENERAL")){
+                type = GENERAL;
+            } else if(data[i].equals("SPECIAL")){
+                type = SPECIAL;
+            } else {
+                type = BASE;
+            }
+
+            //read HexState
+            if(data[i + 1].equals("UNOWNED")){
+                state = Hex.HexState.UNOWNED;
+            } else if(data[i + 1].equals("PLAYER_ACTIVE")){
+                state = Hex.HexState.PLAYER_ACTIVE;
+            } else if(data[i + 1].equals("PLAYER_INACTIVE")){
+                state = Hex.HexState.PLAYER_INACTIVE;
+            } else if(data[i + 1].equals("AI_ACTIVE")){
+                state = Hex.HexState.AI_ACTIVE;
+            } else {
+                state = Hex.HexState.AI_INACTIVE;
+            }
+
+            x = Float.parseFloat(data[i + 2]);
+            x = Float.parseFloat(data[i + 3]);
+
+            newHex = new Hex(type, x, y);
+            newHex.setState(state);
+            stage.addActor(newHex);
+        }
     }
 
     public void saveGameState(){
@@ -311,7 +388,7 @@ public class GameboardActivity extends Activity {
 
                     float x = (float)1.47*TILE_WIDTH*j + xOffset;
                     float y = (float)TILE_HEIGHT*(i/2) + yOffset;
-                    Hex newHex = new Hex(Hex.HexType.GENERAL, x, y);
+                    Hex newHex = new Hex(GENERAL, x, y);
                     stage.addActor(newHex);
 
                 }
@@ -323,7 +400,7 @@ public class GameboardActivity extends Activity {
                 for(int j = 0; j < (boardWidth-1); j++){
                     float x = (float)(1.47*TILE_WIDTH*j) + oddXOffset;
                     float y = (float)(TILE_HEIGHT*(i/2)) + oddYOffset;
-                    stage.addActor(new Hex(Hex.HexType.GENERAL, x, y));
+                    stage.addActor(new Hex(GENERAL, x, y));
 
                 }
             }
