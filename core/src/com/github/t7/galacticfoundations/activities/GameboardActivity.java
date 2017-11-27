@@ -234,7 +234,7 @@ public class GameboardActivity extends Activity {
 
 
     }
-    //overide here
+    //overide getactors
     @Override
     public void render(SpriteBatch sb) {
         cam.update();

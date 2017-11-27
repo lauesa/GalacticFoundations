@@ -121,6 +121,8 @@ public class Hex extends Actor {
 
     }
 
+    //@Override
+
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
