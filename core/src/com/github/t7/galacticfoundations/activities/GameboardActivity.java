@@ -1,7 +1,10 @@
 package com.github.t7.galacticfoundations.activities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
+import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,15 +12,17 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.github.t7.galacticfoundations.actors.Hex;
-import com.github.t7.galacticfoundations.actors.PlayerHex;
 import com.github.t7.galacticfoundations.galacticfoundations;
 import com.github.t7.galacticfoundations.hud.GameboardHUD;
+import com.github.t7.galacticfoundations.states.GameState;
+
+import static com.github.t7.galacticfoundations.actors.Hex.HexType.BASE;
+import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
+import static com.github.t7.galacticfoundations.actors.Hex.HexType.SPECIAL;
 
 /**
  * Created by Warren on 11/19/2017.
@@ -33,6 +38,7 @@ public class GameboardActivity extends Activity {
     private InputListener inputListener;
     private GameboardHUD gameboardHUD;
     private InputMultiplexer multiplexer;
+    private StateMachine<GameboardActivity, GameState> stateMachine;
 
 
 
@@ -42,6 +48,9 @@ public class GameboardActivity extends Activity {
         bg = new Texture("gameboard_bg.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
+
+        stateMachine = new DefaultStateMachine<GameboardActivity, GameState>(this, GameState.PLAYER_TURN);
+
         stage = new Stage(viewport);
 
 
@@ -192,7 +201,7 @@ public class GameboardActivity extends Activity {
 
 
     }
-    //overide here
+    //overide getactors
     @Override
     public void render(SpriteBatch sb) {
         cam.update();
@@ -206,6 +215,11 @@ public class GameboardActivity extends Activity {
         galacticfoundations.batch.setProjectionMatrix(gameboardHUD.stage.getCamera().combined);
         gameboardHUD.stage.draw();
 
+        // Goes to main menu when back button pressed
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+            galacticfoundations.backpressed=true;
+            activityManager.set(new MainActivity(activityManager)); // go to main menu if back button pressed
+        }
     }
 
     @Override
@@ -216,6 +230,79 @@ public class GameboardActivity extends Activity {
     @Override
     public void resize(int width, int height) {
 
+    }
+
+    /*
+    * loadGameState()
+    *
+    * This function to be used on resume game. It will read from the gamestate.txt file and
+    * generate the board from that data.
+    *
+    * Create Array of x,y coords?
+    * */
+
+    public void loadGameState(){
+
+
+
+        boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
+
+        if(isLocAvailable == true){
+            String locRoot = Gdx.files.getLocalStoragePath();
+            System.out.printf("%s", locRoot);
+        } else {
+            System.out.printf("No Local Path");
+            return;
+        }
+
+        int i = 0;
+        FileHandle file = Gdx.files.local("gamestate.txt");
+        Hex newHex;
+        Hex.HexState state;
+        Hex.HexType type;
+        float x = 0;
+        float y = 0;
+
+        String text = file.readString();
+        String[] data = text.split("\\s+");
+
+        /*Formatting
+        * data[i] = Hextype
+        * data[i+1] = HexState
+        * data[i+2] = x
+        * data[i+3] = y
+        * */
+        for(i=0; i < 380 ;i = i + 4){
+
+            //read Hextype with string comp
+            if(data[i].equals("GENERAL")){
+                type = GENERAL;
+            } else if(data[i].equals("SPECIAL")){
+                type = SPECIAL;
+            } else {
+                type = BASE;
+            }
+
+            //read HexState
+            if(data[i + 1].equals("UNOWNED")){
+                state = Hex.HexState.UNOWNED;
+            } else if(data[i + 1].equals("PLAYER_ACTIVE")){
+                state = Hex.HexState.PLAYER_ACTIVE;
+            } else if(data[i + 1].equals("PLAYER_INACTIVE")){
+                state = Hex.HexState.PLAYER_INACTIVE;
+            } else if(data[i + 1].equals("AI_ACTIVE")){
+                state = Hex.HexState.AI_ACTIVE;
+            } else {
+                state = Hex.HexState.AI_INACTIVE;
+            }
+
+            x = Float.parseFloat(data[i + 2]);
+            x = Float.parseFloat(data[i + 3]);
+
+            newHex = new Hex(type, x, y);
+            newHex.setState(state);
+            stage.addActor(newHex);
+        }
     }
 
     public void saveGameState(){
@@ -263,7 +350,7 @@ public class GameboardActivity extends Activity {
 
                     float x = (float)1.47*TILE_WIDTH*j + xOffset;
                     float y = (float)TILE_HEIGHT*(i/2) + yOffset;
-                    Hex newHex = new Hex(Hex.HexType.GENERAL, x, y);
+                    Hex newHex = new Hex(GENERAL, x, y);
                     stage.addActor(newHex);
 
                 }
@@ -275,7 +362,7 @@ public class GameboardActivity extends Activity {
                 for(int j = 0; j < (boardWidth-1); j++){
                     float x = (float)(1.47*TILE_WIDTH*j) + oddXOffset;
                     float y = (float)(TILE_HEIGHT*(i/2)) + oddYOffset;
-                    stage.addActor(new Hex(Hex.HexType.GENERAL, x, y));
+                    stage.addActor(new Hex(GENERAL, x, y));
 
                 }
             }
@@ -304,6 +391,10 @@ public class GameboardActivity extends Activity {
             return false;
         }
 
+    }
+
+    public void initPlayerTurn(){
+        //Do Stuff Here
     }
 
 

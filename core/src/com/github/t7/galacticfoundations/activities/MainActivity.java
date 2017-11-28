@@ -1,6 +1,9 @@
 package com.github.t7.galacticfoundations.activities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -29,6 +32,8 @@ public class MainActivity extends Activity {
     private TextureAtlas atlas;
     private Skin skin;
     private Stage stage;
+    public static float mastervol = 0.05f;
+    public static Music music = Gdx.audio.newMusic(Gdx.files.internal("menu_music.mp3"));
 
     public MainActivity(final ActivityManager activityManager){
         super(activityManager);
@@ -38,6 +43,7 @@ public class MainActivity extends Activity {
         atlas = new TextureAtlas("skin\\quantum-horizon-ui.atlas");
         skin = new Skin(Gdx.files.internal("skin\\quantum-horizon-ui.json"), atlas);
         stage = new Stage(viewport);
+
         Gdx.input.setInputProcessor(stage);
 
         Table mainTable = new Table();
@@ -54,15 +60,33 @@ public class MainActivity extends Activity {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 activityManager.set(new GameboardActivity(activityManager));
+
             }
         });
+
         TextButton tutorialButton = new TextButton("Tutorial", skin);
 
         tutorialButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1f), Actions.fadeIn(0.25f)));
+        tutorialButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                activityManager.set(new TutorialActivity(activityManager));
+            }
+        });
+
+        TextButton settingsButton = new TextButton("Settings", skin);
+
+        settingsButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1.25f), Actions.fadeIn(0.25f)));
+        settingsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                activityManager.set(new SettingsActivity(activityManager));
+            }
+        });
 
         TextButton creditsButton = new TextButton("Credits", skin);
 
-        creditsButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1.25f), Actions.fadeIn(0.25f)));
+        creditsButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1.5f), Actions.fadeIn(0.25f)));
 
         Image imageLogo = new Image();
         imageLogo.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Title.png")))));
@@ -82,10 +106,19 @@ public class MainActivity extends Activity {
         mainTable.row();
         mainTable.add(tutorialButton);
         mainTable.row();
+        mainTable.add(settingsButton);
+        mainTable.row();
         mainTable.add(creditsButton);
         stage.addActor(mainTable);
 
+
+
+        music.setVolume(mastervol);                 // sets the volume to default
+        music.setLooping(true);                // will repeat playback until music.stop() is called
+        music.play();
     }
+
+
 
     @Override
     protected void handleInput() {
@@ -108,6 +141,15 @@ public class MainActivity extends Activity {
         stage.act();
         stage.draw();
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            if(!galacticfoundations.backpressed){
+                galacticfoundations.backpressed = true;
+            }
+            else if(galacticfoundations.backpressed){
+                galacticfoundations.backpressed = false;
+                Gdx.app.exit();
+            }
+        }
     }
 
     @Override

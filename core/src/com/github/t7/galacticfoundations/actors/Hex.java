@@ -18,6 +18,8 @@ import com.github.t7.galacticfoundations.activities.GameboardActivity;
 public class Hex extends Actor {
     protected Texture texture;
     protected Vector2 position;
+    private float x;
+    private float y;
 
 
     public enum HexType {
@@ -36,8 +38,8 @@ public class Hex extends Actor {
 
     @Override
     public String toString() {
-        //function has been altered to return hexstate
-        return "" + "" + hexState + " ";
+        //function has been altered for save state
+        return "" + hexType + " " + hexState + " " + x + " " + y + " ";
     }
 
     protected HexState hexState;
@@ -47,6 +49,8 @@ public class Hex extends Actor {
     public Hex(HexType type, float x, float y) {
         super();
         hexType = type;
+        this.x = x;
+        this.y = y;
         position = new Vector2(x, y);
         setPosition(x, y);
         setState(HexState.UNOWNED);
@@ -121,6 +125,8 @@ public class Hex extends Actor {
 //        });
 
     }
+
+    //@Override
 
 
     @Override
