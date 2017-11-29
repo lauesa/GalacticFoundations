@@ -203,6 +203,7 @@ public class Hex extends Actor {
     public void enterUnowned(){
         generateNewTextureSet("blanktile.png");
     }
+
     public void exitUnowned(){
     }
     public void enterPlayerActivated(){

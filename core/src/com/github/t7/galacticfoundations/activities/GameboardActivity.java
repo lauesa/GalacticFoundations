@@ -642,6 +642,8 @@ public class GameboardActivity extends Activity {
                 }
             }
         }
+
+
     }
 
     public void setBoardMode(BoardMode mode){
