@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 
 public class AI_Activity {
-    public static int resources = 0;    //Count of resources
+    public static int resources = 0;    //Count of resourcesa
     public static Array<Hex> Tiles;     //Array of Hexes that make up the board
 
     public static void AI_turn(Array<Hex> a){   //Function that drives AI turn
