@@ -1,11 +1,14 @@
 package com.github.t7.galacticfoundations.actors;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
@@ -43,90 +46,49 @@ public class Hex extends Actor {
     }
 
     protected HexState hexState;
-    protected boolean dragged;
+    private GameboardActivity board;
 
 
-    public Hex(HexType type, float x, float y) {
+    public Hex(HexType type, float x, float y, GameboardActivity boardInstance) {
         super();
         hexType = type;
         this.x = x;
         this.y = y;
         position = new Vector2(x, y);
+
         setPosition(x, y);
         setState(HexState.UNOWNED);
         setOrigin(texture.getWidth()/2, texture.getHeight()/2);
         setName("Hex");
-        dragged = false;
-
-        addListener( new ActorGestureListener() {
-            @Override
-            public void tap(InputEvent event, float x, float y, int count, int button) {
-                super.tap(event, x, y, count, button);
-                if (checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)) {
-                    //dragged = false;
-                    System.out.println("Tapped");
-                    //System.out.printf("%s\n", event.getTarget().getName());
-
-                }
-            }
-        });
-
-      
 
 
-//        //listen for down click and verifies that it is the lowest level actor and checks hex bounds.
-//        addListener(new ClickListener(){
-//            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
-//                if(checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)){
-//                    dragged = false;;
-//                    System.out.println("TouchDown");
+/**Old Event Listener, remove when positive gameboard level logic works **/
+//        addListener( new ActorGestureListener() {
+//            @Override
+//            public void tap(InputEvent event, float x, float y, int count, int button) {
+//                super.tap(event, x, y, count, button);
+//                if (checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)) {
+//                    //dragged = false;
+//                    Vector2 currentCoords = new Vector2(x,y);
+//                    Vector2 stageCoords = localToStageCoordinates(currentCoords);
+//                    System.out.println("Tapped");
+//                    System.out.printf("%f", stageCoords.x);
+//                    Actor toTheLeft = getParent().hit(stageCoords.x-getWidth()/2, stageCoords.y,true);
+//                    toTheLeft.setName("Left Actor");
+//                    System.out.printf("Current Actor Name: %s\n Left Actor Name: %s", getName(), toTheLeft.getName());
+//
+//
 //                    //System.out.printf("%s\n", event.getTarget().getName());
-//                    return true;
-//                }else{
-//                    return false;
-//                }
 //
+//                }
 //            }
 //        });
 
-        //If not dragged, select hex.
-//        addListener(new ClickListener(){
-//            public void touchUp(InputEvent event, float x, float y, int pointer, int button){
-//                if(!GameboardActivity.zoomed && !GameboardActivity.panned){
-//                    System.out.println("TouchUp");
-//                    if(hexState == HexState.UNOWNED){
-//                        setState(HexState.PLAYER_ACTIVE);
-//                    }
-//                    else if(hexState == HexState.PLAYER_ACTIVE){
-//                        setState(HexState.PLAYER_INACTIVE);
-//                    }
-//                    else if(hexState == HexState.PLAYER_INACTIVE){
-//                        setState(HexState.AI_ACTIVE);
-//                    }
-//                    else if(hexState == HexState.AI_ACTIVE){
-//                        setState(HexState.AI_INACTIVE);
-//                    }
-//                    else if(hexState == HexState.AI_INACTIVE){
-//                        setState(HexState.UNOWNED);
-//                    }
-//                }
-//                cancel();
-//
-//            }
-//        });
 
-        //Do not select hex if dragged
-//        addListener(new DragListener(){
-//           public void touchDragged(InputEvent event, float x, float y, int pointer){
-//               dragged = true;
-//               //System.out.println("Dragged");
-//
-//           }
-//        });
+
 
     }
 
-    //@Override
 
 
     @Override
@@ -141,7 +103,7 @@ public class Hex extends Actor {
         hexState = state;
         switch (state){
             case UNOWNED:{
-                texture = new Texture("greytile.png");
+                texture = new Texture("blanktile.png");
                 break;
             }
             case PLAYER_ACTIVE:{
@@ -165,6 +127,11 @@ public class Hex extends Actor {
         this.setBounds(getX(), getY(), texture.getWidth(), texture.getHeight());
     }
 
+    private void handleTap(){
+
+
+    }
+
     //Check if a click is within a hex
     public boolean checkBounds(float originX, float originY, float x, float y){
         double radius = texture.getWidth()/2;
@@ -186,6 +153,12 @@ public class Hex extends Actor {
             return false;
         }
 
+    }
+
+    public void highlight(boolean isOn){
+        if(isOn){
+            //run highlight texture modification
+        }
     }
 
 

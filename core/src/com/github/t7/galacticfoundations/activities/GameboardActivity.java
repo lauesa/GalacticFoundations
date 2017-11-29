@@ -39,15 +39,18 @@ public class GameboardActivity extends Activity {
     private GameboardHUD gameboardHUD;
     private InputMultiplexer multiplexer;
     private StateMachine<GameboardActivity, GameState> stateMachine;
+    private Hex focus;
 
 
 
     public GameboardActivity(ActivityManager activityManager) {
         super(activityManager);
         viewport.apply();
-        bg = new Texture("gameboard_bg.png");
+        //bg = new Texture("gameboard_bg.png");
+        bg = new Texture("marsflat.jpg");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
+        focus = null;
 
         stateMachine = new DefaultStateMachine<GameboardActivity, GameState>(this, GameState.PLAYER_TURN);
 
@@ -168,8 +171,24 @@ public class GameboardActivity extends Activity {
                 cam.position.add(oldUnprojection.cpy().add(newUnprojection.cpy().scl(-1f)));
             }
 
+            @Override
+            public boolean tap(float x, float y, int count, int button) {
+                Vector2 currentCoords = new Vector2(x, y);
+                Vector2 stageCoords = stage.screenToStageCoordinates(currentCoords);
+                Actor target = stage.hit(stageCoords.x, stageCoords.y, true);
+                if(target != null){
+                    System.out.printf("Tap Target: %s\n", target.getName());
+                    handleTap(target);
+                }
 
-
+                //handleTap(target);
+//                System.out.printf("%s\n", target.getName());
+//                if(target.getName() == "Hex"){
+//                    focus = (Hex)target;
+//                }
+//                System.out.printf("%s\n", focus.getName());
+                return true;
+            }
         });
 
 
@@ -177,7 +196,7 @@ public class GameboardActivity extends Activity {
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(gameboardHUD.getStage());
         multiplexer.addProcessor(gestureDetector);
-        multiplexer.addProcessor(stage);
+        //multiplexer.addProcessor(stage);
 
 
 
@@ -299,7 +318,7 @@ public class GameboardActivity extends Activity {
             x = Float.parseFloat(data[i + 2]);
             x = Float.parseFloat(data[i + 3]);
 
-            newHex = new Hex(type, x, y);
+            newHex = new Hex(type, x, y, this);
             newHex.setState(state);
             stage.addActor(newHex);
         }
@@ -350,7 +369,7 @@ public class GameboardActivity extends Activity {
 
                     float x = (float)1.47*TILE_WIDTH*j + xOffset;
                     float y = (float)TILE_HEIGHT*(i/2) + yOffset;
-                    Hex newHex = new Hex(GENERAL, x, y);
+                    Hex newHex = new Hex(GENERAL, x, y, this);
                     stage.addActor(newHex);
 
                 }
@@ -362,7 +381,7 @@ public class GameboardActivity extends Activity {
                 for(int j = 0; j < (boardWidth-1); j++){
                     float x = (float)(1.47*TILE_WIDTH*j) + oddXOffset;
                     float y = (float)(TILE_HEIGHT*(i/2)) + oddYOffset;
-                    stage.addActor(new Hex(GENERAL, x, y));
+                    stage.addActor(new Hex(GENERAL, x, y, this));
 
                 }
             }
@@ -393,8 +412,33 @@ public class GameboardActivity extends Activity {
 
     }
 
+    private void handleTap(Actor target){
+        Hex hexTarget;
+        if(target.getName().equals("Hex")){
+            hexTarget = (Hex)target;
+            if(focus != hexTarget){
+                setFocus(hexTarget);
+                System.out.println("Tap handled, new focus set");
+
+            }
+        }
+
+    }
+
     public void initPlayerTurn(){
         //Do Stuff Here
+    }
+
+    public void setFocus(Hex newfocus){
+        if(focus != null){
+           focus.highlight(false);
+        }
+        focus = newfocus;
+        newfocus.highlight(true);
+        System.out.printf("Current Focus: %s\n", this.focus.getName());
+    }
+    public Hex getFocus(){
+        return focus;
     }
 
 
