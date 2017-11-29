@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.github.t7.galacticfoundations.galacticfoundations;
 
+import java.util.ArrayList;
+
 /**
  * Created by jaken on 11/26/2017.
  */
@@ -27,6 +29,8 @@ public class TutorialActivity extends Activity {
     private Texture bg;
     private Stage stage;
     private InputMultiplexer multiplexer;
+    private ArrayList<String> imagePaths = new ArrayList<String>();
+    private int currentSlide = 0;
 
     //Variables for creating buttons
     private TextureAtlas atlas;
@@ -35,7 +39,14 @@ public class TutorialActivity extends Activity {
     public TutorialActivity(final ActivityManager activityManager) {
         super(activityManager);
         viewport.apply();
-        bg = new Texture("pixel_mars.jpg");
+
+        // Add tutorial images to imagePaths
+        imagePaths.add("tutorial_images\\tut0.png");
+        imagePaths.add("tutorial_images\\tut1.png");
+        imagePaths.add("tutorial_images\\tut2.png");
+        imagePaths.add("tutorial_images\\tut3.png");
+
+        bg = new Texture(imagePaths.get(currentSlide));
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         stage = new Stage(viewport);
 
@@ -55,6 +66,11 @@ public class TutorialActivity extends Activity {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 System.out.println("prev button pressed.");
+                if(currentSlide >= 1)
+                {
+                    currentSlide--;
+                    bg = new Texture(imagePaths.get(currentSlide));
+                }
             }
         });
 
@@ -63,6 +79,11 @@ public class TutorialActivity extends Activity {
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 System.out.println("next button pressed.");
+                if(currentSlide < imagePaths.size() - 1)
+                {
+                    currentSlide++;
+                    bg = new Texture(imagePaths.get(currentSlide));
+                }
             }
         });
 

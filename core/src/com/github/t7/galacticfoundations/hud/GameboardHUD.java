@@ -48,6 +48,7 @@ public class GameboardHUD implements Disposable{
         TextButton fortifyButton = new TextButton("DEF", skin);
         TextButton expandButton = new TextButton("EXP", skin);
         TextButton stockpileButton = new TextButton("STO", skin);
+        TextButton confirmButton = new TextButton("Confirm", skin);
 
         //define labels using the String, and a Label style consisting of a font and color
         currentPointsTitleLabel = new Label("Current Points", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
@@ -97,10 +98,12 @@ public class GameboardHUD implements Disposable{
         Table table = new Table();
         table.setFillParent(true);
         table.top().padTop(5);
-        table.add(currentPointsTitleLabel);//.expandX();
-        table.add(pointsLabel).width(50);//.padBottom(5);
+        table.add(currentPointsTitleLabel);
+        table.add(pointsLabel).width(50);
+        table.add(confirmButton);
 
-        table.row().padTop(galacticfoundations.HEIGHT*0.87f);
+        //table.row().padTop(galacticfoundations.HEIGHT*0.87f);
+        table.row().padTop(galacticfoundations.HEIGHT*0.80f);
         table.add(attackButton).expandX().width(galacticfoundations.WIDTH/4);
         table.add(fortifyButton).expandX().width(galacticfoundations.WIDTH/4);
         table.add(expandButton).expandX().width(galacticfoundations.WIDTH/4);
