@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.github.t7.galacticfoundations.activities.GameboardActivity;
 import com.github.t7.galacticfoundations.states.HexState;
 
+
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.SPECIAL;
 
@@ -265,7 +266,7 @@ public class Hex extends Actor {
     }
 
     public void enterUnowned(){
-        if(this.hexType == SPECIAL){
+        if(hexType == HexType.SPECIAL){
             generateNewTextureSet("blankSRtile.png");
         } else {
             generateNewTextureSet("blanktile.png");
@@ -275,16 +276,25 @@ public class Hex extends Actor {
     public void exitUnowned(){
     }
     public void enterPlayerActivated(){
-
-        generateNewTextureSet("greentile.png");
+        if(hexType == HexType.SPECIAL){
+            generateNewTextureSet("greenSRtile.png");
+        } else if (hexType == HexType.BASE){
+            generateNewTextureSet("basetile.png");
+        } else {
+            generateNewTextureSet("greentile.png");
+        }
 
     }
     public void exitPlayerActivated(){
 
     }
     public void enterPlayerDeactivated(){
-        generateNewTextureSet("darkgreentile.png");
-
+        if (hexType == HexType.BASE){
+            generateNewTextureSet("darkbasetile.png");
+        } else if (hexType == HexType.SPECIAL) {
+        } else {
+            generateNewTextureSet("darkgreentile.png");
+        }
     }
     public void exitPlayerDeactivated(){
 

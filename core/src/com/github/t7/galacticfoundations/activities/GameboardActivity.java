@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.utils.Array;
 import com.github.t7.galacticfoundations.actors.Hex;
 import com.github.t7.galacticfoundations.galacticfoundations;
@@ -221,6 +222,7 @@ public class GameboardActivity extends Activity {
         } else {
             generateBoard();
         }
+
 
 
         
@@ -464,6 +466,10 @@ public class GameboardActivity extends Activity {
 
         }
         placeTiles();
+
+
+
+
     }
 
     //Check if a click is within a hex
