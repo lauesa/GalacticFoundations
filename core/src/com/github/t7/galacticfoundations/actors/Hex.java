@@ -21,6 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.github.t7.galacticfoundations.activities.GameboardActivity;
 import com.github.t7.galacticfoundations.states.HexState;
 
+import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
+
 /**
  * Created by Warren on 11/20/2017.
  */
@@ -209,6 +211,7 @@ public class Hex extends Actor {
     public void exitUnowned(){
     }
     public void enterPlayerActivated(){
+
         generateNewTextureSet("greentile.png");
 
     }
