@@ -1,5 +1,7 @@
 package com.github.t7.galacticfoundations.actors;
 
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.files.FileHandle;
@@ -245,7 +247,8 @@ public class Hex extends Actor {
         if(highlightTexture != null){
             highlightTexture.dispose();
         }
-        pixmap = new Pixmap(new FileHandle(filepath));
+
+        pixmap = new Pixmap(Gdx.files.internal(filepath));
         defaultTexture = new Texture(pixmap);
         texture = new Texture(pixmap);
         generateHighlight();
