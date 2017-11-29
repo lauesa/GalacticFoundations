@@ -29,14 +29,19 @@ import static com.github.t7.galacticfoundations.actors.Hex.HexType.SPECIAL;
  */
 
 public class Hex extends Actor {
-    private Pixmap pixmap;
+    private Pixmap highlightPixmap;
+    private Pixmap fortifyPixmap;
+
     protected Texture texture;
     private Texture defaultTexture;
     private Texture highlightTexture;
+    private Texture fortifyTexture;
+    private Texture fortifyHighlightTexture;
     protected Vector2 position;
     private StateMachine<Hex, HexState> stateMachine;
     private float x;
     private float y;
+    private boolean foritifed;
 
 
     public enum HexType {
@@ -70,6 +75,7 @@ public class Hex extends Actor {
         this.y = y;
         position = new Vector2(x, y);
         stateMachine = new DefaultStateMachine<Hex, HexState>(this, HexState.UNOWNED);
+        foritifed = false;
 
         setPosition(x, y);
         setState(HexState.UNOWNED);
@@ -175,34 +181,87 @@ public class Hex extends Actor {
 
     public void highlight(boolean isOn){
         if(isOn){
-            texture = highlightTexture;
-
-
+            if(foritifed){
+                texture = fortifyHighlightTexture;
+            }
+            else{
+                texture = highlightTexture;
+            }
 
         }else{
-            texture = defaultTexture;
+            if(foritifed){
+                texture = fortifyTexture;
+            }
+            else{
+                texture = defaultTexture;
+            }
+
         }
     }
 
-    private void generateHighlight(){
+    public void setFortify(boolean isOn){
+        if(isOn){
+            foritifed = true;
+            texture = fortifyTexture;
+        }else{
+            foritifed = false;
+            texture = fortifyTexture;
+        }
+    }
+
+    private void generateColorMods(){
         Color color = new Color();
 
-        for (int x = 0; x < pixmap.getWidth(); x++)
+        for (int x = 0; x < highlightPixmap.getWidth(); x++)
         {
-            for (int y = 0; y < pixmap.getHeight(); y++)
+            for (int y = 0; y < highlightPixmap.getHeight(); y++)
             {
-                int val = pixmap.getPixel(x, y);
+                int val = highlightPixmap.getPixel(x, y);
                 Color.rgba8888ToColor(color, val);
                 int A = (int) (color.a * 255f);
                 int R = (int) (color.r * 255f);
                 int G = (int) (color.g * 255f);
                 int B = (int) (color.b * 255f);
-                pixmap.setColor(0.85f, 1f, 0.85f, 0.75f);
-                if(A != 0) //The flash shouldn't appear on transparent pixels, same for fully black pixels
-                    pixmap.drawPixel(x, y);
+                highlightPixmap.setColor(0.85f, 1f, 0.85f, 0.75f);
+                if(A != 0 && R != 0 && G != 0 && B != 0)
+                    highlightPixmap.drawPixel(x, y);
             }
         }
-        highlightTexture = new Texture(pixmap);
+        highlightTexture = new Texture(highlightPixmap);
+
+        for (int x = 0; x < highlightPixmap.getWidth(); x++)
+        {
+            for (int y = 0; y < fortifyPixmap.getHeight(); y++)
+            {
+                int val = fortifyPixmap.getPixel(x, y);
+                Color.rgba8888ToColor(color, val);
+                int A = (int) (color.a * 255f);
+                int R = (int) (color.r * 255f);
+                int G = (int) (color.g * 255f);
+                int B = (int) (color.b * 255f);
+                fortifyPixmap.setColor(0.537f, 0.56f, 0.647f, 0.5f);
+                if(A != 0 && R != 0 && G != 0 && B != 0)
+                    fortifyPixmap.drawPixel(x, y);
+            }
+        }
+        fortifyTexture = new Texture(fortifyPixmap);
+
+        for (int x = 0; x < fortifyPixmap.getWidth(); x++)
+        {
+            for (int y = 0; y < fortifyPixmap.getHeight(); y++)
+            {
+                int val = fortifyPixmap.getPixel(x, y);
+                Color.rgba8888ToColor(color, val);
+                int A = (int) (color.a * 255f);
+                int R = (int) (color.r * 255f);
+                int G = (int) (color.g * 255f);
+                int B = (int) (color.b * 255f);
+                fortifyPixmap.setColor(0.85f, 1f, 0.85f, 0.75f);
+                if(A != 0 && R != 0 && G != 0 && B != 0)
+                    fortifyPixmap.drawPixel(x, y);
+            }
+        }
+        fortifyHighlightTexture = new Texture(fortifyPixmap);
     }
 
     public void enterUnowned(){
@@ -246,8 +305,11 @@ public class Hex extends Actor {
     }
 
     private void generateNewTextureSet(String filepath){
-        if(pixmap != null){
-            pixmap.dispose();
+        if(highlightPixmap != null){
+            highlightPixmap.dispose();
+        }
+        if(fortifyPixmap != null){
+            fortifyPixmap.dispose();
         }
         if(defaultTexture != null){
             defaultTexture.dispose();
@@ -255,12 +317,16 @@ public class Hex extends Actor {
         if(highlightTexture != null){
             highlightTexture.dispose();
         }
+        if(fortifyPixmap != null){
+            fortifyTexture.dispose();
+        }
 
-        pixmap = new Pixmap(Gdx.files.internal(filepath));
-        defaultTexture = new Texture(pixmap);
-        texture = new Texture(pixmap);
-        generateHighlight();
-        highlightTexture = new Texture(pixmap);
+        highlightPixmap = new Pixmap(Gdx.files.internal(filepath));
+        fortifyPixmap = new Pixmap(Gdx.files.internal(filepath));
+        defaultTexture = new Texture(highlightPixmap);
+        texture = new Texture(highlightPixmap);
+        generateColorMods();
+        highlightTexture = new Texture(highlightPixmap);
         this.setBounds(getX(), getY(), texture.getWidth(), texture.getHeight());
     }
 

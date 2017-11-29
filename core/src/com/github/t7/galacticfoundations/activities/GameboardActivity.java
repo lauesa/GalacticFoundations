@@ -523,6 +523,10 @@ public class GameboardActivity extends Activity {
                         }
                     }
                 }
+                else if(boardMode == BoardMode.DEFEND){
+                    //IMPLEMENT POINT DEDUCTION
+
+                }
 
 
 
@@ -634,6 +638,9 @@ public class GameboardActivity extends Activity {
                 }
             }
 
+        }
+        else if(mode == BoardMode.DEFEND){
+            focus.setFortify(true);
         }
     }
 
