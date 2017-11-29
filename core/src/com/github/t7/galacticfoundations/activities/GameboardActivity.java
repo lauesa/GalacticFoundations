@@ -624,6 +624,7 @@ public class GameboardActivity extends Activity {
 
     public void setBoardMode(BoardMode mode){
         boardMode = mode;
+        unhightlightTiles();
         if(mode == BoardMode.DEFAULT){
             gameboardHUD.hideTileHUD(true);
         }
@@ -639,8 +640,6 @@ public class GameboardActivity extends Activity {
             for(Hex current:focusAdjacents){
                 if(current.getState() == HexState.UNOWNED){
                     current.highlight(true);
-
-
                 }
             }
 
@@ -669,8 +668,8 @@ public class GameboardActivity extends Activity {
         if(target != null){
             if(target.getName().equals("Hex")){
                 Hex targetHex = (Hex)target;
-                targetHex.setState(state);
                 targetHex.setHexType(type);
+                targetHex.setState(state);
             }
         }
     }
@@ -696,7 +695,7 @@ public class GameboardActivity extends Activity {
             return new Vector2(resultX,resultY);
         }
     }
-
+    //
     public void passTurn(){
         if(stateMachine.getCurrentState() == GameState.PLAYER_TURN){
             stateMachine.changeState(GameState.AI_TURN);
