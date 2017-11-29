@@ -33,6 +33,7 @@ public class MainActivity extends Activity {
     private Skin skin;
     private Stage stage;
     public static float mastervol = 0.05f;
+    public static int RESUME = 0;
     public static Music music = Gdx.audio.newMusic(Gdx.files.internal("menu_music.mp3"));
 
     public MainActivity(final ActivityManager activityManager){
@@ -53,6 +54,13 @@ public class MainActivity extends Activity {
 
         resumeButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.5f), Actions.fadeIn(0.25f)));
 
+        resumeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                RESUME = 1;
+                activityManager.set(new GameboardActivity(activityManager));
+            }
+        });
         TextButton newGameButton = new TextButton("New Game", skin);
 
         newGameButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.75f), Actions.fadeIn(0.25f)));

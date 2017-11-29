@@ -22,6 +22,8 @@ import com.github.t7.galacticfoundations.hud.GameboardHUD;
 import com.github.t7.galacticfoundations.states.GameState;
 import com.github.t7.galacticfoundations.states.HexState;
 
+import java.util.Arrays;
+
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.BASE;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.SPECIAL;
@@ -213,11 +215,13 @@ public class GameboardActivity extends Activity {
         //multiplexer.addProcessor(stage);
 
 
+        if(MainActivity.RESUME == 1){
+            loadGameState();
+            MainActivity.RESUME = 0;
+        } else {
+            generateBoard();
+        }
 
-
-
-
-        generateBoard();
 
         
     }
@@ -271,13 +275,12 @@ public class GameboardActivity extends Activity {
     * This function to be used on resume game. It will read from the gamestate.txt file and
     * generate the board from that data.
     *
-    * Create Array of x,y coords?
+    * Create 3d array of Strings[i][j][k], and recreate generateBoard utilizing the kth elements as
+    * Hextype and Hexstate
     * */
 
     public void loadGameState(){
-
-
-
+        System.out.printf("loadGameState Called\n");
         boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
 
         if(isLocAvailable == true){
@@ -289,23 +292,120 @@ public class GameboardActivity extends Activity {
         }
 
         int i = 0;
+        int j = 0;
         FileHandle file = Gdx.files.local("gamestate.txt");
-        Hex newHex;
+
         HexState state;
         Hex.HexType type;
-        float x = 0;
-        float y = 0;
 
         String text = file.readString();
         String[] data = text.split("\\s+");
 
-        /*Formatting
+
+        //Create 3d array to store items
+        String[][][] master = new String[21][5][3];
+        int k = 0;
+        for(i = 0; i < 21; i++){
+            if(i % 2 == 0) {
+                for (j = 0; j < 5; j++){
+                    master[i][j][0] = data[k];
+                    k++;
+                    master[i][j][1] = data[k];
+                    System.out.printf("%s %s %d \n", master[i][j][0], master[i][j][1], k);
+                    k++;
+                }
+            } else {
+                for (j = 0; j < 4; j++) {
+                    master[i][j][0] = data[k];
+                    k++;
+                    master[i][j][1] = data[k];
+                    System.out.printf("\n%s %s %d", master[i][j][0], master[i][j][1], k);
+                    k++;
+                }
+            }
+        }
+        //copied code from generateBoard, altered to build from existing state and type data
+        float xOffset = 19.5f;
+        float yOffset = 120;
+        int boardWidth = 5;
+        int boardHeight = 21;
+        for(i = 0; i < boardHeight; i++){
+
+            if(i % 2 == 0) {
+
+                for (j = 0; j < boardWidth; j++) {
+
+                    float x = (float)1.47*TILE_WIDTH*j + xOffset;
+                    float y = (float)TILE_HEIGHT*(i/2) + yOffset;
+                    if(master[i][j][0].equals("GENERAL")){
+                        type = GENERAL;
+                    } else if(master[i][j][0].equals("SPECIAL")){
+                        type = SPECIAL;
+                    } else {
+                        type = BASE;
+                    }
+
+                    if(master[i][j][1].equals("UNOWNED")){
+                        state = HexState.UNOWNED;
+                    } else if(master[i][j][1].equals("PLAYER_ACTIVE")){
+                        state = HexState.PLAYER_ACTIVE;
+                    } else if(master[i][j][1].equals("PLAYER_INACTIVE")){
+                        state = HexState.PLAYER_INACTIVE;
+                    } else if(master[i][j][1].equals("AI_ACTIVE")){
+                        state = HexState.AI_ACTIVE;
+                    } else {
+                        state = HexState.AI_INACTIVE;
+                    }
+
+                    Hex newHex = new Hex(type, x, y);
+                    newHex.setState(state);
+                    stage.addActor(newHex);
+
+                }
+            }else{
+                float oddXOffset = xOffset + TILE_WIDTH*0.74f;
+                float oddYOffset = yOffset + TILE_HEIGHT*0.49f;
+
+                //this for loop generates all actors and adds them to the board
+                for(j = 0; j < (boardWidth-1); j++){
+                    float x = (float)(1.47*TILE_WIDTH*j) + oddXOffset;
+                    float y = (float)(TILE_HEIGHT*(i/2)) + oddYOffset;
+                    if(master[i][j][0].equals("GENERAL")){
+                        type = GENERAL;
+                    } else if(master[i][j][0].equals("SPECIAL")){
+                        type = SPECIAL;
+                    } else {
+                        type = BASE;
+                    }
+
+                    if(master[i][j][1].equals("UNOWNED")){
+                        state = HexState.UNOWNED;
+                    } else if(master[i][j][1].equals("PLAYER_ACTIVE")){
+                        state = HexState.PLAYER_ACTIVE;
+                    } else if(master[i][j][1].equals("PLAYER_INACTIVE")){
+                        state = HexState.PLAYER_INACTIVE;
+                    } else if(master[i][j][1].equals("AI_ACTIVE")){
+                        state = HexState.AI_ACTIVE;
+                    } else {
+                        state = HexState.AI_INACTIVE;
+                    }
+
+                    Hex newHex = new Hex(type, x, y);
+                    newHex.setState(state);
+                    stage.addActor(newHex);
+
+                }
+            }
+
+        }
+
+
+
+ /*       *//*Formatting
         * data[i] = Hextype
         * data[i+1] = HexState
-        * data[i+2] = x
-        * data[i+3] = y
-        * */
-        for(i=0; i < 380 ;i = i + 4){
+        * *//*
+
 
             //read Hextype with string comp
             if(data[i].equals("GENERAL")){
@@ -329,13 +429,10 @@ public class GameboardActivity extends Activity {
                 state = HexState.AI_INACTIVE;
             }
 
-            x = Float.parseFloat(data[i + 2]);
-            x = Float.parseFloat(data[i + 3]);
-
             newHex = new Hex(type, x, y);
             newHex.setState(state);
             stage.addActor(newHex);
-        }
+*/
     }
 
     public void saveGameState(){
@@ -545,6 +642,8 @@ public class GameboardActivity extends Activity {
                 }
             }
         }
+
+
     }
 
     public void setBoardMode(BoardMode mode){

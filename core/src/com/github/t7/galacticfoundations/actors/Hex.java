@@ -51,7 +51,7 @@ public class Hex extends Actor {
     @Override
     public String toString() {
         //function has been altered for save state
-        return "" + hexType + " " + stateMachine.getCurrentState() + " " + x + " " + y + " ";
+        return "" + hexType + " " + stateMachine.getCurrentState() + " ";
     }
 
 
@@ -203,6 +203,7 @@ public class Hex extends Actor {
     public void enterUnowned(){
         generateNewTextureSet("blanktile.png");
     }
+
     public void exitUnowned(){
     }
     public void enterPlayerActivated(){
