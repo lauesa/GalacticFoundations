@@ -12,6 +12,7 @@ public enum HexState implements State<Hex> {
     UNOWNED(){
         @Override
         public void enter(Hex entity) {
+            entity.enterUnowned();
 
         }
 
@@ -22,6 +23,7 @@ public enum HexState implements State<Hex> {
 
         @Override
         public void exit(Hex entity) {
+            entity.exitUnowned();
 
         }
 
@@ -30,9 +32,10 @@ public enum HexState implements State<Hex> {
             return false;
         }
     },
-    PLAYER_ACTIVATED(){
+    PLAYER_ACTIVE(){
         @Override
         public void enter(Hex entity) {
+            entity.enterPlayerActivated();
 
         }
 
@@ -43,6 +46,7 @@ public enum HexState implements State<Hex> {
 
         @Override
         public void exit(Hex entity) {
+            entity.exitPlayerActivated();
 
         }
 
@@ -51,10 +55,10 @@ public enum HexState implements State<Hex> {
             return false;
         }
     },
-    PLATER_DEACTIVATED(){
+    PLAYER_INACTIVE(){
         @Override
         public void enter(Hex entity) {
-
+            entity.enterPlayerDeactivated();
         }
 
         @Override
@@ -64,6 +68,7 @@ public enum HexState implements State<Hex> {
 
         @Override
         public void exit(Hex entity) {
+            entity.exitPlayerDeactivated();
 
         }
 
@@ -72,9 +77,10 @@ public enum HexState implements State<Hex> {
             return false;
         }
     },
-    AI_ACTIVATED(){
+    AI_ACTIVE(){
         @Override
         public void enter(Hex entity) {
+            entity.enterAiActivated();
 
         }
 
@@ -85,6 +91,7 @@ public enum HexState implements State<Hex> {
 
         @Override
         public void exit(Hex entity) {
+            entity.exitAiActivated();
 
         }
 
@@ -93,9 +100,10 @@ public enum HexState implements State<Hex> {
             return false;
         }
     },
-    AI_DEACTIVATED(){
+    AI_INACTIVE(){
         @Override
         public void enter(Hex entity) {
+            entity.enterAiDeactivated();
 
         }
 
@@ -106,6 +114,7 @@ public enum HexState implements State<Hex> {
 
         @Override
         public void exit(Hex entity) {
+            entity.exitAiDeactivated();
 
         }
 

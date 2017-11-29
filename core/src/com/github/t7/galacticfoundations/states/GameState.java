@@ -34,6 +34,7 @@ public enum GameState implements State<GameboardActivity> {
     AI_TURN(){
         @Override
         public void enter(GameboardActivity entity) {
+            entity.initAiTurn();
 
         }
 

@@ -14,11 +14,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 import com.github.t7.galacticfoundations.actors.Hex;
 import com.github.t7.galacticfoundations.galacticfoundations;
 import com.github.t7.galacticfoundations.hud.GameboardHUD;
 import com.github.t7.galacticfoundations.states.GameState;
+import com.github.t7.galacticfoundations.states.HexState;
 
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.BASE;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
@@ -40,6 +42,14 @@ public class GameboardActivity extends Activity {
     private InputMultiplexer multiplexer;
     private StateMachine<GameboardActivity, GameState> stateMachine;
     private Hex focus;
+    private Array<Hex> focusAdjacents;
+    public enum BoardMode{
+        DEFAULT,
+        ATTACK,
+        DEFEND,
+        EXPAND;
+    };
+    private BoardMode boardMode;
 
 
 
@@ -47,10 +57,12 @@ public class GameboardActivity extends Activity {
         super(activityManager);
         viewport.apply();
         //bg = new Texture("gameboard_bg.png");
-        bg = new Texture("marsflat.jpg");
+        bg = new Texture("marswide.jpg");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         zoomScale = 1f;
         focus = null;
+        focusAdjacents = new Array<Hex>();
+
 
         stateMachine = new DefaultStateMachine<GameboardActivity, GameState>(this, GameState.PLAYER_TURN);
 
@@ -58,7 +70,9 @@ public class GameboardActivity extends Activity {
 
 
         //Initiate gameboardHUD
-        gameboardHUD = new GameboardHUD(galacticfoundations.batch);
+        gameboardHUD = new GameboardHUD(galacticfoundations.batch, this);
+
+        setBoardMode(BoardMode.DEFAULT);
 
 
 
@@ -73,7 +87,7 @@ public class GameboardActivity extends Activity {
                 cam.update();
                 //System.out.printf("Cam X: %f, Cam Y: %f\n", cam.position.x, cam.position.y);
 
-                if ((cam.position.x > 0 && cam.position.x < 500) && (cam.position.y > 0 && cam.position.y < 500)) {
+                if ((cam.position.x > 0 && cam.position.x < 500) && (cam.position.y > 300 && cam.position.y < 500)) {
                     cam.position.add(
                             cam.unproject(new Vector3(0, 0, 0))
                                     .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
@@ -82,12 +96,12 @@ public class GameboardActivity extends Activity {
                     if (cam.position.x <= 0) {
 
 
-                        if (deltaX <= 0 && (cam.position.y > 0 && cam.position.y < 500)) {
+                        if (deltaX <= 0 && (cam.position.y > 300 && cam.position.y < 500)) {
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        } else if (cam.position.y > 0 && cam.position.y < 500) {
+                        } else if (cam.position.y > 300 && cam.position.y < 500) {
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(0, deltaY, 0)).scl(-1f))
@@ -97,19 +111,19 @@ public class GameboardActivity extends Activity {
                     }
                     if (cam.position.x >= 500) {
 
-                        if (deltaX >= 0 && (cam.position.y > 0 && cam.position.y < 500)) {
+                        if (deltaX >= 0 && (cam.position.y > 300 && cam.position.y < 500)) {
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
                             );
-                        } else if (cam.position.y > 0 && cam.position.y < 500) {
+                        } else if (cam.position.y > 300 && cam.position.y < 500) {
                             cam.position.add(
                                     cam.unproject(new Vector3(0, 0, 0))
                                             .add(cam.unproject(new Vector3(0, deltaY, 0)).scl(-1f))
                             );
                         }
                     }
-                    if (cam.position.y <= 0) {
+                    if (cam.position.y <= 300) {
 
                         if (deltaY >= 0) {//&& (cam.position.x > 0 && cam.position.x < 500)){
                             cam.position.add(
@@ -226,7 +240,7 @@ public class GameboardActivity extends Activity {
         cam.update();
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        sb.draw(bg, 0, 0);
+        sb.draw(bg, -350, -100);
         sb.end();
         stage.act();
         stage.draw();
@@ -277,7 +291,7 @@ public class GameboardActivity extends Activity {
         int i = 0;
         FileHandle file = Gdx.files.local("gamestate.txt");
         Hex newHex;
-        Hex.HexState state;
+        HexState state;
         Hex.HexType type;
         float x = 0;
         float y = 0;
@@ -304,21 +318,21 @@ public class GameboardActivity extends Activity {
 
             //read HexState
             if(data[i + 1].equals("UNOWNED")){
-                state = Hex.HexState.UNOWNED;
+                state = HexState.UNOWNED;
             } else if(data[i + 1].equals("PLAYER_ACTIVE")){
-                state = Hex.HexState.PLAYER_ACTIVE;
+                state = HexState.PLAYER_ACTIVE;
             } else if(data[i + 1].equals("PLAYER_INACTIVE")){
-                state = Hex.HexState.PLAYER_INACTIVE;
+                state = HexState.PLAYER_INACTIVE;
             } else if(data[i + 1].equals("AI_ACTIVE")){
-                state = Hex.HexState.AI_ACTIVE;
+                state = HexState.AI_ACTIVE;
             } else {
-                state = Hex.HexState.AI_INACTIVE;
+                state = HexState.AI_INACTIVE;
             }
 
             x = Float.parseFloat(data[i + 2]);
             x = Float.parseFloat(data[i + 3]);
 
-            newHex = new Hex(type, x, y, this);
+            newHex = new Hex(type, x, y);
             newHex.setState(state);
             stage.addActor(newHex);
         }
@@ -369,7 +383,7 @@ public class GameboardActivity extends Activity {
 
                     float x = (float)1.47*TILE_WIDTH*j + xOffset;
                     float y = (float)TILE_HEIGHT*(i/2) + yOffset;
-                    Hex newHex = new Hex(GENERAL, x, y, this);
+                    Hex newHex = new Hex(GENERAL, x, y);
                     stage.addActor(newHex);
 
                 }
@@ -381,12 +395,13 @@ public class GameboardActivity extends Activity {
                 for(int j = 0; j < (boardWidth-1); j++){
                     float x = (float)(1.47*TILE_WIDTH*j) + oddXOffset;
                     float y = (float)(TILE_HEIGHT*(i/2)) + oddYOffset;
-                    stage.addActor(new Hex(GENERAL, x, y, this));
+                    stage.addActor(new Hex(GENERAL, x, y));
 
                 }
             }
 
         }
+        placeTiles();
     }
 
     //Check if a click is within a hex
@@ -416,30 +431,204 @@ public class GameboardActivity extends Activity {
         Hex hexTarget;
         if(target.getName().equals("Hex")){
             hexTarget = (Hex)target;
+            //If you click a new tile
             if(focus != hexTarget){
-                setFocus(hexTarget);
-                System.out.println("Tap handled, new focus set");
+                //if board is default and player selects another of their own tiles, change focus
+                if(boardMode == BoardMode.DEFAULT){
+                    if(hexTarget.getState() == HexState.PLAYER_ACTIVE) {
+                        setFocus(hexTarget);
+                        gameboardHUD.hideTileHUD(false);
+                    }
+                }
+                else if(boardMode == BoardMode.ATTACK){
+                    for(Hex current:focusAdjacents){
+                        if(((hexTarget.getState() == HexState.AI_ACTIVE) || (hexTarget.getState() == HexState.AI_INACTIVE)) && hexTarget == current){
+                            //PUT POINTS DEDUCTION HERE
+                            //IMPLEMENT FORITFY
+                            hexTarget.setState(HexState.UNOWNED);
+                            focus.setState(HexState.PLAYER_INACTIVE);
+                        }
+                    }
+                }
+                else if(boardMode == BoardMode.EXPAND){
+                    for(int i = 0; i < focusAdjacents.size; i++){
+                        Hex current = focusAdjacents.get(i);
+                        if((hexTarget.getState() == HexState.UNOWNED) && (hexTarget == current)){
+                            hexTarget.setState(HexState.PLAYER_ACTIVE);
+                            focus.setState(HexState.PLAYER_INACTIVE);
+                            setBoardMode(BoardMode.DEFAULT);
+                            unhightlightTiles();
+                        }
+                    }
+                }
 
+
+
+            //If you click the focused tile again, remove focus
+            }else{
+                focus.highlight(false);
+                focus = null;
+                setBoardMode(BoardMode.DEFAULT);
+                //System.out.println("Focus Removed");
             }
         }
 
     }
 
     public void initPlayerTurn(){
-        //Do Stuff Here
+        //re-enable inputs
+        gameboardHUD.stage.getRoot().setTouchable(Touchable.enabled);
+        stage.getRoot().setTouchable(Touchable.enabled);
+        System.out.println("Player's turn");
+        //~Implement Point Gathering Here~
+    }
+
+    public void initAiTurn(){
+        //cleanup, dont touch anything during AI's turn
+        unhightlightTiles();
+        gameboardHUD.stage.getRoot().setTouchable(Touchable.disabled);
+        stage.getRoot().setTouchable(Touchable.disabled);
+        System.out.println("Ai's turn");
+        passTurn();
     }
 
     public void setFocus(Hex newfocus){
         if(focus != null){
            focus.highlight(false);
+            if(focusAdjacents.size > 0) {
+                for (Hex current : focusAdjacents) {
+                    current.highlight(false);
+                }
+            }
+
         }
         focus = newfocus;
+
         newfocus.highlight(true);
-        System.out.printf("Current Focus: %s\n", this.focus.getName());
+        //System.out.printf("Current Focus: %s\n", this.focus.getName());
+        collectAdjacents();
+
+
     }
+
+    public void unhightlightTiles(){
+        if(focus != null) {
+            focus.highlight(false);
+        }
+        if(focusAdjacents.size > 0) {
+            for (Hex current : focusAdjacents) {
+                current.highlight(false);
+            }
+        }
+    }
+
     public Hex getFocus(){
         return focus;
     }
+
+    private void collectAdjacents(){
+        //clear out old adjacent (may rework to just return array)
+        focusAdjacents.clear();
+        Vector2 localCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
+        Vector2 stageCoords = focus.localToStageCoordinates(localCoords);
+        Vector2 hitCoords;
+        for(int i = 30; i < 390; i+=60){
+            double radsI = Math.toRadians(i);
+            hitCoords = new Vector2((float)(stageCoords.x+(TILE_WIDTH*Math.cos(radsI))), (float)(stageCoords.y + (TILE_WIDTH*Math.sin(radsI))));
+            //System.out.printf("Hitting target at x=%f, y=%f\n", hitCoords.x, hitCoords.y);
+            Actor target = stage.hit(hitCoords.x, hitCoords.y, true);
+            if(target != null){
+                //System.out.printf("Tap Target: %s\n", target.getName());
+                if(target.getName().equals("Hex")){
+                    focusAdjacents.add((Hex)target);
+                    //System.out.println("Added Adjacent");
+                }
+            }
+        }
+    }
+
+    public void setBoardMode(BoardMode mode){
+        boardMode = mode;
+        if(mode == BoardMode.DEFAULT){
+            gameboardHUD.hideTileHUD(true);
+        }
+        else if(mode == BoardMode.ATTACK){
+            for(Hex current:focusAdjacents){
+                if(current.getState()==HexState.AI_ACTIVE || current.getState()==HexState.AI_INACTIVE){
+                    current.highlight(true);
+                }
+            }
+        }
+        else if(mode == BoardMode.EXPAND){
+
+            for(Hex current:focusAdjacents){
+                if(current.getState() == HexState.UNOWNED){
+                    current.highlight(true);
+
+
+                }
+            }
+
+        }
+    }
+
+    private void placeTiles(){
+
+
+        //Place Base Tiles
+        placeTileAt(18, 1, HexState.PLAYER_ACTIVE, Hex.HexType.BASE);
+        placeTileAt(4, 4, HexState.AI_ACTIVE, Hex.HexType.BASE);
+
+        //Place Special Tiles
+        placeTileAt(16, 3, HexState.UNOWNED, Hex.HexType.SPECIAL);
+        placeTileAt(10, 1, HexState.UNOWNED, Hex.HexType.SPECIAL);
+    }
+
+    private void placeTileAt(int row, int col, HexState state, Hex.HexType type){
+        Vector2 screenCoords = boardToScreenCoords(row, col);
+        Vector2 stageCoords = stage.screenToStageCoordinates(screenCoords);
+        Actor target = stage.hit(stageCoords.x, stageCoords.y, true);
+        if(target != null){
+            if(target.getName().equals("Hex")){
+                Hex targetHex = (Hex)target;
+                targetHex.setState(state);
+                targetHex.setHexType(type);
+            }
+        }
+    }
+
+    //fetches Origin of a hex in screen coordinates
+    private Vector2 boardToScreenCoords(int row, int col){
+        int x = col;
+        int y = row;
+        float xOffset = 19.5f;
+        float yOffset = 120;
+        float oddXOffset = xOffset + TILE_WIDTH*0.74f;
+        float oddYOffset = yOffset + TILE_HEIGHT*0.49f;
+
+        if(y % 2 == 0){
+            //Even row calculations
+            float resultX = (float)1.47*TILE_WIDTH*x + xOffset - TILE_WIDTH/2;
+            float resultY = (float)TILE_HEIGHT*(y/2) + yOffset - TILE_HEIGHT/2;
+            return new Vector2(resultX,resultY);
+        }else{
+            //Odd Row calculations
+            float resultX = (float)(1.47*TILE_WIDTH*x) + oddXOffset - TILE_WIDTH/2;
+            float resultY = (float)(TILE_HEIGHT*(y/2)) + oddYOffset - TILE_HEIGHT/2;
+            return new Vector2(resultX,resultY);
+        }
+    }
+
+    public void passTurn(){
+        if(stateMachine.getCurrentState() == GameState.PLAYER_TURN){
+            stateMachine.changeState(GameState.AI_TURN);
+        }
+        else if(stateMachine.getCurrentState() == GameState.AI_TURN){
+            stateMachine.changeState(GameState.PLAYER_TURN);
+        }
+    }
+
+
 
 
 

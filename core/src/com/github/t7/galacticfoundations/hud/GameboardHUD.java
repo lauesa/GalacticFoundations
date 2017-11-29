@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.t7.galacticfoundations.activities.GameboardActivity;
 import com.github.t7.galacticfoundations.galacticfoundations;
 
 public class GameboardHUD implements Disposable{
@@ -35,18 +36,27 @@ public class GameboardHUD implements Disposable{
     Label currentPointsTitleLabel;
     Label pointsLabel;
 
-    public GameboardHUD(SpriteBatch sb){
+    private TextButton attackButton;
+    private TextButton fortifyButton;
+    private TextButton expandButton;
+
+    private GameboardActivity board;
+
+    public GameboardHUD(SpriteBatch sb, GameboardActivity _board){
         //Define tracking variables
         currentPoints = 0;
+
+        //Hold Gameboard
+        board = _board;
 
         //Define button skin, textureAtlas
         atlas = new TextureAtlas("skin\\GameBoardHUD_skin\\star-soldier-ui.atlas");
         skin = new Skin(Gdx.files.internal("skin\\GameBoardHUD_skin\\star-soldier-ui.json"), atlas);
 
         //Create TextButtons
-        TextButton attackButton = new TextButton("ATT", skin);
-        TextButton fortifyButton = new TextButton("DEF", skin);
-        TextButton expandButton = new TextButton("EXP", skin);
+        attackButton = new TextButton("ATT", skin);
+        fortifyButton = new TextButton("DEF", skin);
+        expandButton = new TextButton("EXP", skin);
         TextButton stockpileButton = new TextButton("STO", skin);
         TextButton confirmButton = new TextButton("Confirm", skin);
 
@@ -60,6 +70,7 @@ public class GameboardHUD implements Disposable{
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 System.out.println("Attack button pressed.");
+                board.setBoardMode(GameboardActivity.BoardMode.ATTACK);
                 currentPoints--;
                 System.out.printf("Current points: %d\n", currentPoints);
                 pointsLabel.setText(String.format("%d", currentPoints));
@@ -78,6 +89,7 @@ public class GameboardHUD implements Disposable{
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
+                board.setBoardMode(GameboardActivity.BoardMode.EXPAND);
                 System.out.println("Expand button pressed.");
             }
         });
@@ -87,6 +99,7 @@ public class GameboardHUD implements Disposable{
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 System.out.println("Stockpile button pressed.");
+                board.passTurn();
             }
         });
 
@@ -123,4 +136,18 @@ public class GameboardHUD implements Disposable{
     public Stage getStage(){
         return stage;
     }
+
+    public void hideTileHUD(boolean hide){
+        if(hide){
+            attackButton.setVisible(false);
+            fortifyButton.setVisible(false);
+            expandButton.setVisible(false);
+        }else{
+            attackButton.setVisible(true);
+            fortifyButton.setVisible(true);
+            expandButton.setVisible(true);
+        }
+    }
+
+
 }
