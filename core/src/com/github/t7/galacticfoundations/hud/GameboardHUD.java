@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.t7.galacticfoundations.activities.GameboardActivity;
+import com.github.t7.galacticfoundations.activities.MainActivity;
 import com.github.t7.galacticfoundations.galacticfoundations;
 
 public class GameboardHUD implements Disposable{

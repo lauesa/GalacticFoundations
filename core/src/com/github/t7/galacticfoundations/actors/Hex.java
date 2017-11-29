@@ -22,6 +22,7 @@ import com.github.t7.galacticfoundations.activities.GameboardActivity;
 import com.github.t7.galacticfoundations.states.HexState;
 
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
+import static com.github.t7.galacticfoundations.actors.Hex.HexType.SPECIAL;
 
 /**
  * Created by Warren on 11/20/2017.
@@ -205,7 +206,11 @@ public class Hex extends Actor {
     }
 
     public void enterUnowned(){
-        generateNewTextureSet("blanktile.png");
+        if(this.hexType == SPECIAL){
+            generateNewTextureSet("blankSRtile.png");
+        } else {
+            generateNewTextureSet("blanktile.png");
+        }
     }
 
     public void exitUnowned(){

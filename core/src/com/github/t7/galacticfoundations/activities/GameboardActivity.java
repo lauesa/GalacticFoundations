@@ -398,41 +398,6 @@ public class GameboardActivity extends Activity {
             }
 
         }
-
-
-
- /*       *//*Formatting
-        * data[i] = Hextype
-        * data[i+1] = HexState
-        * *//*
-
-
-            //read Hextype with string comp
-            if(data[i].equals("GENERAL")){
-                type = GENERAL;
-            } else if(data[i].equals("SPECIAL")){
-                type = SPECIAL;
-            } else {
-                type = BASE;
-            }
-
-            //read HexState
-            if(data[i + 1].equals("UNOWNED")){
-                state = HexState.UNOWNED;
-            } else if(data[i + 1].equals("PLAYER_ACTIVE")){
-                state = HexState.PLAYER_ACTIVE;
-            } else if(data[i + 1].equals("PLAYER_INACTIVE")){
-                state = HexState.PLAYER_INACTIVE;
-            } else if(data[i + 1].equals("AI_ACTIVE")){
-                state = HexState.AI_ACTIVE;
-            } else {
-                state = HexState.AI_INACTIVE;
-            }
-
-            newHex = new Hex(type, x, y);
-            newHex.setState(state);
-            stage.addActor(newHex);
-*/
     }
 
     public void saveGameState(){
@@ -577,6 +542,7 @@ public class GameboardActivity extends Activity {
         gameboardHUD.stage.getRoot().setTouchable(Touchable.enabled);
         stage.getRoot().setTouchable(Touchable.enabled);
         System.out.println("Player's turn");
+        saveGameState();
         //~Implement Point Gathering Here~
     }
 
