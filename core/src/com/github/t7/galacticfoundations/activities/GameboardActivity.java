@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.github.t7.galacticfoundations.actors.Hex;
 import com.github.t7.galacticfoundations.galacticfoundations;
 import com.github.t7.galacticfoundations.hud.GameboardHUD;
@@ -53,6 +54,9 @@ public class GameboardActivity extends Activity {
         EXPAND;
     };
     private BoardMode boardMode;
+    private AI_Activity ai;
+    private Hex playerBase;
+    private Hex aiBase;
 
 
 
@@ -62,6 +66,7 @@ public class GameboardActivity extends Activity {
         //bg = new Texture("gameboard_bg.png");
         bg = new Texture("marswide.jpg");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
+
         zoomScale = 1f;
         focus = null;
         focusAdjacents = new Array<Hex>();
@@ -70,6 +75,7 @@ public class GameboardActivity extends Activity {
         stateMachine = new DefaultStateMachine<GameboardActivity, GameState>(this, GameState.PLAYER_TURN);
 
         stage = new Stage(viewport);
+        //stage.getCamera().position.set(galacticfoundations.WIDTH/2,galacticfoundations.HEIGHT/2,0);
 
 
         //Initiate gameboardHUD
@@ -549,6 +555,8 @@ public class GameboardActivity extends Activity {
 
     public void initPlayerTurn(){
         //re-enable inputs
+        deactivate(1);
+        collectConnected(playerBase);
         gameboardHUD.stage.getRoot().setTouchable(Touchable.enabled);
         stage.getRoot().setTouchable(Touchable.enabled);
         System.out.println("Player's turn");
@@ -558,6 +566,7 @@ public class GameboardActivity extends Activity {
 
     public void initAiTurn(){
         //cleanup, dont touch anything during AI's turn
+        deactivate(0);
         unhightlightTiles();
         gameboardHUD.stage.getRoot().setTouchable(Touchable.disabled);
         stage.getRoot().setTouchable(Touchable.disabled);
@@ -618,9 +627,124 @@ public class GameboardActivity extends Activity {
                 }
             }
         }
+    }
+
+    //Adjacent Funtion for Points collection
+    private Array<Hex> adjacentHexes(Hex hexTarget){
+        Array<Hex> result = new Array<Hex>();
+        Vector2 localCoords = new Vector2(hexTarget.getOriginX(), hexTarget.getOriginY());
+        Vector2 stageCoords = hexTarget.localToStageCoordinates(localCoords);
+        Vector2 hitCoords;
+        for(int i = 30; i < 390; i+=60){
+            double radsI = Math.toRadians(i);
+            hitCoords = new Vector2((float)(stageCoords.x+(TILE_WIDTH*Math.cos(radsI))), (float)(stageCoords.y + (TILE_WIDTH*Math.sin(radsI))));
+            System.out.printf("Hitting target at x=%f, y=%f\n", hitCoords.x, hitCoords.y);
+            Actor target = stage.hit(hitCoords.x, hitCoords.y, false);
+            if(target != null){
+                System.out.printf("Tap Target: %s\n", target.getName());
+                if(target.getName().equals("Hex")){
+                    result.add((Hex)target);
+                    System.out.println("Added Adjacent");
+                }
+            }
+        }
+        return result;
+    }
+
+    //Dectivate tiles
+    private void deactivate(int team){
+        //Player Team
+        for(Actor current:stage.getActors()){
+            if(current.getName().equals("Hex")){
+                Hex currentHex = (Hex)current;
+                //Searching for Player Tiles
+                if(team == 0){
+                    if(currentHex.getState() == HexState.PLAYER_ACTIVE){
+                        currentHex.setState(HexState.PLAYER_INACTIVE);
+                    }
+                }else{
+                    if(currentHex.getState() == HexState.AI_ACTIVE){
+                        currentHex.setState(HexState.AI_INACTIVE);
+                    }
+                }
+            }
+        }
+    }
+
+    //Points collection function
+    private void collectConnected(Hex origin){
+        int team = 0;
+        if(origin.getState() == HexState.AI_ACTIVE){
+            team = 1;
+        }else{
+            team = 0;
+        }
+
+        Array<Hex> unchecked = new Array<Hex>();
+        for(Actor current:stage.getActors()){
+            if(current.getName().equals("Hex")){
+                Hex currentHex = (Hex)current;
+                //Searching for Player Tiles
+                if(team == 0){
+                    if(currentHex.getState() == HexState.PLAYER_INACTIVE){
+                        unchecked.add(currentHex);
+                    }
+                }else{
+                    if(currentHex.getState() == HexState.AI_INACTIVE){
+                        unchecked.add(currentHex);
+                    }
+                }
+            }
+        }
+
+        //Remove Origin
+        Array<Hex> checked = new Array<Hex>();
+        checked.add(origin);
+        unchecked.removeValue(origin, true);
+
+        for(int i = 0; i < unchecked.size; i++){
+            if(unchecked.size <= 0){
+                break;
+            }
+            Hex current = unchecked.get(i);
+            Array<Hex> adjacents = adjacentHexes(current);
+            System.out.printf("%d\n", adjacents.size);
+            for(Hex adjacent:adjacents){
+                for(Hex check:checked){
+                    if(adjacent == check){
+                        System.out.println("Entered loop\n");
+                        //int index = checked.indexOf(check, true);
+
+                        checked.add(unchecked.get(i));
+                        unchecked.removeValue(unchecked.get(i), true);
+                        i = 0;
+                        //break;
+                    }
+                }
+            }
+        }
+        //set active and collect points
+        int sum = 0;
+        System.out.printf("Unchecked Size: %d\n", unchecked.size);
+        System.out.printf("Checked Size: %d\n", checked.size);
+        for(Hex current:checked){
+            sum += current.getValue();
+            if(team == 0){
+                current.setState(HexState.PLAYER_ACTIVE);
+                gameboardHUD.addPoints(sum);
+            }
+            else{
+                current.setState(HexState.AI_ACTIVE);
+                ai.addResources(sum);
+
+            }
+        }
+
+
 
 
     }
+
 
     public void setBoardMode(BoardMode mode){
         boardMode = mode;
@@ -653,29 +777,35 @@ public class GameboardActivity extends Activity {
 
 
         //Place Base Tiles
-        placeTileAt(18, 1, HexState.PLAYER_ACTIVE, Hex.HexType.BASE);
-        placeTileAt(4, 4, HexState.AI_ACTIVE, Hex.HexType.BASE);
+        placeTileAt(130, 220, HexState.PLAYER_ACTIVE, Hex.HexType.BASE);
+        placeTileAt(400, 600, HexState.AI_ACTIVE, Hex.HexType.BASE);
 
         //Place Special Tiles
-        placeTileAt(16, 3, HexState.UNOWNED, Hex.HexType.SPECIAL);
-        placeTileAt(10, 1, HexState.UNOWNED, Hex.HexType.SPECIAL);
+        placeTileAt(300, 450, HexState.UNOWNED, Hex.HexType.SPECIAL);
+        //placeTileAt(10, 1, HexState.UNOWNED, Hex.HexType.SPECIAL);
     }
 
-    private void placeTileAt(int row, int col, HexState state, Hex.HexType type){
-        Vector2 screenCoords = boardToScreenCoords(row, col);
-        Vector2 stageCoords = stage.screenToStageCoordinates(screenCoords);
-        Actor target = stage.hit(stageCoords.x, stageCoords.y, true);
+    private void placeTileAt(int x, int y, HexState state, Hex.HexType type){
+        Actor target = stage.hit(x, y, true);
         if(target != null){
             if(target.getName().equals("Hex")){
                 Hex targetHex = (Hex)target;
                 targetHex.setHexType(type);
                 targetHex.setState(state);
+                if(type == Hex.HexType.BASE){
+                    if(state == HexState.PLAYER_ACTIVE){
+                        playerBase = targetHex;
+                    }
+                    else if(state == HexState.AI_ACTIVE){
+                        aiBase = targetHex;
+                    }
+                }
             }
         }
     }
 
     //fetches Origin of a hex in screen coordinates
-    private Vector2 boardToScreenCoords(int row, int col){
+    private Vector3 boardToScreenCoords(int row, int col){
         int x = col;
         int y = row;
         float xOffset = 19.5f;
@@ -687,12 +817,17 @@ public class GameboardActivity extends Activity {
             //Even row calculations
             float resultX = (float)1.47*TILE_WIDTH*x + xOffset - TILE_WIDTH/2;
             float resultY = (float)TILE_HEIGHT*(y/2) + yOffset - TILE_HEIGHT/2;
-            return new Vector2(resultX,resultY);
+            //return new Vector2(resultX,resultY);
+            Vector3 result = new Vector3(resultX, resultY, 0);
+            return cam.unproject(result);
+
         }else{
             //Odd Row calculations
             float resultX = (float)(1.47*TILE_WIDTH*x) + oddXOffset - TILE_WIDTH/2;
             float resultY = (float)(TILE_HEIGHT*(y/2)) + oddYOffset - TILE_HEIGHT/2;
-            return new Vector2(resultX,resultY);
+            //return new Vector2(resultX,resultY);
+            Vector3 result = new Vector3(resultX, resultY, 0);
+            return cam.unproject(result);
         }
     }
     //

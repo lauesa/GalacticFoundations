@@ -43,6 +43,7 @@ public class Hex extends Actor {
     private float x;
     private float y;
     private boolean foritifed;
+    private int value;
 
 
     public enum HexType {
@@ -71,7 +72,7 @@ public class Hex extends Actor {
 
     public Hex(HexType type, float x, float y) {
         super();
-        hexType = type;
+        setHexType(type);
         this.x = x;
         this.y = y;
         position = new Vector2(x, y);
@@ -300,17 +301,35 @@ public class Hex extends Actor {
 
     }
     public void enterAiActivated(){
-        generateNewTextureSet("redtile.png");
+        if(hexType == HexType.BASE){
+            generateNewTextureSet("AItile.png");
+        }
+        else if(hexType == HexType.SPECIAL){
+            generateNewTextureSet("redSRtile.png");
+        }
+        else{
+            generateNewTextureSet("redtile.png");
+        }
+
 
     }
     public void exitAiActivated(){
 
     }
     public void enterAiDeactivated(){
+        if(hexType == HexType.BASE){
+            generateNewTextureSet("darkAItile.png");
+        }
+        else if(hexType == HexType.SPECIAL){
+            generateNewTextureSet("darkredSRtile.png");
+        }
+        else{
+            generateNewTextureSet("darkredtile.png");
+        }
 
     }
     public void exitAiDeactivated(){
-        generateNewTextureSet("darkredtile.png");
+        //generateNewTextureSet("darkredtile.png");
 
     }
 
@@ -344,7 +363,18 @@ public class Hex extends Actor {
 
     public void setHexType(HexType type){
         hexType = type;
+        if(type == HexType.GENERAL){
+            value = 1;
+        }
+        else if(type == HexType.SPECIAL){
+            value = 3;
+        }else{
+            value = 5;
+        }
     }
+
+    public int getValue(){return value;}
+
 
 
 }

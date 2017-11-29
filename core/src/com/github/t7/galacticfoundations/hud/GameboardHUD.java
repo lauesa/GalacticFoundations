@@ -151,5 +151,12 @@ public class GameboardHUD implements Disposable{
         }
     }
 
+    public void addPoints(int points){
+        currentPoints += points;
+    }
+    public int getCurrentPoints(){
+        return currentPoints;
+    }
+
 
 }

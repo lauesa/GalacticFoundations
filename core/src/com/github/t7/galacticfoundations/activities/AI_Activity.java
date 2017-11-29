@@ -192,4 +192,9 @@ public class AI_Activity {
 
         return adjacencyMatrix; //Returns the adjacency matrix
     }
+
+    //Just a add points function
+    public void addResources(int addResources){
+        resources += addResources;
+    }
 }
