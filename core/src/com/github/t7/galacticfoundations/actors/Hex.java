@@ -51,7 +51,7 @@ public class Hex extends Actor {
     @Override
     public String toString() {
         //function has been altered for save state
-        return "" + hexType + " " + stateMachine.getCurrentState() + " " + x + " " + y + " ";
+        return "" + hexType + " " + stateMachine.getCurrentState() + " ";
     }
 
 
