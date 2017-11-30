@@ -702,44 +702,47 @@ public class GameboardActivity extends Activity {
         checked.add(origin);
         unchecked.removeValue(origin, true);
 
-        for(int i = 0; i < unchecked.size; i++){
-            if(unchecked.size <= 0){
-                break;
-            }
-            Hex current = unchecked.get(i);
-            Array<Hex> adjacents = adjacentHexes(current);
-            System.out.printf("%d\n", adjacents.size);
-            for(Hex adjacent:adjacents){
-                for(Hex check:checked){
-                    if(adjacent == check){
-                        System.out.println("Entered loop\n");
-                        //int index = checked.indexOf(check, true);
 
+        //Get Base Tile
+        Hex current = checked.get(0);
+        //Calculate adjacent tiles
+
+        Array<Hex> adjacents = adjacentHexes(current);
+
+            //Work from Checked List. Init origin
+            for(Hex source: checked){ //these have valid paths to BASE
+                //clear list and recheck
+                adjacents.clear();
+                adjacents = adjacentHexes(source);
+                for(Hex adj : adjacents){ //check each member of the adjacency list with unchecked
+                    if(unchecked.contains(adj, true)){ //if unchecked is in the list of adj
+                        int i = unchecked.indexOf(adj, true);
+                        //int index = checked.indexOf(check, true);
                         checked.add(unchecked.get(i));
-                        unchecked.removeValue(unchecked.get(i), true);
-                        i = 0;
-                        //break;
+                        unchecked.removeIndex(i);
                     }
                 }
-            }
+
         }
+
+
+
         //set active and collect points
         int sum = 0;
         System.out.printf("Unchecked Size: %d\n", unchecked.size);
         System.out.printf("Checked Size: %d\n", checked.size);
-        for(Hex current:checked){
-            sum += current.getValue();
+        for(Hex item:checked){
+            sum +=item.getValue();
             if(team == 0){
-                current.setState(HexState.PLAYER_ACTIVE);
-                gameboardHUD.addPoints(sum);
+                item.setState(HexState.PLAYER_ACTIVE);
+                gameboardHUD.addPoints(item.getValue());
             }
             else{
-                current.setState(HexState.AI_ACTIVE);
-                ai.addResources(sum);
-
+                item.setState(HexState.AI_ACTIVE);
+                ai.addResources(item.getValue());
             }
         }
-
+        System.out.printf("Total point change: %d\n", sum);
 
 
 

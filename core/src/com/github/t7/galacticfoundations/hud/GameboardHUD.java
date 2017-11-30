@@ -45,7 +45,7 @@ public class GameboardHUD implements Disposable{
 
     public GameboardHUD(SpriteBatch sb, GameboardActivity _board){
         //Define tracking variables
-        currentPoints = 0;
+        currentPoints = 5;
 
         //Hold Gameboard
         board = _board;
@@ -153,6 +153,7 @@ public class GameboardHUD implements Disposable{
 
     public void addPoints(int points){
         currentPoints += points;
+        System.out.printf("\nCurrent Points: %d\n", currentPoints);
     }
     public int getCurrentPoints(){
         return currentPoints;

@@ -293,6 +293,7 @@ public class Hex extends Actor {
         if (hexType == HexType.BASE){
             generateNewTextureSet("darkbasetile.png");
         } else if (hexType == HexType.SPECIAL) {
+            generateNewTextureSet("darkgreenSRtile.png");
         } else {
             generateNewTextureSet("darkgreentile.png");
         }
