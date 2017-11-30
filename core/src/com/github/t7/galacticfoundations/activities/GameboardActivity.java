@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.github.t7.galacticfoundations.actors.Hex;
 import com.github.t7.galacticfoundations.galacticfoundations;
@@ -532,6 +533,7 @@ public class GameboardActivity extends Activity {
                                 focus.setState(HexState.PLAYER_INACTIVE);
                             }
                         }
+
                         setBoardMode(BoardMode.DEFAULT);
                     }
                 }
@@ -704,11 +706,17 @@ public class GameboardActivity extends Activity {
         gameboardHUD.stage.getRoot().setTouchable(Touchable.disabled);
         stage.getRoot().setTouchable(Touchable.disabled);
         System.out.println("Ai's turn");
-        for(Hex current: adjacentHexes(aiBase)){
-            for(Hex currentprime: adjacentHexes(current)){
-                currentprime.setState(HexState.AI_ACTIVE);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                for(Hex current: adjacentHexes(aiBase)){
+                    for(Hex currentprime: adjacentHexes(current)){
+                        currentprime.setState(HexState.AI_ACTIVE);
+                    }
+                }
             }
-        }
+        }, 2f);;
+
         passTurn();
     }
 
@@ -1019,7 +1027,7 @@ public class GameboardActivity extends Activity {
         }
     }
 
-    
+
 
 
 
