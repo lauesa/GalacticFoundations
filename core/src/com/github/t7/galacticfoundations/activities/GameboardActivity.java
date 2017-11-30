@@ -23,8 +23,10 @@ import com.github.t7.galacticfoundations.galacticfoundations;
 import com.github.t7.galacticfoundations.hud.GameboardHUD;
 import com.github.t7.galacticfoundations.states.GameState;
 import com.github.t7.galacticfoundations.states.HexState;
+import com.badlogic.gdx.math.RandomXS128;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.BASE;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
@@ -406,6 +408,9 @@ public class GameboardActivity extends Activity {
             }
 
         }
+
+        placeTileAt(130, 220, HexState.PLAYER_ACTIVE, Hex.HexType.BASE);
+        placeTileAt(400, 600, HexState.AI_ACTIVE, Hex.HexType.BASE);
     }
 
     public void saveGameState(){
@@ -556,12 +561,12 @@ public class GameboardActivity extends Activity {
     public void initPlayerTurn(){
         //re-enable inputs
         deactivate(1);
-        collectConnected(playerBase);
+        collectConnected(0);
         gameboardHUD.stage.getRoot().setTouchable(Touchable.enabled);
         stage.getRoot().setTouchable(Touchable.enabled);
         System.out.println("Player's turn");
         saveGameState();
-        //~Implement Point Gathering Here~
+
     }
 
     public void initAiTurn(){
@@ -672,12 +677,12 @@ public class GameboardActivity extends Activity {
     }
 
     //Points collection function
-    private void collectConnected(Hex origin){
-        int team = 0;
-        if(origin.getState() == HexState.AI_ACTIVE){
-            team = 1;
-        }else{
-            team = 0;
+    private void collectConnected(int team){
+        Hex origin;
+        if(team == 1){
+            origin = aiBase;
+        } else {
+            origin = playerBase;
         }
 
         Array<Hex> unchecked = new Array<Hex>();
@@ -783,9 +788,27 @@ public class GameboardActivity extends Activity {
         placeTileAt(130, 220, HexState.PLAYER_ACTIVE, Hex.HexType.BASE);
         placeTileAt(400, 600, HexState.AI_ACTIVE, Hex.HexType.BASE);
 
-        //Place Special Tiles
-        placeTileAt(300, 450, HexState.UNOWNED, Hex.HexType.SPECIAL);
-        //placeTileAt(10, 1, HexState.UNOWNED, Hex.HexType.SPECIAL);
+        //Place Special Tiles at
+        //placeTileAt(300, 440, HexState.UNOWNED, Hex.HexType.SPECIAL);
+        randSpecial(130, 220);
+        randSpecial(400, 600);
+        randSpecial(100, 600);
+        randSpecial(400, 200);
+        randSpecial(350, 350);
+    }
+
+    private void randSpecial(int x, int y){
+        Random random = new Random();
+        int choice = random.nextInt(5);
+
+        Actor target = stage.hit(x, y, true);
+        if((target != null) &&(target.getName().equals("Hex"))) {
+            Hex targetHex = (Hex) target;
+            Array<Hex> SRTplace = adjacentHexes(targetHex);
+            targetHex = SRTplace.get(choice);
+            targetHex.setHexType(Hex.HexType.SPECIAL);
+            targetHex.setState(HexState.UNOWNED);
+        }
     }
 
     private void placeTileAt(int x, int y, HexState state, Hex.HexType type){
