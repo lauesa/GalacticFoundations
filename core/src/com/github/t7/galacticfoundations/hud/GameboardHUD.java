@@ -82,7 +82,7 @@ public class GameboardHUD implements Disposable{
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 board.setBoardMode(GameboardActivity.BoardMode.DEFEND);
-                currentPoints -=2;
+                //currentPoints -=2;
                 updateHUD(currentPoints);
                 System.out.println("Fortify button pressed.");
             }
@@ -93,7 +93,7 @@ public class GameboardHUD implements Disposable{
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 board.setBoardMode(GameboardActivity.BoardMode.EXPAND);
-                currentPoints--;
+                //currentPoints--;
                 updateHUD(currentPoints);
                 System.out.println("Expand button pressed.");
             }
