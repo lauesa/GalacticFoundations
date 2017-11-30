@@ -506,6 +506,7 @@ public class GameboardActivity extends Activity {
 
     }
 
+    //user gameplay logic utilizing the current tile focus and the current board mode
     private void handleTap(Actor target){
         Hex hexTarget;
         if(target.getName().equals("Hex")){
@@ -520,32 +521,38 @@ public class GameboardActivity extends Activity {
                     }
                 }
                 else if(boardMode == BoardMode.ATTACK){
-                    for(Hex current:focusAdjacents){
-                        if(((hexTarget.getState() == HexState.AI_ACTIVE) || (hexTarget.getState() == HexState.AI_INACTIVE)) && hexTarget == current){
-                            //PUT POINTS DEDUCTION HERE
-                            //IMPLEMENT FORITFY
-                            hexTarget.setState(HexState.UNOWNED);
-                            focus.setState(HexState.PLAYER_INACTIVE);
+                    //check if user has enough points
+                    if(gameboardHUD.getCurrentPoints() >= 5) {
+                        for (Hex current : focusAdjacents) {
+                            if (((hexTarget.getState() == HexState.AI_ACTIVE) || (hexTarget.getState() == HexState.AI_INACTIVE)) && hexTarget == current) {
+                                //Deduct points
+                                gameboardHUD.addPoints(-5);
+                                hexTarget.setState(HexState.UNOWNED);
+                                focus.setState(HexState.PLAYER_INACTIVE);
+                            }
                         }
                     }
                 }
                 else if(boardMode == BoardMode.EXPAND){
-                    for(int i = 0; i < focusAdjacents.size; i++){
-                        Hex current = focusAdjacents.get(i);
-                        if((hexTarget.getState() == HexState.UNOWNED) && (hexTarget == current)){
-                            hexTarget.setState(HexState.PLAYER_ACTIVE);
-                            focus.setState(HexState.PLAYER_INACTIVE);
-                            setBoardMode(BoardMode.DEFAULT);
-                            unhightlightTiles();
+                    //check if user has enough points to expand
+                    if(gameboardHUD.getCurrentPoints() >= 1) {
+                        for (int i = 0; i < focusAdjacents.size; i++) {
+                            Hex current = focusAdjacents.get(i);
+                            if ((hexTarget.getState() == HexState.UNOWNED) && (hexTarget == current)) {
+                                hexTarget.setState(HexState.PLAYER_ACTIVE);
+                                focus.setState(HexState.PLAYER_INACTIVE);
+                                setBoardMode(BoardMode.DEFAULT);
+                                unhightlightTiles();
+                                //Deduct points
+                                gameboardHUD.addPoints(-1);
+                            }
                         }
                     }
                 }
                 else if(boardMode == BoardMode.DEFEND){
-                    //IMPLEMENT POINT DEDUCTION
+
 
                 }
-
-
 
             //If you click the focused tile again, remove focus
             }else{
@@ -556,6 +563,51 @@ public class GameboardActivity extends Activity {
             }
         }
 
+    }
+
+    //This attack will attempt to hit 3 tiles in the direction if the first tile selected
+    private void rayAttack(Hex target){
+        Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
+        Vector2 focusStageCoords = focus.localToStageCoordinates(focusLocalCoords);
+        Vector2 targetLocalCoords = new Vector2(target.getOriginX(), target.getOriginY());
+        Vector2 targetStageCoords = target.localToStageCoordinates(targetLocalCoords);
+        double theta = Math.atan2((double)(targetStageCoords.y-focusStageCoords.y), (double)(targetStageCoords.x - focusStageCoords.x))*180/Math.PI;
+        double rads = Math.toRadians(theta);
+        //find the vector that would hit the target hex
+        Vector2 hitCoords = new Vector2((float)(focusStageCoords.x+(TILE_WIDTH*Math.cos(rads))), (float)(focusStageCoords.y + (TILE_WIDTH*Math.sin(rads))));
+        //scale that vector for each tile distance
+        //first look at target 2
+        Vector2 hit2Coords = hitCoords.scl(2);
+        Actor hitTarget2 = stage.hit(hit2Coords.x, hit2Coords.y, true);
+        if(hitTarget2 != null){
+            if(hitTarget2.getName().equals("Hex")){
+                Hex target2 = (Hex)hitTarget2;
+                if(target2.getState() == HexState.AI_INACTIVE){
+                    if(target2.getFortifyStatus()){
+                        target2.setFortify(false);
+                    }
+                    else {
+                        target2.setState(HexState.UNOWNED);
+
+                        //Now that target2 was successful, do the same for target3
+                        Vector2 hit3Coords = hitCoords.scl(3);
+                        Actor hitTarget3 = stage.hit(hit3Coords.x, hit3Coords.y, true);
+                        if (hitTarget3 != null) {
+                            if (hitTarget3.getName().equals("Hex")) {
+                                Hex target3 = (Hex) hitTarget3;
+                                if (target3.getState() == HexState.AI_INACTIVE) {
+                                    if (target3.getFortifyStatus()) {
+                                        target3.setFortify(false);
+                                    } else {
+                                        target3.setState(HexState.UNOWNED);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void initPlayerTurn(){
@@ -572,14 +624,17 @@ public class GameboardActivity extends Activity {
     public void initAiTurn(){
         //cleanup, dont touch anything during AI's turn
         deactivate(0);
-        unhightlightTiles();
+        //board mode change also un-highlights tiles
+        setBoardMode(boardMode.DEFAULT);
         gameboardHUD.stage.getRoot().setTouchable(Touchable.disabled);
         stage.getRoot().setTouchable(Touchable.disabled);
         System.out.println("Ai's turn");
         passTurn();
     }
 
+    //Set current user selection tile
     public void setFocus(Hex newfocus){
+        //clear previous selection
         if(focus != null){
            focus.highlight(false);
             if(focusAdjacents.size > 0) {
@@ -636,6 +691,7 @@ public class GameboardActivity extends Activity {
 
     //Adjacent Funtion for Points collection
     private Array<Hex> adjacentHexes(Hex hexTarget){
+        //result array
         Array<Hex> result = new Array<Hex>();
         Vector2 localCoords = new Vector2(hexTarget.getOriginX(), hexTarget.getOriginY());
         Vector2 stageCoords = hexTarget.localToStageCoordinates(localCoords);
@@ -656,7 +712,7 @@ public class GameboardActivity extends Activity {
         return result;
     }
 
-    //Dectivate tiles
+    //Deactivate tiles
     private void deactivate(int team){
         //Player Team
         for(Actor current:stage.getActors()){
@@ -758,6 +814,7 @@ public class GameboardActivity extends Activity {
         boardMode = mode;
         unhightlightTiles();
         if(mode == BoardMode.DEFAULT){
+            focus = null;
             gameboardHUD.hideTileHUD(true);
         }
         else if(mode == BoardMode.ATTACK){
@@ -768,16 +825,30 @@ public class GameboardActivity extends Activity {
             }
         }
         else if(mode == BoardMode.EXPAND){
+            //if player cant afford expansion, don't highlight
+            if(gameboardHUD.getCurrentPoints() >= 1) {
 
-            for(Hex current:focusAdjacents){
-                if(current.getState() == HexState.UNOWNED){
-                    current.highlight(true);
+                for (Hex current : focusAdjacents) {
+                    if (current.getState() == HexState.UNOWNED) {
+                        current.highlight(true);
+                    }
                 }
+            }else{
+                //If user cant afford expansion, keep focus highlighted when button pushed
+                focus.highlight(true);
             }
 
         }
         else if(mode == BoardMode.DEFEND){
-            focus.setFortify(true);
+            //if player can afford to fortify and it hasn't happened already
+            if(gameboardHUD.getCurrentPoints() >= 2 && !focus.getFortifyStatus()){
+                focus.setFortify(true);
+                gameboardHUD.addPoints(-2);
+                setBoardMode(boardMode.DEFAULT);
+            }else{
+                focus.highlight(true);
+            }
+
         }
     }
 

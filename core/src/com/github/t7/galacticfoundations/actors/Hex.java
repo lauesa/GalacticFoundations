@@ -203,11 +203,19 @@ public class Hex extends Actor {
 
     public void setFortify(boolean isOn){
         if(isOn){
+            if(getState() == HexState.PLAYER_ACTIVE){
+                setState(HexState.PLAYER_INACTIVE);
+            }
+            else if(getState() == HexState.AI_ACTIVE){
+                setState(HexState.AI_INACTIVE);
+            }
             foritifed = true;
             texture = fortifyTexture;
+
+
         }else{
             foritifed = false;
-            texture = fortifyTexture;
+            texture = defaultTexture;
         }
     }
 
@@ -354,9 +362,14 @@ public class Hex extends Actor {
         highlightPixmap = new Pixmap(Gdx.files.internal(filepath));
         fortifyPixmap = new Pixmap(Gdx.files.internal(filepath));
         defaultTexture = new Texture(highlightPixmap);
-        texture = new Texture(highlightPixmap);
+        //texture = new Texture(highlightPixmap);
         generateColorMods();
-        highlightTexture = new Texture(highlightPixmap);
+        if(!foritifed){
+            texture = defaultTexture;
+        }else{
+            texture = fortifyTexture;
+        }
+        //highlightTexture = new Texture(highlightPixmap);
         this.setBounds(getX(), getY(), texture.getWidth(), texture.getHeight());
     }
 
@@ -375,6 +388,10 @@ public class Hex extends Actor {
     }
 
     public int getValue(){return value;}
+
+    public boolean getFortifyStatus(){
+        return foritifed;
+    }
 
 
 

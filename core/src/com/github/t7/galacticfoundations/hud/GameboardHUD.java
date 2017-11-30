@@ -73,8 +73,7 @@ public class GameboardHUD implements Disposable{
                 super.tap(event, x, y, count, button);
                 System.out.println("Attack button pressed.");
                 board.setBoardMode(GameboardActivity.BoardMode.ATTACK);
-                currentPoints -=5;
-                updateHUD(currentPoints);
+                System.out.printf("Current points: %d\n", currentPoints);
             }
         });
 
@@ -163,6 +162,7 @@ public class GameboardHUD implements Disposable{
     public void addPoints(int points){
         currentPoints += points;
         pointsLabel.setText(String.format("%d", currentPoints));
+        System.out.printf("\nCurrent Points: %d\n", currentPoints);
     }
     public int getCurrentPoints(){
         return currentPoints;
