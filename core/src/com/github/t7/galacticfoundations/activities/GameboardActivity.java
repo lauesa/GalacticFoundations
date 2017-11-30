@@ -529,6 +529,9 @@ public class GameboardActivity extends Activity {
                                 //Deduct points
                                 gameboardHUD.addPoints(-5);
                                 rayAttack(focus, hexTarget);
+                                if(aiBase.getState() == HexState.UNOWNED){
+                                    activityManager.set(new MainActivity(activityManager));
+                                }
                                 //hexTarget.setState(HexState.UNOWNED);
                                 focus.setState(HexState.PLAYER_INACTIVE);
                             }
@@ -711,8 +714,9 @@ public class GameboardActivity extends Activity {
             public void run() {
                 for(Hex current: adjacentHexes(aiBase)){
                     for(Hex currentprime: adjacentHexes(current)){
-                        currentprime.setState(HexState.AI_ACTIVE);
+                        currentprime.setState(HexState.AI_INACTIVE);
                     }
+                    //current.setFortify(true);
                 }
             }
         }, 2f);;
