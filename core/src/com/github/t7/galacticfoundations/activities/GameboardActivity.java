@@ -527,10 +527,12 @@ public class GameboardActivity extends Activity {
                             if (((hexTarget.getState() == HexState.AI_ACTIVE) || (hexTarget.getState() == HexState.AI_INACTIVE)) && hexTarget == current) {
                                 //Deduct points
                                 gameboardHUD.addPoints(-5);
-                                hexTarget.setState(HexState.UNOWNED);
+                                rayAttack(focus, hexTarget);
+                                //hexTarget.setState(HexState.UNOWNED);
                                 focus.setState(HexState.PLAYER_INACTIVE);
                             }
                         }
+                        setBoardMode(BoardMode.DEFAULT);
                     }
                 }
                 else if(boardMode == BoardMode.EXPAND){
@@ -557,7 +559,7 @@ public class GameboardActivity extends Activity {
             //If you click the focused tile again, remove focus
             }else{
                 focus.highlight(false);
-                focus = null;
+                //focus = null;
                 setBoardMode(BoardMode.DEFAULT);
                 //System.out.println("Focus Removed");
             }
@@ -566,40 +568,55 @@ public class GameboardActivity extends Activity {
     }
 
     //This attack will attempt to hit 3 tiles in the direction if the first tile selected
-    private void rayAttack(Hex target){
-        Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
-        Vector2 focusStageCoords = focus.localToStageCoordinates(focusLocalCoords);
-        Vector2 targetLocalCoords = new Vector2(target.getOriginX(), target.getOriginY());
-        Vector2 targetStageCoords = target.localToStageCoordinates(targetLocalCoords);
-        double theta = Math.atan2((double)(targetStageCoords.y-focusStageCoords.y), (double)(targetStageCoords.x - focusStageCoords.x))*180/Math.PI;
-        double rads = Math.toRadians(theta);
-        //find the vector that would hit the target hex
-        Vector2 hitCoords = new Vector2((float)(focusStageCoords.x+(TILE_WIDTH*Math.cos(rads))), (float)(focusStageCoords.y + (TILE_WIDTH*Math.sin(rads))));
-        //scale that vector for each tile distance
-        //first look at target 2
-        Vector2 hit2Coords = hitCoords.scl(2);
-        Actor hitTarget2 = stage.hit(hit2Coords.x, hit2Coords.y, true);
-        if(hitTarget2 != null){
-            if(hitTarget2.getName().equals("Hex")){
-                Hex target2 = (Hex)hitTarget2;
-                if(target2.getState() == HexState.AI_INACTIVE){
-                    if(target2.getFortifyStatus()){
-                        target2.setFortify(false);
-                    }
-                    else {
-                        target2.setState(HexState.UNOWNED);
+    private void rayAttack(Hex origin, Hex target1){
+        //if the origin is a Player tile
+        if(origin.getState() == HexState.PLAYER_ACTIVE){
+            if(target1.getState() == HexState.AI_INACTIVE){
+                System.out.println("Target1 hit");
+                //If attack hits a fortify, stop attack
+                if(target1.getFortifyStatus()){
+                    target1.setFortify(false);
+                }else{
+                    target1.setState(HexState.UNOWNED);
 
-                        //Now that target2 was successful, do the same for target3
-                        Vector2 hit3Coords = hitCoords.scl(3);
-                        Actor hitTarget3 = stage.hit(hit3Coords.x, hit3Coords.y, true);
-                        if (hitTarget3 != null) {
-                            if (hitTarget3.getName().equals("Hex")) {
-                                Hex target3 = (Hex) hitTarget3;
-                                if (target3.getState() == HexState.AI_INACTIVE) {
-                                    if (target3.getFortifyStatus()) {
-                                        target3.setFortify(false);
-                                    } else {
-                                        target3.setState(HexState.UNOWNED);
+                    Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
+                    Vector2 focusStageCoords = focus.localToStageCoordinates(focusLocalCoords);
+                    Vector2 targetLocalCoords = new Vector2(target1.getOriginX(), target1.getOriginY());
+                    Vector2 targetStageCoords = target1.localToStageCoordinates(targetLocalCoords);
+                    double theta = Math.toDegrees(Math.atan2((double)(targetStageCoords.y-focusStageCoords.y), (double)(targetStageCoords.x - focusStageCoords.x)));
+                    theta = (theta < 0)? (360d + theta):theta;
+                    System.out.printf("%f\n", theta);
+                    double rads = Math.toRadians(theta);
+                    //find the vector that would hit the target hex
+                    Vector2 hit2Coords = new Vector2((float)(targetStageCoords.x+(TILE_WIDTH*Math.cos(rads))), (float)(targetStageCoords.y + (TILE_WIDTH*Math.sin(rads))));
+                    //look at target 2
+                    Actor hitTarget2 = stage.hit(hit2Coords.x, hit2Coords.y, true);
+                    if(hitTarget2 != null){
+                        if(hitTarget2.getName().equals("Hex")){
+                            Hex target2 = (Hex)hitTarget2;
+                            if(target2.getState() == HexState.AI_INACTIVE){
+                                System.out.println("Target2 hit");
+                                if(target2.getFortifyStatus()){
+                                    target2.setFortify(false);
+                                }
+                                else {
+                                    target2.setState(HexState.UNOWNED);
+
+                                    //Now that target2 was successful, do the same for target3
+                                    Vector2 hit3Coords = new Vector2((float)(hit2Coords.x+(TILE_WIDTH*Math.cos(rads))), (float)(hit2Coords.y + (TILE_WIDTH*Math.sin(rads))));
+                                    Actor hitTarget3 = stage.hit(hit3Coords.x, hit3Coords.y, true);
+                                    if (hitTarget3 != null) {
+                                        if (hitTarget3.getName().equals("Hex")) {
+                                            Hex target3 = (Hex) hitTarget3;
+                                            if (target3.getState() == HexState.AI_INACTIVE) {
+                                                System.out.println("Target3 hit");
+                                                if (target3.getFortifyStatus()) {
+                                                    target3.setFortify(false);
+                                                } else {
+                                                    target3.setState(HexState.UNOWNED);
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -608,6 +625,64 @@ public class GameboardActivity extends Activity {
                 }
             }
         }
+        //If Origin is an AI tile
+        else if(origin.getState()==HexState.AI_ACTIVE){
+            if(target1.getState() == HexState.PLAYER_INACTIVE){
+                System.out.println("Target1 hit");
+                //If attack hits a fortify, stop attack
+                if(target1.getFortifyStatus()){
+                    target1.setFortify(false);
+                }else{
+                    target1.setState(HexState.UNOWNED);
+
+                    Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
+                    Vector2 focusStageCoords = focus.localToStageCoordinates(focusLocalCoords);
+                    Vector2 targetLocalCoords = new Vector2(target1.getOriginX(), target1.getOriginY());
+                    Vector2 targetStageCoords = target1.localToStageCoordinates(targetLocalCoords);
+                    double theta = Math.toDegrees(Math.atan2((double)(targetStageCoords.y-focusStageCoords.y), (double)(targetStageCoords.x - focusStageCoords.x)));
+                    theta = (theta < 0)? (360d + theta):theta;
+                    System.out.printf("%f\n", theta);
+                    double rads = Math.toRadians(theta);
+                    //find the vector that would hit the target hex
+                    Vector2 hit2Coords = new Vector2((float)(targetStageCoords.x+(TILE_WIDTH*Math.cos(rads))), (float)(targetStageCoords.y + (TILE_WIDTH*Math.sin(rads))));
+                    //look at target 2
+                    Actor hitTarget2 = stage.hit(hit2Coords.x, hit2Coords.y, true);
+                    if(hitTarget2 != null){
+                        if(hitTarget2.getName().equals("Hex")){
+                            Hex target2 = (Hex)hitTarget2;
+                            if(target2.getState() == HexState.PLAYER_INACTIVE){
+                                System.out.println("Target2 hit");
+                                if(target2.getFortifyStatus()){
+                                    target2.setFortify(false);
+                                }
+                                else {
+                                    target2.setState(HexState.UNOWNED);
+
+                                    //Now that target2 was successful, do the same for target3
+                                    Vector2 hit3Coords = new Vector2((float)(hit2Coords.x+(TILE_WIDTH*Math.cos(rads))), (float)(hit2Coords.y + (TILE_WIDTH*Math.sin(rads))));
+                                    Actor hitTarget3 = stage.hit(hit3Coords.x, hit3Coords.y, true);
+                                    if (hitTarget3 != null) {
+                                        if (hitTarget3.getName().equals("Hex")) {
+                                            Hex target3 = (Hex) hitTarget3;
+                                            if (target3.getState() == HexState.PLAYER_INACTIVE) {
+                                                System.out.println("Target3 hit");
+                                                if (target3.getFortifyStatus()) {
+                                                    target3.setFortify(false);
+                                                } else {
+                                                    target3.setState(HexState.UNOWNED);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
     }
 
     public void initPlayerTurn(){
@@ -629,6 +704,11 @@ public class GameboardActivity extends Activity {
         gameboardHUD.stage.getRoot().setTouchable(Touchable.disabled);
         stage.getRoot().setTouchable(Touchable.disabled);
         System.out.println("Ai's turn");
+        for(Hex current: adjacentHexes(aiBase)){
+            for(Hex currentprime: adjacentHexes(current)){
+                currentprime.setState(HexState.AI_ACTIVE);
+            }
+        }
         passTurn();
     }
 
@@ -645,10 +725,11 @@ public class GameboardActivity extends Activity {
 
         }
         focus = newfocus;
-
-        newfocus.highlight(true);
-        //System.out.printf("Current Focus: %s\n", this.focus.getName());
-        collectAdjacents();
+        if(newfocus != null) {
+            newfocus.highlight(true);
+            //System.out.printf("Current Focus: %s\n", this.focus.getName());
+            collectAdjacents();
+        }
 
 
     }
@@ -820,6 +901,7 @@ public class GameboardActivity extends Activity {
         else if(mode == BoardMode.ATTACK){
             for(Hex current:focusAdjacents){
                 if(current.getState()==HexState.AI_ACTIVE || current.getState()==HexState.AI_INACTIVE){
+                    System.out.println("Enemy Highlighted");
                     current.highlight(true);
                 }
             }
@@ -841,7 +923,7 @@ public class GameboardActivity extends Activity {
         }
         else if(mode == BoardMode.DEFEND){
             //if player can afford to fortify and it hasn't happened already
-            if(gameboardHUD.getCurrentPoints() >= 2 && !focus.getFortifyStatus()){
+            if(gameboardHUD.getCurrentPoints() >= 2 && !focus.getFortifyStatus() && focus.getHexType() != Hex.HexType.BASE){
                 focus.setFortify(true);
                 gameboardHUD.addPoints(-2);
                 setBoardMode(boardMode.DEFAULT);
@@ -936,6 +1018,8 @@ public class GameboardActivity extends Activity {
             stateMachine.changeState(GameState.PLAYER_TURN);
         }
     }
+
+    
 
 
 

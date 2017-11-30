@@ -73,7 +73,7 @@ public class GameboardHUD implements Disposable{
                 super.tap(event, x, y, count, button);
                 System.out.println("Attack button pressed.");
                 board.setBoardMode(GameboardActivity.BoardMode.ATTACK);
-                System.out.printf("Current points: %d\n", currentPoints);
+                //System.out.printf("Current points: %d\n", currentPoints);
             }
         });
 

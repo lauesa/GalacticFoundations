@@ -393,6 +393,8 @@ public class Hex extends Actor {
         return foritifed;
     }
 
+    public HexType getHexType(){return hexType;}
+
 
 
 }
