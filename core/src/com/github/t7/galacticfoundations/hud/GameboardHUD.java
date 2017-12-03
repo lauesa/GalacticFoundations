@@ -34,8 +34,8 @@ public class GameboardHUD implements Disposable{
     private static int currentPoints;
 
     //Scene2D widgets
-    Label currentPointsTitleLabel;
-    Label pointsLabel;
+    private Label currentPointsTitleLabel;
+    //Label pointsLabel;
 
     private TextButton attackButton;
     private TextButton fortifyButton;
@@ -59,11 +59,13 @@ public class GameboardHUD implements Disposable{
         fortifyButton = new TextButton("DEF", skin);
         expandButton = new TextButton("EXP", skin);
         TextButton stockpileButton = new TextButton("STO", skin);
-        TextButton confirmButton = new TextButton("Confirm", skin);
+        TextButton menuButton = new TextButton("Menu", skin);
 
         //define labels using the String, and a Label style consisting of a font and color
-        currentPointsTitleLabel = new Label("Current Points", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
-        pointsLabel = new Label(String.format("%d", currentPoints), new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        //currentPointsTitleLabel = new Label("Current Points", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        currentPointsTitleLabel = new Label(String.format("Current Points: %d", currentPoints), skin);
+        //currentPointsTitleLabel.setFontScale(1);
+        //pointsLabel = new Label(String.format("%d", currentPoints), new Label.LabelStyle(new BitmapFont(), Color.BLACK));
 
 
         //Add button listeners
@@ -116,15 +118,15 @@ public class GameboardHUD implements Disposable{
         Table table = new Table();
         table.setFillParent(true);
         table.top().padTop(5);
-        table.add(currentPointsTitleLabel);
-        table.add(pointsLabel).width(50);
+        table.add(currentPointsTitleLabel).padLeft(20);
+        //table.add(pointsLabel).width(50);
         //table.add(confirmButton);
-
+        //table.setFillParent(true);
         //table.row().padTop(galacticfoundations.HEIGHT*0.87f);
         table.row().padTop(galacticfoundations.HEIGHT*0.80f);
-        table.add(attackButton).expandX().width(galacticfoundations.WIDTH/4);
-        table.add(fortifyButton).expandX().width(galacticfoundations.WIDTH/4);
-        table.add(expandButton).expandX().width(galacticfoundations.WIDTH/4);
+        table.add(attackButton).left();//.width(galacticfoundations.WIDTH/4);
+        table.add(fortifyButton).padLeft(-185);//.expandX().width(galacticfoundations.WIDTH/4);
+        table.add(expandButton).padLeft(-35);//.expandX().width(galacticfoundations.WIDTH/4);
         table.add(stockpileButton).expandX().width(galacticfoundations.WIDTH/4);
 
         //add table to the stage
@@ -143,8 +145,9 @@ public class GameboardHUD implements Disposable{
         return stage;
     }
 
-    public void updatePoints(){
-        pointsLabel.setText(String.format("%d", currentPoints));
+    //Sets
+    public void updatePointsLabel(){
+        currentPointsTitleLabel.setText(String.format("Current Points: %d", currentPoints));
     }
 
     public void hideTileHUD(boolean hide){
@@ -161,7 +164,7 @@ public class GameboardHUD implements Disposable{
 
     public void addPoints(int points){
         currentPoints += points;
-        pointsLabel.setText(String.format("%d", currentPoints));
+        updatePointsLabel();
         System.out.printf("\nCurrent Points: %d\n", currentPoints);
     }
     public int getCurrentPoints(){
@@ -184,7 +187,7 @@ public class GameboardHUD implements Disposable{
         } else {
             expandButton.setVisible(true);
         }
-        pointsLabel.setText(String.format("%d", currentPoints));
+        //pointsLabel.setText(String.format("%d", currentPoints));
     }
 
 }
