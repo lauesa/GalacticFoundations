@@ -586,8 +586,8 @@ public class GameboardActivity extends Activity {
                 }else{
                     target1.setState(HexState.UNOWNED);
 
-                    Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
-                    Vector2 focusStageCoords = focus.localToStageCoordinates(focusLocalCoords);
+                    Vector2 focusLocalCoords = new Vector2(origin.getOriginX(), origin.getOriginY());
+                    Vector2 focusStageCoords = origin.localToStageCoordinates(focusLocalCoords);
                     Vector2 targetLocalCoords = new Vector2(target1.getOriginX(), target1.getOriginY());
                     Vector2 targetStageCoords = target1.localToStageCoordinates(targetLocalCoords);
                     double theta = Math.toDegrees(Math.atan2((double)(targetStageCoords.y-focusStageCoords.y), (double)(targetStageCoords.x - focusStageCoords.x)));
@@ -642,8 +642,8 @@ public class GameboardActivity extends Activity {
                 }else{
                     target1.setState(HexState.UNOWNED);
 
-                    Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
-                    Vector2 focusStageCoords = focus.localToStageCoordinates(focusLocalCoords);
+                    Vector2 focusLocalCoords = new Vector2(origin.getOriginX(), origin.getOriginY());
+                    Vector2 focusStageCoords = origin.localToStageCoordinates(focusLocalCoords);
                     Vector2 targetLocalCoords = new Vector2(target1.getOriginX(), target1.getOriginY());
                     Vector2 targetStageCoords = target1.localToStageCoordinates(targetLocalCoords);
                     double theta = Math.toDegrees(Math.atan2((double)(targetStageCoords.y-focusStageCoords.y), (double)(targetStageCoords.x - focusStageCoords.x)));
@@ -695,7 +695,7 @@ public class GameboardActivity extends Activity {
     public void initPlayerTurn(){
         //re-enable inputs
         deactivate(1);
-        collectConnected(0);
+        collectConnected(1);
         gameboardHUD.stage.getRoot().setTouchable(Touchable.enabled);
         stage.getRoot().setTouchable(Touchable.enabled);
         System.out.println("Player's turn");
@@ -731,7 +731,7 @@ public class GameboardActivity extends Activity {
                 System.out.println("Here jackass");
             }
         }
-        collectConnected(1);
+        collectConnected(0);
         ai.AI_turn(boardHex, this);
         passTurn();
     }

@@ -20,11 +20,12 @@ import static com.github.t7.galacticfoundations.activities.GameboardActivity.*;
 
 public class AI_Activity{
     public static int resources = 0;    //Count of resourcesa
-    public static ArrayList<Hex> Tiles = new ArrayList<Hex>();     //Array of Hexes that make up the board
+    public static ArrayList<Hex> Tiles;     //Array of Hexes that make up the board
     public static Random rand;          //Instantiation of random class
     private static GameboardActivity gameBoard;
 
-    public static void AI_turn(ArrayList<Hex> a,  GameboardActivity g){   //Function that drives AI turn
+    public static void AI_turn(ArrayList<Hex> a,  GameboardActivity g){//Function that drives AI turn
+        Tiles = new ArrayList<Hex>();
         Tiles = a;                              //Initialize Tiles Array with Hex values
         gameBoard = g;
         List<Integer> tileWeights = new ArrayList<Integer> (); //List of weights for each tile
@@ -73,7 +74,7 @@ public class AI_Activity{
 
         Array<Array<Hex>> adjacencyMatrix = hexAdjacent();                            //Gets adjacency matrix from function
         ArrayList<Hex> Min_ID = new ArrayList<Hex>();                   //ArrayList to hold all forward moving Tiles adjacent to a tile
-        while(AI_Tiles.size() >= 0 || resources != 0){                                        //Loop will continue until out of tiles to use or out of resources
+        while(AI_Tiles.size() > 0 && resources != 0){                                        //Loop will continue until out of tiles to use or out of resources
 
             //while(Min_ID.size() < 3){                                      //Loop that will continue to run until forwardmost half of adjacent tiles are added to ArrayList
                 //for(int i = 0; i < adjacencyMatrix.get(AI_Tiles.get(0)).size; i++){
@@ -85,8 +86,10 @@ public class AI_Activity{
                         double radsI = Math.toRadians(i);
                         Vector2 hitCoords = new Vector2((float)(stageCoords.x+(GameboardActivity.TILE_WIDTH*Math.cos(radsI))), (float)(stageCoords.y+(GameboardActivity.TILE_WIDTH*Math.sin(radsI))));
                         Actor target = gameBoard.getStage().hit(hitCoords.x, hitCoords.y, false);
-                        if(target.getName().equals("Hex")){
-                            Min_ID.add((Hex)target);
+                        if(target != null) {
+                            if (target.getName().equals("Hex")) {
+                                Min_ID.add((Hex) target);
+                            }
                         }
                     }
             //}
