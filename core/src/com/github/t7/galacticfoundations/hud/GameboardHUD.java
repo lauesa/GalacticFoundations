@@ -59,7 +59,7 @@ public class GameboardHUD implements Disposable{
         fortifyButton = new TextButton("DEF", skin);
         expandButton = new TextButton("EXP", skin);
         TextButton stockpileButton = new TextButton("STO", skin);
-        TextButton menuButton = new TextButton("Menu", skin);
+        TextButton menuButton = new TextButton("MENU", skin);
 
         //define labels using the String, and a Label style consisting of a font and color
         //currentPointsTitleLabel = new Label("Current Points", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
@@ -76,6 +76,15 @@ public class GameboardHUD implements Disposable{
                 System.out.println("Attack button pressed.");
                 board.setBoardMode(GameboardActivity.BoardMode.ATTACK);
                 //System.out.printf("Current points: %d\n", currentPoints);
+            }
+        });
+
+        menuButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                board.setBoardMode(GameboardActivity.BoardMode.MENU);
+
             }
         });
 
@@ -122,12 +131,17 @@ public class GameboardHUD implements Disposable{
         //table.add(pointsLabel).width(50);
         //table.add(confirmButton);
         //table.setFillParent(true);
+        //table.add(currentPointsTitleLabel);
+        //table.add(pointsLabel).width(50);
+        table.add(menuButton);
+
         //table.row().padTop(galacticfoundations.HEIGHT*0.87f);
         table.row().padTop(galacticfoundations.HEIGHT*0.80f);
-        table.add(attackButton).left();//.width(galacticfoundations.WIDTH/4);
-        table.add(fortifyButton).padLeft(-185);//.expandX().width(galacticfoundations.WIDTH/4);
-        table.add(expandButton).padLeft(-35);//.expandX().width(galacticfoundations.WIDTH/4);
+        table.add(attackButton).expandX().width(galacticfoundations.WIDTH/4);
+        table.add(fortifyButton).expandX().width(galacticfoundations.WIDTH/4);
+        table.add(expandButton).expandX().width(galacticfoundations.WIDTH/4);
         table.add(stockpileButton).expandX().width(galacticfoundations.WIDTH/4);
+        System.out.println(galacticfoundations.WIDTH);
 
         //add table to the stage
         stage.addActor(table);

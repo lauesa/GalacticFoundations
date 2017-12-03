@@ -55,6 +55,7 @@ public class GameboardActivity extends Activity {
         DEFAULT,
         ATTACK,
         DEFEND,
+        MENU,
         EXPAND;
     };
     private BoardMode boardMode;
@@ -955,6 +956,10 @@ public class GameboardActivity extends Activity {
                 focus.highlight(true);
             }
 
+        }
+        else if(mode == BoardMode.MENU){
+            //go to menu!!!
+            activityManager.set(new MainActivity(activityManager));
         }
     }
 
