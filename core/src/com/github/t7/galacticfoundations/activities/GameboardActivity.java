@@ -32,6 +32,7 @@ import java.util.Random;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.BASE;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.SPECIAL;
+import java.util.ArrayList;
 
 /**
  * Created by Warren on 11/19/2017.
@@ -69,6 +70,7 @@ public class GameboardActivity extends Activity {
         //bg = new Texture("gameboard_bg.png");
         bg = new Texture("marswide.jpg");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
+        ai = new AI_Activity();
 
         zoomScale = 1f;
         focus = null;
@@ -529,9 +531,9 @@ public class GameboardActivity extends Activity {
                                 //Deduct points
                                 gameboardHUD.addPoints(-5);
                                 rayAttack(focus, hexTarget);
-                                /*if(aiBase.getState() == HexState.UNOWNED){
+                                if(aiBase.getState() == HexState.UNOWNED){
                                     activityManager.set(new MainActivity(activityManager));
-                                }*/
+                                }
                                 //hexTarget.setState(HexState.UNOWNED);
                                 focus.setState(HexState.PLAYER_INACTIVE);
                             }
@@ -573,7 +575,7 @@ public class GameboardActivity extends Activity {
     }
 
     //This attack will attempt to hit 3 tiles in the direction if the first tile selected
-    private void rayAttack(Hex origin, Hex target1){
+    public void rayAttack(Hex origin, Hex target1){
         //if the origin is a Player tile
         if(origin.getState() == HexState.PLAYER_ACTIVE){
             if(target1.getState() == HexState.AI_INACTIVE){
@@ -582,9 +584,6 @@ public class GameboardActivity extends Activity {
                 if(target1.getFortifyStatus()){
                     target1.setFortify(false);
                 }else{
-                    if(target1.getHexType() == Hex.HexType.BASE){
-                        activityManager.set(new VictoryActivity(activityManager));
-                    }
                     target1.setState(HexState.UNOWNED);
 
                     Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
@@ -608,10 +607,6 @@ public class GameboardActivity extends Activity {
                                     target2.setFortify(false);
                                 }
                                 else {
-                                    //end if base
-                                    if(target2.getHexType() == Hex.HexType.BASE){
-                                        activityManager.set(new VictoryActivity(activityManager));
-                                    }
                                     target2.setState(HexState.UNOWNED);
 
                                     //Now that target2 was successful, do the same for target3
@@ -625,9 +620,6 @@ public class GameboardActivity extends Activity {
                                                 if (target3.getFortifyStatus()) {
                                                     target3.setFortify(false);
                                                 } else {
-                                                    if(target3.getHexType() == Hex.HexType.BASE){
-                                                        activityManager.set(new VictoryActivity(activityManager));
-                                                    }
                                                     target3.setState(HexState.UNOWNED);
                                                 }
                                             }
@@ -648,9 +640,6 @@ public class GameboardActivity extends Activity {
                 if(target1.getFortifyStatus()){
                     target1.setFortify(false);
                 }else{
-                    if(target1.getHexType() == Hex.HexType.BASE){
-                        activityManager.set(new DefeatActivity(activityManager));
-                    }
                     target1.setState(HexState.UNOWNED);
 
                     Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
@@ -674,9 +663,6 @@ public class GameboardActivity extends Activity {
                                     target2.setFortify(false);
                                 }
                                 else {
-                                    if(target2.getHexType() == Hex.HexType.BASE){
-                                        activityManager.set(new DefeatActivity(activityManager));
-                                    }
                                     target2.setState(HexState.UNOWNED);
 
                                     //Now that target2 was successful, do the same for target3
@@ -690,9 +676,6 @@ public class GameboardActivity extends Activity {
                                                 if (target3.getFortifyStatus()) {
                                                     target3.setFortify(false);
                                                 } else {
-                                                    if(target3.getHexType() == Hex.HexType.BASE){
-                                                        activityManager.set(new DefeatActivity(activityManager));
-                                                    }
                                                     target3.setState(HexState.UNOWNED);
                                                 }
                                             }
@@ -721,6 +704,8 @@ public class GameboardActivity extends Activity {
     }
 
     public void initAiTurn(){
+        ArrayList<Hex> boardHex = new ArrayList<Hex>();
+        Array<Actor> boardActors = stage.getActors();
         //cleanup, dont touch anything during AI's turn
         deactivate(0);
         //board mode change also un-highlights tiles
@@ -728,7 +713,7 @@ public class GameboardActivity extends Activity {
         gameboardHUD.stage.getRoot().setTouchable(Touchable.disabled);
         stage.getRoot().setTouchable(Touchable.disabled);
         System.out.println("Ai's turn");
-
+        /*
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -739,8 +724,15 @@ public class GameboardActivity extends Activity {
                     //current.setFortify(true);
                 }
             }
-        }, 2f);;
-
+        }, 2f);;*/
+        for(Actor current: boardActors){
+            if(current.getName().equals("Hex")){
+                boardHex.add((Hex)current);
+                System.out.println("Here jackass");
+            }
+        }
+        collectConnected(1);
+        ai.AI_turn(boardHex, this);
         passTurn();
     }
 
@@ -803,7 +795,7 @@ public class GameboardActivity extends Activity {
     }
 
     //Adjacent Funtion for Points collection
-    private Array<Hex> adjacentHexes(Hex hexTarget){
+    public Array<Hex> adjacentHexes(Hex hexTarget){
         //result array
         Array<Hex> result = new Array<Hex>();
         Vector2 localCoords = new Vector2(hexTarget.getOriginX(), hexTarget.getOriginY());
@@ -1049,6 +1041,10 @@ public class GameboardActivity extends Activity {
         else if(stateMachine.getCurrentState() == GameState.AI_TURN){
             stateMachine.changeState(GameState.PLAYER_TURN);
         }
+    }
+
+    public Stage getStage(){
+        return stage;
     }
 
 
