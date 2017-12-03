@@ -31,6 +31,7 @@ public class TutorialActivity extends Activity {
     private InputMultiplexer multiplexer;
     private ArrayList<String> imagePaths = new ArrayList<String>();
     private int currentSlide = 0;
+    private boolean end = false;
 
     //Variables for creating buttons
     private TextureAtlas atlas;
@@ -58,7 +59,7 @@ public class TutorialActivity extends Activity {
         //Define next and prev buttons
         TextButton prevButton = new TextButton("Prev", skin);
         prevButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
-        TextButton nextButton = new TextButton("Next", skin);
+        final TextButton nextButton = new TextButton("Next", skin);
         nextButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
 
         //Add button listeners
@@ -68,6 +69,7 @@ public class TutorialActivity extends Activity {
                 super.tap(event, x, y, count, button);
                 if(currentSlide >= 1)
                 {
+                    nextButton.setText("Next");
                     currentSlide--;
                     bg = new Texture(imagePaths.get(currentSlide));
                 }
@@ -78,11 +80,24 @@ public class TutorialActivity extends Activity {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
+
+                System.out.println(nextButton.getText());
                 if(currentSlide < imagePaths.size() - 1)
                 {
+                    end = false;
                     currentSlide++;
                     bg = new Texture(imagePaths.get(currentSlide));
                 }
+
+                if(currentSlide == imagePaths.size() - 1 ){
+
+                    nextButton.setText("End");
+                    end = !end;
+                    if(!end){
+                        activityManager.set(new MainActivity(activityManager));
+                    }
+                }
+
             }
         });
 

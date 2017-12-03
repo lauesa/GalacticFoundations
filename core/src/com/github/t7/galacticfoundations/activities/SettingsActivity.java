@@ -55,14 +55,37 @@ public class SettingsActivity extends Activity {
             Label sliderLabel = new Label("Volume" ,skin);
             sliderLabel.setFontScale(2);
 
+            //Define next and prev buttons
+
+            TextButton backButton = new TextButton("Back", skin);
+            backButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
+
+            //Add button listeners
+            backButton.addListener(new ActorGestureListener() {
+                @Override
+                public void tap(InputEvent event, float x, float y, int count, int button) {
+                    super.tap(event, x, y, count, button);
+                    activityManager.set(new MainActivity(activityManager));
+                }
+            });
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+                galacticfoundations.backpressed=true;
+                activityManager.set(new MainActivity(activityManager)); // go to main menu if back button pressed
+            }
+
             //Table of buttons
             Table table = new Table();
             table.setFillParent(true);
-            table.center();
+            table.bottom().padBottom(5).padTop(20);
 
             table.add(sliderLabel);
             table.row();
             table.add(slider);
+            table.row();
+            table.add().fillY().expandY();
+            table.row();
+            table.add(backButton);
             stage.addActor(table);
 
             multiplexer = new InputMultiplexer();
