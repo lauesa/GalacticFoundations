@@ -529,9 +529,9 @@ public class GameboardActivity extends Activity {
                                 //Deduct points
                                 gameboardHUD.addPoints(-5);
                                 rayAttack(focus, hexTarget);
-                                if(aiBase.getState() == HexState.UNOWNED){
+                                /*if(aiBase.getState() == HexState.UNOWNED){
                                     activityManager.set(new MainActivity(activityManager));
-                                }
+                                }*/
                                 //hexTarget.setState(HexState.UNOWNED);
                                 focus.setState(HexState.PLAYER_INACTIVE);
                             }
@@ -582,6 +582,9 @@ public class GameboardActivity extends Activity {
                 if(target1.getFortifyStatus()){
                     target1.setFortify(false);
                 }else{
+                    if(target1.getHexType() == Hex.HexType.BASE){
+                        activityManager.set(new VictoryActivity(activityManager));
+                    }
                     target1.setState(HexState.UNOWNED);
 
                     Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
@@ -605,6 +608,10 @@ public class GameboardActivity extends Activity {
                                     target2.setFortify(false);
                                 }
                                 else {
+                                    //end if base
+                                    if(target2.getHexType() == Hex.HexType.BASE){
+                                        activityManager.set(new VictoryActivity(activityManager));
+                                    }
                                     target2.setState(HexState.UNOWNED);
 
                                     //Now that target2 was successful, do the same for target3
@@ -618,6 +625,9 @@ public class GameboardActivity extends Activity {
                                                 if (target3.getFortifyStatus()) {
                                                     target3.setFortify(false);
                                                 } else {
+                                                    if(target3.getHexType() == Hex.HexType.BASE){
+                                                        activityManager.set(new VictoryActivity(activityManager));
+                                                    }
                                                     target3.setState(HexState.UNOWNED);
                                                 }
                                             }
@@ -638,6 +648,9 @@ public class GameboardActivity extends Activity {
                 if(target1.getFortifyStatus()){
                     target1.setFortify(false);
                 }else{
+                    if(target1.getHexType() == Hex.HexType.BASE){
+                        activityManager.set(new DefeatActivity(activityManager));
+                    }
                     target1.setState(HexState.UNOWNED);
 
                     Vector2 focusLocalCoords = new Vector2(focus.getOriginX(), focus.getOriginY());
@@ -661,6 +674,9 @@ public class GameboardActivity extends Activity {
                                     target2.setFortify(false);
                                 }
                                 else {
+                                    if(target2.getHexType() == Hex.HexType.BASE){
+                                        activityManager.set(new DefeatActivity(activityManager));
+                                    }
                                     target2.setState(HexState.UNOWNED);
 
                                     //Now that target2 was successful, do the same for target3
@@ -674,6 +690,9 @@ public class GameboardActivity extends Activity {
                                                 if (target3.getFortifyStatus()) {
                                                     target3.setFortify(false);
                                                 } else {
+                                                    if(target3.getHexType() == Hex.HexType.BASE){
+                                                        activityManager.set(new DefeatActivity(activityManager));
+                                                    }
                                                     target3.setState(HexState.UNOWNED);
                                                 }
                                             }

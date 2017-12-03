@@ -2,6 +2,9 @@ package com.github.t7.galacticfoundations.states;
 
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;
+import com.github.t7.galacticfoundations.activities.GameboardActivity;
+import com.github.t7.galacticfoundations.activities.MainActivity;
+import com.github.t7.galacticfoundations.activities.VictoryActivity;
 import com.github.t7.galacticfoundations.actors.Hex;
 
 /**
@@ -47,6 +50,7 @@ public enum HexState implements State<Hex> {
         @Override
         public void exit(Hex entity) {
             entity.exitPlayerActivated();
+
 
         }
 
