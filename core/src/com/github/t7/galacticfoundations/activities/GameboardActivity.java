@@ -709,6 +709,7 @@ public class GameboardActivity extends Activity {
         gameboardHUD.stage.getRoot().setTouchable(Touchable.disabled);
         stage.getRoot().setTouchable(Touchable.disabled);
         System.out.println("Ai's turn");
+
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {

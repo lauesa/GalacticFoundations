@@ -95,7 +95,22 @@ public class MainActivity extends Activity {
         TextButton creditsButton = new TextButton("Credits", skin);
 
         creditsButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1.5f), Actions.fadeIn(0.25f)));
+        creditsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                activityManager.set(new CreditsActivity(activityManager));
+            }
+        });
 
+        TextButton exitButton = new TextButton("Exit Game", skin);
+
+        exitButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1.75f), Actions.fadeIn(0.25f)));
+        exitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit();
+            }
+        });
         Image imageLogo = new Image();
         imageLogo.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Title.png")))));
         imageLogo.setScaling(Scaling.fit);
@@ -117,6 +132,8 @@ public class MainActivity extends Activity {
         mainTable.add(settingsButton);
         mainTable.row();
         mainTable.add(creditsButton);
+        mainTable.row();
+        mainTable.add(exitButton);
         stage.addActor(mainTable);
 
 
