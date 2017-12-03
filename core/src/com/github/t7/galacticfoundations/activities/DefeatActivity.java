@@ -44,7 +44,7 @@ public class DefeatActivity extends Activity {
 
 
 
-        bg = new Texture("credits.png");
+        bg = new Texture("defeat_bg.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         stage = new Stage(viewport);
 
@@ -52,17 +52,26 @@ public class DefeatActivity extends Activity {
         atlas = new TextureAtlas("skin\\GameBoardHUD_skin\\star-soldier-ui.atlas");
         skin = new Skin(Gdx.files.internal("skin\\GameBoardHUD_skin\\star-soldier-ui.json"), atlas);
 
-        //Define next and prev buttons
 
-        TextButton backButton = new TextButton("AI Vic", skin);
-        backButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
+        //Define again and quit buttons
+        TextButton againButton = new TextButton("Again", skin);
+        againButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
+        TextButton quitButton = new TextButton("Quit", skin);
+        quitButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
 
         //Add button listeners
-        backButton.addListener(new ActorGestureListener() {
+        againButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                activityManager.set(new MainActivity(activityManager));
+                activityManager.set(new GameboardActivity(activityManager));
+            }
+        });
+        quitButton.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                super.tap(event, x, y, count, button);
+                Gdx.app.exit();
             }
         });
 
@@ -77,7 +86,8 @@ public class DefeatActivity extends Activity {
         table.bottom().padBottom(5);
 
 
-        table.add(backButton).expandX().width(BUTTONWIDTH);
+        table.add(againButton).expandX().width(BUTTONWIDTH);
+        table.add(quitButton).expandX().width(BUTTONWIDTH);
         stage.addActor(table);
 
         multiplexer = new InputMultiplexer();
