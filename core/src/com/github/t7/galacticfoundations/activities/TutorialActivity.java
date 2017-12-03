@@ -45,6 +45,7 @@ public class TutorialActivity extends Activity {
         imagePaths.add("tutorial_images\\tut1.png");
         imagePaths.add("tutorial_images\\tut2.png");
         imagePaths.add("tutorial_images\\tut3.png");
+        imagePaths.add("tutorial_images\\tut4.png");
 
         bg = new Texture(imagePaths.get(currentSlide));
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
@@ -65,7 +66,6 @@ public class TutorialActivity extends Activity {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                System.out.println("prev button pressed.");
                 if(currentSlide >= 1)
                 {
                     currentSlide--;
@@ -78,7 +78,6 @@ public class TutorialActivity extends Activity {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                System.out.println("next button pressed.");
                 if(currentSlide < imagePaths.size() - 1)
                 {
                     currentSlide++;
