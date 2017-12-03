@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import com.badlogic.gdx.math.Vector2;
+import com.github.t7.galacticfoundations.states.HexState;
 
 import static com.github.t7.galacticfoundations.activities.GameboardActivity.*;
 
@@ -16,19 +18,22 @@ import static com.github.t7.galacticfoundations.activities.GameboardActivity.*;
  * Created by Borzantag on 11/25/2017.
  */
 
-public class AI_Activity {
+public class AI_Activity{
     public static int resources = 0;    //Count of resourcesa
-    public static Array<Hex> Tiles;     //Array of Hexes that make up the board
+    public static ArrayList<Hex> Tiles;     //Array of Hexes that make up the board
     public static Random rand;          //Instantiation of random class
+    private static GameboardActivity gameBoard;
 
-    public static void AI_turn(Array<Hex> a){   //Function that drives AI turn
+    public static void AI_turn(ArrayList<Hex> a,  GameboardActivity g){//Function that drives AI turn
+        Tiles = new ArrayList<Hex>();
         Tiles = a;                              //Initialize Tiles Array with Hex values
+        gameBoard = g;
         List<Integer> tileWeights = new ArrayList<Integer> (); //List of weights for each tile
         int tileLocations[][] = new int[11][9];                 //List of tile IDs
         int count = 1;                                         //Count for making sure each row gets a different weight
         int weight = 1;                                         //Initial weight, updated for each row
         /*
-        for(int i = 0; i < Tiles.size; i++) {                   //Loop to go through each Hex tile and initialize weight and
+        for(int i = 0; i < Tiles.size; i++) {                   //Loop to go through each Hex tile and initialize weight andw
             tileLocations[weight-1][count-1] = i;               //Initializing ID of each tile
             if(Tiles.get(i).toString().split(" ")[0].equals("BASE") || Tiles.get(i).toString().split(" ")[0].equals("SPECIAL")){ //if a tile is a base or special tile add 5 to weight
                 tileWeights.add((weight+5));                //Add weight of tile to arraylist
@@ -49,9 +54,10 @@ public class AI_Activity {
         }
         Collections.reverse(tileWeights);                               //Reverse weights so that they start increasing from AI side of board
         */
-        while(resources != 0){                                          //Evaluate board and take action while AI has resources
-            eval_board(tileWeights, tileLocations);
-        }
+                                             //Evaluate board and take action while AI has resources
+        eval_board(tileWeights, tileLocations);
+        return;
+
     }
     /*
      Evaluates the current game board for best course of action
@@ -60,55 +66,66 @@ public class AI_Activity {
      */
     public static void eval_board(List<Integer> weight, int location[][]){
         List<Integer> AI_Tiles = new ArrayList<Integer>();                   //Array to hold IDs of AI tiles
-        for(int i = 0; i < Tiles.size;i++){                                  //Goes through all tiles to find active AI tiles
+        for(int i = 0; i < Tiles.size();i++){                                  //Goes through all tiles to find active AI tiles
             if(Tiles.get(i).toString().split(" ")[1].equals("AI_ACTIVE")){     //Checks if tile is active AI tile
                AI_Tiles.add(i);
             }
         }
 
-        int[][] adjacencyMatrix = hexAdjacent();                            //Gets adjacency matrix from function
-        ArrayList<Integer> Adj_Tiles = new ArrayList<Integer>();                 //ArrayList to hold all Tiles adjacent to a tile
-        ArrayList<Integer> Max_ID = new ArrayList<Integer>();                   //ArrayList to hold all forward moving Tiles adjacent to a tile
-        int max = 0;                                                        //Max variable for use in determining forward-most tiles
-        while(AI_Tiles.size() >= 0 || resources != 0){                                        //Loop will continue until out of tiles to use or out of resources
-            for(int i = 0; i < 95; i++){                                                      //Loop to go through and find adjacent tiles to first tile in AI_Tiles
-                if(adjacencyMatrix[AI_Tiles.get(0)][i] == 1){                                  //Checks if an ID for a tile is adjacent
-                    Adj_Tiles.add(adjacencyMatrix[AI_Tiles.get(0)][1]);                        //If so, add tile to Adjacency ArrayList
-                }
-            }
+        Array<Array<Hex>> adjacencyMatrix = hexAdjacent();                            //Gets adjacency matrix from function
+        ArrayList<Hex> Min_ID = new ArrayList<Hex>();                   //ArrayList to hold all forward moving Tiles adjacent to a tile
+        while(AI_Tiles.size() > 0 && resources != 0){                                        //Loop will continue until out of tiles to use or out of resources
 
-            while(Max_ID.size() < 3){                                      //Loop that will continue to run until forwardmost half of adjacent tiles are added to ArrayList
-                for(int i = 0; i < Adj_Tiles.size(); i++){                  //Loop to go through Adjacent Tiles and find the max ID
-                    if(Adj_Tiles.get(i) > max){                             //Checks if current tile has a greater ID than the max ID
-                        max = Adj_Tiles.get(i);                             //If so, sets current max to current tile's ID
+            //while(Min_ID.size() < 3){                                      //Loop that will continue to run until forwardmost half of adjacent tiles are added to ArrayList
+                //for(int i = 0; i < adjacencyMatrix.get(AI_Tiles.get(0)).size; i++){
+                    float sourceX = Tiles.get(AI_Tiles.get(0)).getOriginX();
+                    float sourceY = Tiles.get(AI_Tiles.get(0)).getOriginY();
+                    Vector2 stageLocal = new Vector2(sourceX, sourceY);
+                    Vector2 stageCoords = Tiles.get(AI_Tiles.get(0)).localToStageCoordinates(stageLocal);
+                    for(int i = 150; i <= 270; i+=60){
+                        double radsI = Math.toRadians(i);
+                        Vector2 hitCoords = new Vector2((float)(stageCoords.x+(GameboardActivity.TILE_WIDTH*Math.cos(radsI))), (float)(stageCoords.y+(GameboardActivity.TILE_WIDTH*Math.sin(radsI))));
+                        Actor target = gameBoard.getStage().hit(hitCoords.x, hitCoords.y, false);
+                        if(target != null) {
+                            if (target.getName().equals("Hex")) {
+                                Min_ID.add((Hex) target);
+                            }
+                        }
                     }
+            //}
+
+            int enemyCount = 0;                                              //Count variable to count enemy tiles in forward positions
+            int  friendCount = 0;
+            ArrayList<Hex> EnemyTiles = new ArrayList<Hex>();   //ArrayList to hold IDs of enemy tiles
+            for(int i = 0; i < Min_ID.size(); i++){                     //Loop to go through forward tiles and search for enemy tiles
+                if(Min_ID.get(i).toString().split(" ")[1].equals("PLAYER_INACTIVE")){  //Checks if a tile belongs to a player
+                    enemyCount++;                                                                        //If yes, increments count
+                    EnemyTiles.add(Min_ID.get(i));                                                  //Also adds the enemy tile's ID to ArrayList
                 }
-                Max_ID.add(max);                                        //Adds max value to array of Max IDs
-                Adj_Tiles.remove(Adj_Tiles.indexOf(max));               //Removes max value from Array so that secondary or tertiary max ID can be found
-                max = 0;                                                //Sets max back to zero
+                if(Min_ID.get(i).toString().split(" ")[1].equals("AI_ACTIVE")){
+                    friendCount++;
+                }
             }
 
-            int count = 0;                                              //Count variable to count enemy tiles in forward positions
-            ArrayList<Integer> EnemyTiles = new ArrayList<Integer>();   //ArrayList to hold IDs of enemy tiles
-            for(int i = 0; i < Max_ID.size(); i++){                     //Loop to go through forward tiles and search for enemy tiles
-                if(Tiles.get(Max_ID.get(i)).toString().split(" ")[1].equals("PLAYER_ACTIVE")){  //Checks if a tile belongs to a player
-                    count++;                                                                        //If yes, increments count
-                    EnemyTiles.add(Max_ID.get(i));                                                  //Also adds the enemy tile's ID to ArrayList
-                }
+            if(resources <= 0){
+                return;
             }
-
-            if(count >= 2){                                                         //If count of enemy tiles greater than 2, make AoE attack
-                AOE_Attack(Tiles.get(AI_Tiles.get(0)), Adj_Tiles, Max_ID);            //Passes tile attack origin and adjacency matrix to AoE attack function
+            /*if(enemyCount >= 2 && resources >= 5){                                                         //If count of enemy tiles greater than 2, make AoE attack
+                AOE_Attack(Tiles.get(AI_Tiles.get(0)), Adj_Tiles, Min_ID);            //Passes tile attack origin and adjacency matrix to AoE attack function
+                resources-=5;
+            }*/
+            if(enemyCount == 1 && resources >= 5){                                                         //If count of enemy tiles is 1, make line attack
+                gameBoard.rayAttack(Tiles.get(AI_Tiles.get(0)), EnemyTiles.get(0));     //Passes tile attack origin and target
+                resources-=5;
             }
-            if(count == 1){                                                         //If count of enemy tiles is 1, make line attack
-                lineAttack(Tiles.get(AI_Tiles.get(0)), Tiles.get(EnemyTiles.get(0)));     //Passes tile attack origin and target
-            }
-            if(count == 0){                                                     //If no enemy tiles, expand
-                int randTile = randomTile(Max_ID);                              //Gets a random tile from forward most tiles to expand to
-                expand(Tiles.get(randTile));                                    //Expands to target tile
+            if(enemyCount == 0 && resources >= 1){                                                     //If no enemy tiles, expand
+                Hex randTile = randomTile(Min_ID);                              //Gets a random tile from forward most tiles to expand to
+                expand(randTile, Tiles.get(AI_Tiles.get(0)));                                    //Expands to target tile
+                resources-=1;
             }
             AI_Tiles.remove(0);                                             //Removes tile just used from ArrayList
         }
+        return;
 
     }
 
@@ -148,8 +165,9 @@ public class AI_Activity {
     public static void fortify(){
     }
 
-    public static void expand(Hex target){
-
+    public static void expand(Hex target, Hex source){
+        target.setState((HexState.AI_ACTIVE));
+        target.setState((HexState.AI_INACTIVE));
     }
 
     public static void stockpile(){
@@ -160,9 +178,9 @@ public class AI_Activity {
         Input: ArrayList of Ints corresponding to tile IDs
         Output: Random integer corresponding to a tile ID
      */
-    public static int randomTile(ArrayList<Integer> ActionTiles){
+    public static Hex randomTile(ArrayList<Hex> ActionTiles){
          rand = new Random();
-         int randTile = ActionTiles.get(rand.nextInt(ActionTiles.size()));
+         Hex randTile = ActionTiles.get(rand.nextInt(ActionTiles.size()));
          return randTile;
     }
 
@@ -171,8 +189,12 @@ public class AI_Activity {
         Input: None
         Output: 95x95 adjacency matrix
      */
-    public static int[][] hexAdjacent(){
-
+    public static Array<Array<Hex>> hexAdjacent(){
+        Array<Array<Hex>> adjacencyMatrix = new Array<Array<Hex>>();
+        for(int i = 0; i < Tiles.size(); i++){
+            adjacencyMatrix.add(gameBoard.adjacentHexes(Tiles.get(i)));
+        }
+        /*
             int adjacencyMatrix[][] = new int[95][95];  //Initializing matrix
             for(int i =0; i < 95; i++){                 //Go through every tile
                 for(int j =0; j<95; j++){               //Go through every possible tile connected to i
@@ -274,7 +296,7 @@ public class AI_Activity {
                     }
 
             }
-        }
+        }*/
 
         return adjacencyMatrix; //Returns the adjacency matrix
     }
