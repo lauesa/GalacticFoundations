@@ -44,7 +44,7 @@ public class VictoryActivity extends Activity {
 
 
 
-        bg = new Texture("credits.png");
+        bg = new Texture("victorybg.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         stage = new Stage(viewport);
 
@@ -54,7 +54,7 @@ public class VictoryActivity extends Activity {
 
         //Define next and prev buttons
 
-        TextButton backButton = new TextButton("P Vic", skin);
+        TextButton backButton = new TextButton("Confirm", skin);
         backButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
 
         //Add button listeners
@@ -88,7 +88,9 @@ public class VictoryActivity extends Activity {
     /* Overrides */
     @Override
 
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+
+    }
 
     @Override
     protected void handleInput() {}
@@ -102,6 +104,8 @@ public class VictoryActivity extends Activity {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
         sb.draw(bg, 0, 0);
+
+
         sb.end();
         stage.act();
         stage.draw();
