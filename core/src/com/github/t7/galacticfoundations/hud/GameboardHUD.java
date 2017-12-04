@@ -154,7 +154,7 @@ public class GameboardHUD implements Disposable{
 
     //Sets
     public void updatePointsLabel(){
-        currentPointsTitleLabel.setText(String.format("Current Points: %d", currentPoints));
+        currentPointsTitleLabel.setText(String.format("CP: %d", currentPoints));
     }
 
     public void hideTileHUD(boolean hide){
