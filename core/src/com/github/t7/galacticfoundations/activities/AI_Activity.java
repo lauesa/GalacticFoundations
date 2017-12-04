@@ -19,13 +19,12 @@ import static com.github.t7.galacticfoundations.activities.GameboardActivity.*;
  */
 
 public class AI_Activity{
-    public static int resources = 0;    //Count of resourcesa
-    public static ArrayList<Hex> Tiles;     //Array of Hexes that make up the board
+    public static int resources = 5;    //Count of resourcesa
+    public static ArrayList<Hex> Tiles = new ArrayList<Hex>();     //Array of Hexes that make up the board
     public static Random rand;          //Instantiation of random class
     private static GameboardActivity gameBoard;
 
-    public static void AI_turn(ArrayList<Hex> a,  GameboardActivity g){//Function that drives AI turn
-        Tiles = new ArrayList<Hex>();
+    public static void AI_turn(ArrayList<Hex> a,  GameboardActivity g){   //Function that drives AI turn
         Tiles = a;                              //Initialize Tiles Array with Hex values
         gameBoard = g;
         List<Integer> tileWeights = new ArrayList<Integer> (); //List of weights for each tile
@@ -65,7 +64,7 @@ public class AI_Activity{
      Outputs:None
      */
     public static void eval_board(List<Integer> weight, int location[][]){
-        List<Integer> AI_Tiles = new ArrayList<Integer>();                   //Array to hold IDs of AI tiles
+        ArrayList<Integer> AI_Tiles = new ArrayList<Integer>();                   //Array to hold IDs of AI tiles
         for(int i = 0; i < Tiles.size();i++){                                  //Goes through all tiles to find active AI tiles
             if(Tiles.get(i).toString().split(" ")[1].equals("AI_ACTIVE")){     //Checks if tile is active AI tile
                AI_Tiles.add(i);
@@ -104,6 +103,7 @@ public class AI_Activity{
                 }
                 if(Min_ID.get(i).toString().split(" ")[1].equals("AI_ACTIVE")){
                     friendCount++;
+                    Min_ID.remove(Min_ID.get(i));
                 }
             }
 
@@ -118,10 +118,11 @@ public class AI_Activity{
                 gameBoard.rayAttack(Tiles.get(AI_Tiles.get(0)), EnemyTiles.get(0));     //Passes tile attack origin and target
                 resources-=5;
             }
-            if(enemyCount == 0 && resources >= 1){                                                     //If no enemy tiles, expand
+            if(enemyCount == 0 && resources >= 1 && friendCount < 3 && Min_ID.size() > 0){                                                     //If no enemy tiles, expand
                 Hex randTile = randomTile(Min_ID);                              //Gets a random tile from forward most tiles to expand to
                 expand(randTile, Tiles.get(AI_Tiles.get(0)));                                    //Expands to target tile
                 resources-=1;
+                AI_Tiles.add(Tiles.indexOf(randTile));
             }
             AI_Tiles.remove(0);                                             //Removes tile just used from ArrayList
         }

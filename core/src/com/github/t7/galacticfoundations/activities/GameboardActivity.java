@@ -733,6 +733,7 @@ public class GameboardActivity extends Activity {
             }
         }
         collectConnected(0);
+        ai.addResources(5);
         ai.AI_turn(boardHex, this);
         passTurn();
     }
