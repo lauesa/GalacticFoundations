@@ -32,6 +32,8 @@ import java.util.Random;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.BASE;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
 import static com.github.t7.galacticfoundations.actors.Hex.HexType.SPECIAL;
+import static com.github.t7.galacticfoundations.hud.GameboardHUD.getCurrent;
+
 import java.util.ArrayList;
 
 /**
@@ -86,6 +88,7 @@ public class GameboardActivity extends Activity {
 
         //Initiate gameboardHUD
         gameboardHUD = new GameboardHUD(galacticfoundations.batch, this);
+
 
         setBoardMode(BoardMode.DEFAULT);
 
@@ -333,10 +336,11 @@ public class GameboardActivity extends Activity {
                     master[i][j][0] = data[k];
                     k++;
                     master[i][j][1] = data[k];
-                    System.out.printf("\n%s %s %d", master[i][j][0], master[i][j][1], k);
+                    //System.out.printf("\n%s %s %d", master[i][j][0], master[i][j][1], k);
                     k++;
                 }
             }
+
         }
         //copied code from generateBoard, altered to build from existing state and type data
         float xOffset = 19.5f;
@@ -414,7 +418,18 @@ public class GameboardActivity extends Activity {
         }
 
         placeTileAt(130, 220, HexState.PLAYER_ACTIVE, Hex.HexType.BASE);
-        placeTileAt(400, 600, HexState.AI_ACTIVE, Hex.HexType.BASE);
+        placeTileAt(400, 600, HexState.AI_INACTIVE, Hex.HexType.BASE);
+
+        //set currentpoints and resources
+        int num = Integer.parseInt(data[190]);
+        GameboardHUD.setCurrentPoints(num);
+        System.out.print(num);
+        num = Integer.parseInt(data[191]);
+        AI_Activity.setResources(num);
+        System.out.print(num);
+        gameboardHUD.updatePointsLabel();
+
+
     }
 
     public void saveGameState(){
@@ -436,7 +451,10 @@ public class GameboardActivity extends Activity {
         for (Actor hex: listActors) {
             file.writeString(hex.toString(), true);
         }
+        String out = "" + GameboardHUD.getCurrent() + " " + AI_Activity.getResources() + " ";
+        file.writeString(out, true);
     }
+
 
     public void generateGameState(){
 
@@ -482,7 +500,8 @@ public class GameboardActivity extends Activity {
         }
         placeTiles();
 
-
+        GameboardHUD.setCurrentPoints(5);
+        gameboardHUD.updatePointsLabel();
 
 
     }
@@ -765,7 +784,7 @@ public class GameboardActivity extends Activity {
             }
         }
         collectConnected(1);
-        ai.addResources(5);
+        //ai.addResources(5);
         ai.AI_turn(boardHex, this);
         deactivate(1);
         passTurn();

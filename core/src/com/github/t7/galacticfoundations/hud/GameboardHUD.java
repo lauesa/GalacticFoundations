@@ -33,6 +33,15 @@ public class GameboardHUD implements Disposable{
     private TextureAtlas atlas;
     private Skin skin;
 
+
+    public static int getCurrent() {
+        return currentPoints;
+    }
+
+    public static void setCurrentPoints(int currentPoints) {
+        GameboardHUD.currentPoints = currentPoints;
+    }
+
     private static int currentPoints;
 
     //Scene2D widgets
@@ -47,7 +56,7 @@ public class GameboardHUD implements Disposable{
 
     public GameboardHUD(SpriteBatch sb, GameboardActivity _board){
         //Define tracking variables
-        currentPoints = 5;
+
 
         //Hold Gameboard
         board = _board;

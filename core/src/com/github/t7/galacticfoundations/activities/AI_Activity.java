@@ -19,6 +19,14 @@ import static com.github.t7.galacticfoundations.activities.GameboardActivity.*;
  */
 
 public class AI_Activity{
+    public static int getResources() {
+        return resources;
+    }
+
+    public static void setResources(int resources) {
+        AI_Activity.resources = resources;
+    }
+
     public static int resources = 0;    //Count of resourcesa
     public static ArrayList<Hex> Tiles = new ArrayList<Hex>();     //Array of Hexes that make up the board
     public static Random rand;          //Instantiation of random class
