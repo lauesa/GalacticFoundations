@@ -101,16 +101,28 @@ public class AI_Activity{
                 AOE_Attack(Tiles.get(AI_Tiles.get(0)), Adj_Tiles, Min_ID);            //Passes tile attack origin and adjacency matrix to AoE attack function
                 resources-=5;
             }*/
-            if(enemyCount == 1 && resources >= 5){                                                         //If count of enemy tiles is 1, make line attack
-                gameBoard.rayAttack(Tiles.get(AI_Tiles.get(0)), EnemyTiles.get(0));     //Passes tile attack origin and target
+            else if(Tiles.get(AI_Tiles.get(0)).getHexType() == Hex.HexType.SPECIAL && resources >= 2){
+                Tiles.get(AI_Tiles.get(0)).setFortify(true);
+                resources -=2;
+            }
+            else if(enemyCount >= 1 && resources >= 5){                                                         //If count of enemy tiles is 1, make line attack
+                Hex target = randomTile(EnemyTiles);
+                gameBoard.rayAttack(Tiles.get(AI_Tiles.get(0)), target);     //Passes tile attack origin and target
                 resources-=5;
             }
-            if(enemyCount == 0 && resources >= 1 && friendCount < 3 && Min_ID.size() > 0){                                                     //If no enemy tiles, expand
-                Hex randTile = randomTile(Min_ID);                              //Gets a random tile from forward most tiles to expand to
-                expand(randTile, Tiles.get(AI_Tiles.get(0)));                                    //Expands to target tile
-                resources-=1;
-                AI_Tiles.add(Tiles.indexOf(randTile));
+            else if(enemyCount == 0 && resources >= 1 && friendCount < 3 && Min_ID.size() > 0){                                                     //If no enemy tiles, expand
+                if(Min_ID.size() == 1 && Min_ID.get(0).getHexType() == Hex.HexType.SPECIAL && resources >= 5){
+                    expand(Min_ID.get(0), Tiles.get(AI_Tiles.get(0)));
+                    resources -= 5;
+                }
+                else {
+                    Hex randTile = randomTile(Min_ID);                              //Gets a random tile from forward most tiles to expand to
+                    expand(randTile, Tiles.get(AI_Tiles.get(0)));                                    //Expands to target tile
+                    resources -= 1;
+                    AI_Tiles.add(Tiles.indexOf(randTile));
+                }
             }
+            Min_ID.clear();
             AI_Tiles.remove(0);                                             //Removes tile just used from ArrayList
         }
         return;
