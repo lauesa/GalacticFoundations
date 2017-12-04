@@ -550,13 +550,26 @@ public class GameboardActivity extends Activity {
                         for (int i = 0; i < focusAdjacents.size; i++) {
                             Hex current = focusAdjacents.get(i);
                             if ((hexTarget.getState() == HexState.UNOWNED) && (hexTarget == current)) {
-                                hexTarget.setState(HexState.PLAYER_ACTIVE);
-                                hexTarget.setCanAttack(false);
-                                focus.setState(HexState.PLAYER_INACTIVE);
-                                setBoardMode(BoardMode.DEFAULT);
-                                unhightlightTiles();
-                                //Deduct points
-                                gameboardHUD.addPoints(-1);
+
+                                if(hexTarget.getHexType() == Hex.HexType.GENERAL){
+                                    hexTarget.setState(HexState.PLAYER_ACTIVE);
+                                    hexTarget.setCanAttack(false);
+                                    //Deduct points
+                                    gameboardHUD.addPoints(-1);
+                                    focus.setState(HexState.PLAYER_INACTIVE);
+                                    setBoardMode(BoardMode.DEFAULT);
+                                    unhightlightTiles();
+                                }
+                                else if(hexTarget.getHexType() == Hex.HexType.SPECIAL && gameboardHUD.getCurrentPoints() >= 3){
+                                    hexTarget.setState(HexState.PLAYER_ACTIVE);
+                                    hexTarget.setCanAttack(false);
+                                    //Deduct points
+                                    gameboardHUD.addPoints(-3);
+                                    focus.setState(HexState.PLAYER_INACTIVE);
+                                    setBoardMode(BoardMode.DEFAULT);
+                                    unhightlightTiles();
+                                }
+
                             }
                         }
                     }
@@ -601,7 +614,7 @@ public class GameboardActivity extends Activity {
                     System.out.printf("%f\n", theta);
                     double rads = Math.toRadians(theta);
                     //find the vector that would hit the target hex
-                    Vector2 hit2Coords = new Vector2((float)(targetStageCoords.x+(TILE_WIDTH*Math.cos(rads))), (float)(targetStageCoords.y + (TILE_WIDTH*Math.sin(rads))));
+                    Vector2 hit2Coords = new Vector2((float)(targetStageCoords.x+(TILE_HEIGHT*Math.cos(rads))), (float)(targetStageCoords.y + (TILE_HEIGHT*Math.sin(rads))));
                     //look at target 2
                     Actor hitTarget2 = stage.hit(hit2Coords.x, hit2Coords.y, true);
                     if(hitTarget2 != null){
@@ -619,7 +632,7 @@ public class GameboardActivity extends Activity {
                                     target2.setState(HexState.UNOWNED);
 
                                     //Now that target2 was successful, do the same for target3
-                                    Vector2 hit3Coords = new Vector2((float)(hit2Coords.x+(TILE_WIDTH*Math.cos(rads))), (float)(hit2Coords.y + (TILE_WIDTH*Math.sin(rads))));
+                                    Vector2 hit3Coords = new Vector2((float)(hit2Coords.x+(TILE_HEIGHT*Math.cos(rads))), (float)(hit2Coords.y + (TILE_HEIGHT*Math.sin(rads))));
                                     Actor hitTarget3 = stage.hit(hit3Coords.x, hit3Coords.y, true);
                                     if (hitTarget3 != null) {
                                         if (hitTarget3.getName().equals("Hex")) {
@@ -666,7 +679,7 @@ public class GameboardActivity extends Activity {
                     System.out.printf("%f\n", theta);
                     double rads = Math.toRadians(theta);
                     //find the vector that would hit the target hex
-                    Vector2 hit2Coords = new Vector2((float)(targetStageCoords.x+(TILE_WIDTH*Math.cos(rads))), (float)(targetStageCoords.y + (TILE_WIDTH*Math.sin(rads))));
+                    Vector2 hit2Coords = new Vector2((float)(targetStageCoords.x+(TILE_HEIGHT*Math.cos(rads))), (float)(targetStageCoords.y + (TILE_HEIGHT*Math.sin(rads))));
                     //look at target 2
                     Actor hitTarget2 = stage.hit(hit2Coords.x, hit2Coords.y, true);
                     if(hitTarget2 != null){
@@ -684,7 +697,7 @@ public class GameboardActivity extends Activity {
                                     target2.setState(HexState.UNOWNED);
 
                                     //Now that target2 was successful, do the same for target3
-                                    Vector2 hit3Coords = new Vector2((float)(hit2Coords.x+(TILE_WIDTH*Math.cos(rads))), (float)(hit2Coords.y + (TILE_WIDTH*Math.sin(rads))));
+                                    Vector2 hit3Coords = new Vector2((float)(hit2Coords.x+(TILE_HEIGHT*Math.cos(rads))), (float)(hit2Coords.y + (TILE_HEIGHT*Math.sin(rads))));
                                     Actor hitTarget3 = stage.hit(hit3Coords.x, hit3Coords.y, true);
                                     if (hitTarget3 != null) {
                                         if (hitTarget3.getName().equals("Hex")) {
@@ -961,7 +974,12 @@ public class GameboardActivity extends Activity {
 
                 for (Hex current : focusAdjacents) {
                     if (current.getState() == HexState.UNOWNED) {
-                        current.highlight(true);
+                        if(current.getHexType() == Hex.HexType.GENERAL) {
+                            current.highlight(true);
+                        }
+                        else if(current.getHexType() == Hex.HexType.SPECIAL && gameboardHUD.getCurrentPoints() >= 3){
+                            current.highlight(true);
+                        }
                     }
                 }
             }else{

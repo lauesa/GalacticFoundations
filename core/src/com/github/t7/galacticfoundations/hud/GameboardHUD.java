@@ -166,7 +166,7 @@ public class GameboardHUD implements Disposable{
             expandButton.setVisible(false);
         }else{
             //Only show button if you can attack
-            if(board.getFocus().getCanAttack()) {
+            if(board.getFocus().getCanAttack() && currentPoints >= 5) {
                 boolean inRange = false;
                 for(Hex current:board.adjacentHexes(board.getFocus())){
                     if(current.getState() == HexState.AI_INACTIVE){

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -61,6 +63,7 @@ public class MainActivity extends Activity {
                 activityManager.set(new GameboardActivity(activityManager));
             }
         });
+
         TextButton newGameButton = new TextButton("New Game", skin);
 
         newGameButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.75f), Actions.fadeIn(0.25f)));
@@ -71,6 +74,7 @@ public class MainActivity extends Activity {
 
             }
         });
+
 
         TextButton tutorialButton = new TextButton("Tutorial", skin);
 
