@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -13,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -37,6 +38,7 @@ public class MainActivity extends Activity {
     public static float mastervol = 0.05f;
     public static int RESUME = 0;
     public static Music music = Gdx.audio.newMusic(Gdx.files.internal("menu_music.mp3"));
+    FileHandle file;
 
     public MainActivity(final ActivityManager activityManager){
         super(activityManager);
@@ -139,6 +141,14 @@ public class MainActivity extends Activity {
         mainTable.row();
         mainTable.add(exitButton);
         stage.addActor(mainTable);
+
+            file = Gdx.files.local("gamestate.txt");
+            if(!file.exists()){
+                resumeButton.setTouchable(Touchable.disabled);
+                resumeButton.addAction(Actions.color(new Color(Color.DARK_GRAY)));
+            }
+
+
 
 
 

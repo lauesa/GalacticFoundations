@@ -60,11 +60,23 @@ public class SettingsActivity extends Activity {
             TextButton backButton = new TextButton("Back", skin);
             backButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
 
+            TextButton eraseButton = new TextButton("Erase Saved Game", skin);
+            backButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
+
             //Add button listeners
             backButton.addListener(new ActorGestureListener() {
                 @Override
                 public void tap(InputEvent event, float x, float y, int count, int button) {
                     super.tap(event, x, y, count, button);
+                    activityManager.set(new MainActivity(activityManager));
+                }
+            });
+
+            eraseButton.addListener(new ActorGestureListener() {
+                @Override
+                public void tap(InputEvent event, float x, float y, int count, int button) {
+                    super.tap(event, x, y, count, button);
+                    Gdx.files.local("gamestate.txt").delete();
                     activityManager.set(new MainActivity(activityManager));
                 }
             });
@@ -82,6 +94,8 @@ public class SettingsActivity extends Activity {
             table.add(sliderLabel);
             table.row();
             table.add(slider);
+            table.row();
+            table.add(eraseButton);
             table.row();
             table.add().fillY().expandY();
             table.row();

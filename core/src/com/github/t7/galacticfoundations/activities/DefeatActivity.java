@@ -6,11 +6,14 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -71,6 +74,7 @@ public class DefeatActivity extends Activity {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
+                Gdx.files.local("gamestate.txt").delete();
                 Gdx.app.exit();
             }
         });
@@ -79,6 +83,12 @@ public class DefeatActivity extends Activity {
             galacticfoundations.backpressed=true;
             activityManager.set(new MainActivity(activityManager)); // go to main menu if back button pressed
         }
+        FileHandle file = Gdx.files.local("gamestate.txt");
+        Gdx.files.local("gamestate.txt").delete();
+        if(!file.exists()){
+           System.out.println("Failure to Exist");
+        }
+
 
         //Table of buttons
         Table table = new Table();
@@ -93,6 +103,8 @@ public class DefeatActivity extends Activity {
         multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(stage);
+
+
     }
 
     /* Overrides */
@@ -121,6 +133,8 @@ public class DefeatActivity extends Activity {
             galacticfoundations.backpressed=true;
             activityManager.set(new MainActivity(activityManager)); // go to main menu if back button pressed
         }
+
+
     }
 
     @Override

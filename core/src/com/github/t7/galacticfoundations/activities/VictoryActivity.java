@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -62,6 +63,7 @@ public class VictoryActivity extends Activity {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
+                Gdx.files.local("gamestate.txt").delete();
                 activityManager.set(new MainActivity(activityManager));
             }
         });
@@ -83,6 +85,7 @@ public class VictoryActivity extends Activity {
         multiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(multiplexer);
         multiplexer.addProcessor(stage);
+
     }
 
     /* Overrides */
