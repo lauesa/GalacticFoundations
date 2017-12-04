@@ -99,13 +99,14 @@ public class AI_Activity{
             for(int i = 0; i < Min_ID.size(); i++){                     //Loop to go through forward tiles and search for enemy tiles
                 if(Min_ID.get(i).toString().split(" ")[1].equals("PLAYER_INACTIVE")){  //Checks if a tile belongs to a player
                     enemyCount++;                                                                        //If yes, increments count
-                    EnemyTiles.add(Min_ID.get(i));                                                  //Also adds the enemy tile's ID to ArrayList
+                    EnemyTiles.add(Min_ID.get(i));//Also adds the enemy tile's ID to ArrayList
                 }
                 if(Min_ID.get(i).toString().split(" ")[1].equals("AI_ACTIVE")){
                     friendCount++;
                     Min_ID.remove(Min_ID.get(i));
                 }
             }
+            System.out.printf("Enemy Array Size: %d\n", enemyCount); //Debug for attacking player base
 
             if(resources <= 0){
                 return;
@@ -116,6 +117,10 @@ public class AI_Activity{
             }*/
             if(enemyCount == 1 && resources >= 5){                                                         //If count of enemy tiles is 1, make line attack
                 gameBoard.rayAttack(Tiles.get(AI_Tiles.get(0)), EnemyTiles.get(0));     //Passes tile attack origin and target
+                //Victory Detection
+                if(gameBoard.getPlayerBase().getState() == HexState.UNOWNED){
+                    gameBoard.getActivityManager().set(new DefeatActivity(gameBoard.getActivityManager()));
+                }
                 resources-=5;
             }
             if(enemyCount == 0 && resources >= 1 && friendCount < 3 && Min_ID.size() > 0){                                                     //If no enemy tiles, expand

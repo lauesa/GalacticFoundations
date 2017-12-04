@@ -532,8 +532,9 @@ public class GameboardActivity extends Activity {
                                 //Deduct points
                                 gameboardHUD.addPoints(-5);
                                 rayAttack(focus, hexTarget);
+                                //Detect Victory
                                 if(aiBase.getState() == HexState.UNOWNED){
-                                    activityManager.set(new MainActivity(activityManager));
+                                    activityManager.set(new VictoryActivity(activityManager));
                                 }
                                 //hexTarget.setState(HexState.UNOWNED);
                                 focus.setState(HexState.PLAYER_INACTIVE);
@@ -695,8 +696,7 @@ public class GameboardActivity extends Activity {
 
     public void initPlayerTurn(){
         //re-enable inputs
-        deactivate(1);
-        collectConnected(1);
+        collectConnected(0);
         gameboardHUD.stage.getRoot().setTouchable(Touchable.enabled);
         stage.getRoot().setTouchable(Touchable.enabled);
         System.out.println("Player's turn");
@@ -708,6 +708,7 @@ public class GameboardActivity extends Activity {
         ArrayList<Hex> boardHex = new ArrayList<Hex>();
         Array<Actor> boardActors = stage.getActors();
         //cleanup, dont touch anything during AI's turn
+        deactivate(1);
         deactivate(0);
         //board mode change also un-highlights tiles
         setBoardMode(boardMode.DEFAULT);
@@ -729,12 +730,12 @@ public class GameboardActivity extends Activity {
         for(Actor current: boardActors){
             if(current.getName().equals("Hex")){
                 boardHex.add((Hex)current);
-                System.out.println("Here jackass");
             }
         }
-        collectConnected(0);
+        collectConnected(1);
         ai.addResources(5);
         ai.AI_turn(boardHex, this);
+        deactivate(1);
         passTurn();
     }
 
@@ -1052,6 +1053,10 @@ public class GameboardActivity extends Activity {
     public Stage getStage(){
         return stage;
     }
+
+    public Hex getPlayerBase(){return playerBase;}
+
+    public ActivityManager getActivityManager(){return activityManager;}
 
 
 
