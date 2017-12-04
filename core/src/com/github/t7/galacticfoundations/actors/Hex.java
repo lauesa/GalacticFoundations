@@ -45,6 +45,7 @@ public class Hex extends Actor {
     private float y;
     private boolean foritifed;
     private int value;
+    private boolean canAttack;
 
 
     public enum HexType {
@@ -79,6 +80,7 @@ public class Hex extends Actor {
         position = new Vector2(x, y);
         stateMachine = new DefaultStateMachine<Hex, HexState>(this, HexState.UNOWNED);
         foritifed = false;
+        canAttack = true;
 
         setPosition(x, y);
         setState(HexState.UNOWNED);
@@ -395,6 +397,14 @@ public class Hex extends Actor {
     }
 
     public HexType getHexType(){return hexType;}
+
+    public boolean getCanAttack(){
+        return canAttack;
+    }
+
+    public void setCanAttack(boolean state){
+        canAttack = state;
+    }
 
 
 

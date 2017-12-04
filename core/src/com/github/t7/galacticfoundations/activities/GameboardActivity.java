@@ -551,6 +551,7 @@ public class GameboardActivity extends Activity {
                             Hex current = focusAdjacents.get(i);
                             if ((hexTarget.getState() == HexState.UNOWNED) && (hexTarget == current)) {
                                 hexTarget.setState(HexState.PLAYER_ACTIVE);
+                                hexTarget.setCanAttack(false);
                                 focus.setState(HexState.PLAYER_INACTIVE);
                                 setBoardMode(BoardMode.DEFAULT);
                                 unhightlightTiles();
@@ -922,6 +923,8 @@ public class GameboardActivity extends Activity {
             sum +=item.getValue();
             if(team == 0){
                 item.setState(HexState.PLAYER_ACTIVE);
+                //new turn, all tiles can attack
+                item.setCanAttack(true);
                 gameboardHUD.addPoints(item.getValue());
             }
             else{
@@ -943,6 +946,7 @@ public class GameboardActivity extends Activity {
             focus = null;
             gameboardHUD.hideTileHUD(true);
         }
+        //if attack button was pushed and focus can attack
         else if(mode == BoardMode.ATTACK){
             for(Hex current:focusAdjacents){
                 if(current.getState()==HexState.AI_ACTIVE || current.getState()==HexState.AI_INACTIVE){
