@@ -179,8 +179,12 @@ public class GameboardHUD implements Disposable{
                     System.out.printf("Attack button visible");
                 }
             }
-            fortifyButton.setVisible(true);
-            expandButton.setVisible(true);
+            if(currentPoints >= 2) {
+                fortifyButton.setVisible(true);
+            }
+            if(currentPoints >= 1) {
+                expandButton.setVisible(true);
+            }
         }
     }
 
