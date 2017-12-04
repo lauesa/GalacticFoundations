@@ -1062,10 +1062,10 @@ public class GameboardActivity extends Activity {
                 targetHex.setHexType(type);
                 targetHex.setState(state);
                 if(type == Hex.HexType.BASE){
-                    if(state == HexState.PLAYER_ACTIVE){
+                    if(state == HexState.PLAYER_ACTIVE || state == HexState.PLAYER_INACTIVE){
                         playerBase = targetHex;
                     }
-                    else if(state == HexState.AI_ACTIVE){
+                    else if(state == HexState.AI_ACTIVE || state == HexState.AI_INACTIVE){
                         aiBase = targetHex;
                     }
                 }
