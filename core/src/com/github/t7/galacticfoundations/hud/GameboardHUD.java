@@ -63,7 +63,7 @@ public class GameboardHUD implements Disposable{
 
         //define labels using the String, and a Label style consisting of a font and color
         //currentPointsTitleLabel = new Label("Current Points", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
-        currentPointsTitleLabel = new Label(String.format("Current Points: %d", currentPoints), skin);
+        currentPointsTitleLabel = new Label(String.format("CP: %d", currentPoints), skin);
         //currentPointsTitleLabel.setFontScale(1);
         //pointsLabel = new Label(String.format("%d", currentPoints), new Label.LabelStyle(new BitmapFont(), Color.BLACK));
 
@@ -126,32 +126,25 @@ public class GameboardHUD implements Disposable{
         //define a table used to organize GameboardHUD's labels
         Table table = new Table();
         table.setFillParent(true);
-        table.top().padTop(5);
-        table.add(currentPointsTitleLabel).padLeft(20);
-        //table.add(pointsLabel).width(50);
-        //table.add(confirmButton);
-        //table.setFillParent(true);
-        //table.add(currentPointsTitleLabel);
-        //table.add(pointsLabel).width(50);
-        table.add(menuButton);
+        table.left().padBottom(5).padTop(20);
+        table.add(currentPointsTitleLabel).padLeft(50);
+        table.add(menuButton).colspan(3).right().padRight(30).row();
 
         //table.row().padTop(galacticfoundations.HEIGHT*0.87f);
-        table.row().padTop(galacticfoundations.HEIGHT*0.80f);
-        table.add(attackButton).expandX().width(galacticfoundations.WIDTH/4);
-        table.add(fortifyButton).expandX().width(galacticfoundations.WIDTH/4);
-        table.add(expandButton).expandX().width(galacticfoundations.WIDTH/4);
-        table.add(stockpileButton).expandX().width(galacticfoundations.WIDTH/4);
-        System.out.println(galacticfoundations.WIDTH);
+        //table.row().padTop(galacticfoundations.HEIGHT*0.80f);
+
+        table.add().fillY().expandY();
+        table.row();
+        table.add(attackButton).left();
+        table.add(fortifyButton).left().padLeft(10);
+        table.add(expandButton).left();
+        table.add(stockpileButton).right().padRight(30);
 
         //add table to the stage
         stage.addActor(table);
 
     }
 
-    //public static void changeCurrentPoints(int newPoints){
-     //   currentPoints = newPoints;
-      //  pointsLabel.setText(String.format("%d", newPoints));
-    //}
 
     public void dispose() { stage.dispose(); }
 

@@ -586,6 +586,9 @@ public class GameboardActivity extends Activity {
                 if(target1.getFortifyStatus()){
                     target1.setFortify(false);
                 }else{
+                    if(target1.getHexType() == BASE){
+                        activityManager.set(new VictoryActivity(activityManager));
+                    }
                     target1.setState(HexState.UNOWNED);
 
                     Vector2 focusLocalCoords = new Vector2(origin.getOriginX(), origin.getOriginY());
@@ -609,6 +612,9 @@ public class GameboardActivity extends Activity {
                                     target2.setFortify(false);
                                 }
                                 else {
+                                    if(target2.getHexType() == BASE){
+                                        activityManager.set(new VictoryActivity(activityManager));
+                                    }
                                     target2.setState(HexState.UNOWNED);
 
                                     //Now that target2 was successful, do the same for target3
@@ -622,6 +628,9 @@ public class GameboardActivity extends Activity {
                                                 if (target3.getFortifyStatus()) {
                                                     target3.setFortify(false);
                                                 } else {
+                                                    if(target3.getHexType() == BASE){
+                                                        activityManager.set(new VictoryActivity(activityManager));
+                                                    }
                                                     target3.setState(HexState.UNOWNED);
                                                 }
                                             }
@@ -642,6 +651,9 @@ public class GameboardActivity extends Activity {
                 if(target1.getFortifyStatus()){
                     target1.setFortify(false);
                 }else{
+                    if(target1.getHexType() == BASE){
+                        activityManager.set(new DefeatActivity(activityManager));
+                    }
                     target1.setState(HexState.UNOWNED);
 
                     Vector2 focusLocalCoords = new Vector2(origin.getOriginX(), origin.getOriginY());
@@ -665,6 +677,9 @@ public class GameboardActivity extends Activity {
                                     target2.setFortify(false);
                                 }
                                 else {
+                                    if(target2.getHexType() == BASE){
+                                        activityManager.set(new DefeatActivity(activityManager));
+                                    }
                                     target2.setState(HexState.UNOWNED);
 
                                     //Now that target2 was successful, do the same for target3
@@ -678,6 +693,9 @@ public class GameboardActivity extends Activity {
                                                 if (target3.getFortifyStatus()) {
                                                     target3.setFortify(false);
                                                 } else {
+                                                    if(target3.getHexType() == BASE){
+                                                        activityManager.set(new DefeatActivity(activityManager));
+                                                    }
                                                     target3.setState(HexState.UNOWNED);
                                                 }
                                             }
@@ -961,7 +979,8 @@ public class GameboardActivity extends Activity {
         }
         else if(mode == BoardMode.MENU){
             //go to menu!!!
-            activityManager.set(new MainActivity(activityManager));
+            //activityManager.set(new MainActivity(activityManager));
+            activityManager.set(new VictoryActivity(activityManager));
         }
     }
 
