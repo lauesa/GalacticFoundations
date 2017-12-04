@@ -20,7 +20,9 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.t7.galacticfoundations.activities.GameboardActivity;
 import com.github.t7.galacticfoundations.activities.MainActivity;
+import com.github.t7.galacticfoundations.actors.Hex;
 import com.github.t7.galacticfoundations.galacticfoundations;
+import com.github.t7.galacticfoundations.states.HexState;
 
 public class GameboardHUD implements Disposable{
     private static final int BUTTON_WIDTH = 160;
@@ -94,7 +96,7 @@ public class GameboardHUD implements Disposable{
                 super.tap(event, x, y, count, button);
                 board.setBoardMode(GameboardActivity.BoardMode.DEFEND);
                 //currentPoints -=2;
-                updateHUD(currentPoints);
+                //updateHUD(currentPoints);
                 System.out.println("Fortify button pressed.");
             }
         });
@@ -105,7 +107,7 @@ public class GameboardHUD implements Disposable{
                 super.tap(event, x, y, count, button);
                 board.setBoardMode(GameboardActivity.BoardMode.EXPAND);
                 //currentPoints--;
-                updateHUD(currentPoints);
+                //updateHUD(currentPoints);
                 System.out.println("Expand button pressed.");
             }
         });
@@ -163,7 +165,20 @@ public class GameboardHUD implements Disposable{
             fortifyButton.setVisible(false);
             expandButton.setVisible(false);
         }else{
-            attackButton.setVisible(true);
+            //Only show button if you can attack
+            if(board.getFocus().getCanAttack()) {
+                boolean inRange = false;
+                for(Hex current:board.adjacentHexes(board.getFocus())){
+                    if(current.getState() == HexState.AI_INACTIVE){
+                        inRange = true;
+                    }
+                }
+                //only show button if you can attack a tile
+                if(inRange) {
+                    attackButton.setVisible(true);
+                    System.out.printf("Attack button visible");
+                }
+            }
             fortifyButton.setVisible(true);
             expandButton.setVisible(true);
         }
@@ -178,23 +193,23 @@ public class GameboardHUD implements Disposable{
         return currentPoints;
     }
 
-    public void updateHUD(int currentPoints) {
-        if (currentPoints < 5) {
-            attackButton.setVisible(false);
-        } else {
-            attackButton.setVisible(true);
-        }
-        if (currentPoints < 2) {
-            fortifyButton.setVisible(false);
-        } else {
-            fortifyButton.setVisible(true);
-        }
-        if (currentPoints < 1) {
-            expandButton.setVisible(false);
-        } else {
-            expandButton.setVisible(true);
-        }
-        //pointsLabel.setText(String.format("%d", currentPoints));
-    }
+//    public void updateHUD(int currentPoints) {
+//        if (currentPoints < 5) {
+//            attackButton.setVisible(false);
+//        } else {
+//            attackButton.setVisible(true);
+//        }
+//        if (currentPoints < 2) {
+//            fortifyButton.setVisible(false);
+//        } else {
+//            fortifyButton.setVisible(true);
+//        }
+//        if (currentPoints < 1) {
+//            expandButton.setVisible(false);
+//        } else {
+//            expandButton.setVisible(true);
+//        }
+//        //pointsLabel.setText(String.format("%d", currentPoints));
+//    }
 
 }
