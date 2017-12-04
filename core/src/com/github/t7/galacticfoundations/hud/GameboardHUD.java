@@ -52,6 +52,7 @@ public class GameboardHUD implements Disposable{
     private TextButton fortifyButton;
     private TextButton expandButton;
 
+    //Instance of game board
     private GameboardActivity board;
 
     public GameboardHUD(SpriteBatch sb, GameboardActivity _board){
@@ -72,21 +73,15 @@ public class GameboardHUD implements Disposable{
         TextButton stockpileButton = new TextButton("STO", skin);
         TextButton menuButton = new TextButton("MENU", skin);
 
-        //define labels using the String, and a Label style consisting of a font and color
-        //currentPointsTitleLabel = new Label("Current Points", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        //define points label, is updated when points value changes
         currentPointsTitleLabel = new Label(String.format("CP: %d", currentPoints), skin);
-        //currentPointsTitleLabel.setFontScale(1);
-        //pointsLabel = new Label(String.format("%d", currentPoints), new Label.LabelStyle(new BitmapFont(), Color.BLACK));
-
 
         //Add button listeners
         attackButton.addListener(new ActorGestureListener() {
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                System.out.println("Attack button pressed.");
                 board.setBoardMode(GameboardActivity.BoardMode.ATTACK);
-                //System.out.printf("Current points: %d\n", currentPoints);
             }
         });
 
@@ -104,9 +99,6 @@ public class GameboardHUD implements Disposable{
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 board.setBoardMode(GameboardActivity.BoardMode.DEFEND);
-                //currentPoints -=2;
-                //updateHUD(currentPoints);
-                System.out.println("Fortify button pressed.");
             }
         });
 
@@ -115,9 +107,6 @@ public class GameboardHUD implements Disposable{
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
                 board.setBoardMode(GameboardActivity.BoardMode.EXPAND);
-                //currentPoints--;
-                //updateHUD(currentPoints);
-                System.out.println("Expand button pressed.");
             }
         });
 
@@ -125,7 +114,7 @@ public class GameboardHUD implements Disposable{
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
                 super.tap(event, x, y, count, button);
-                System.out.println("Stockpile button pressed.");
+                //Transfer Turn to AI
                 board.passTurn();
             }
         });
@@ -140,10 +129,6 @@ public class GameboardHUD implements Disposable{
         table.left().padBottom(5).padTop(20);
         table.add(currentPointsTitleLabel).padLeft(50);
         table.add(menuButton).colspan(3).right().padRight(30).row();
-
-        //table.row().padTop(galacticfoundations.HEIGHT*0.87f);
-        //table.row().padTop(galacticfoundations.HEIGHT*0.80f);
-
         table.add().fillY().expandY();
         table.row();
         table.add(attackButton).left();
@@ -163,18 +148,20 @@ public class GameboardHUD implements Disposable{
         return stage;
     }
 
-    //Sets
+    //Updates points label to display current points value
     public void updatePointsLabel(){
         currentPointsTitleLabel.setText(String.format("CP: %d", currentPoints));
     }
 
+    //Will hid all action buttons for when a tile is not focused
+    //Will only show buttons according to what points allow for
     public void hideTileHUD(boolean hide){
         if(hide){
             attackButton.setVisible(false);
             fortifyButton.setVisible(false);
             expandButton.setVisible(false);
         }else{
-            //Only show button if you can attack
+            //Only show button if focus can attack and player has 5 points or more
             if(board.getFocus().getCanAttack() && currentPoints >= 5) {
                 boolean inRange = false;
                 for(Hex current:board.adjacentHexes(board.getFocus())){
@@ -185,44 +172,29 @@ public class GameboardHUD implements Disposable{
                 //only show button if you can attack a tile
                 if(inRange) {
                     attackButton.setVisible(true);
-                    System.out.printf("Attack button visible");
                 }
             }
+            //only show fortify if player has 2 points or more
             if(currentPoints >= 2) {
                 fortifyButton.setVisible(true);
             }
+            //Only show expand if player has 1 point or more
             if(currentPoints >= 1) {
                 expandButton.setVisible(true);
             }
         }
     }
 
+    //update point value from game board
     public void addPoints(int points){
         currentPoints += points;
         updatePointsLabel();
         System.out.printf("\nCurrent Points: %d\n", currentPoints);
     }
+
+    //obtain current point value for functionality in game board
     public int getCurrentPoints(){
         return currentPoints;
     }
-
-//    public void updateHUD(int currentPoints) {
-//        if (currentPoints < 5) {
-//            attackButton.setVisible(false);
-//        } else {
-//            attackButton.setVisible(true);
-//        }
-//        if (currentPoints < 2) {
-//            fortifyButton.setVisible(false);
-//        } else {
-//            fortifyButton.setVisible(true);
-//        }
-//        if (currentPoints < 1) {
-//            expandButton.setVisible(false);
-//        } else {
-//            expandButton.setVisible(true);
-//        }
-//        //pointsLabel.setText(String.format("%d", currentPoints));
-//    }
 
 }

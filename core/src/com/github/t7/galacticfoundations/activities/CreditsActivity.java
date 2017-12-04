@@ -28,9 +28,6 @@ public class CreditsActivity extends Activity {
     private static final int BUTTONWIDTH = galacticfoundations.WIDTH/3;
     private Texture bg;
     private Stage stage;
-    private InputMultiplexer multiplexer;
-    private ArrayList<String> imagePaths = new ArrayList<String>();
-    private int currentSlide = 0;
 
     //Variables for creating buttons
     private TextureAtlas atlas;
@@ -40,12 +37,11 @@ public class CreditsActivity extends Activity {
         super(activityManager);
         viewport.apply();
 
-        // Add tutorial images to imagePaths
-
-
-
+        //Credits image
         bg = new Texture("credits.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
+
+        //stage holds table
         stage = new Stage(viewport);
 
         //Define button skin, textureAtlas
@@ -53,7 +49,6 @@ public class CreditsActivity extends Activity {
         skin = new Skin(Gdx.files.internal("skin\\GameBoardHUD_skin\\star-soldier-ui.json"), atlas);
 
         //Define next and prev buttons
-
         TextButton backButton = new TextButton("Back", skin);
         backButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
 
@@ -78,23 +73,16 @@ public class CreditsActivity extends Activity {
 
 
         table.add(backButton).expandX().width(BUTTONWIDTH);
+
+        //add table to stage
         stage.addActor(table);
 
-        multiplexer = new InputMultiplexer();
-        Gdx.input.setInputProcessor(multiplexer);
-        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(stage);
     }
 
     /* Overrides */
     @Override
-
     public void resize(int width, int height) {}
-
-    @Override
-    protected void handleInput() {}
-
-    @Override
-    public void update(float dt) {}
 
     @Override
     public void render(SpriteBatch sb) {
@@ -115,6 +103,7 @@ public class CreditsActivity extends Activity {
 
     @Override
     public void dispose() {
-
+            bg.dispose();
+            stage.dispose();
     }
 }

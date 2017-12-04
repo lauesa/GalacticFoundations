@@ -45,20 +45,25 @@ public class MainActivity extends Activity {
         super(activityManager);
         viewport.apply();
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
+        //main background
         bg = new Texture("pixel_mars.jpg");
+        //initialize button skin
         atlas = new TextureAtlas("skin\\quantum-horizon-ui.atlas");
         skin = new Skin(Gdx.files.internal("skin\\quantum-horizon-ui.json"), atlas);
+
+        //Stage holds table of buttons
         stage = new Stage(viewport);
 
         Gdx.input.setInputProcessor(stage);
 
+        //table manages button positions
         Table mainTable = new Table();
         mainTable.setFillParent(true);
         mainTable.center();
+
+        //resume game
         TextButton resumeButton = new TextButton("Resume Game", skin);
-
         resumeButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.5f), Actions.fadeIn(0.25f)));
-
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -67,8 +72,8 @@ public class MainActivity extends Activity {
             }
         });
 
+        //New Game
         TextButton newGameButton = new TextButton("New Game", skin);
-
         newGameButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.75f), Actions.fadeIn(0.25f)));
         newGameButton.addListener(new ChangeListener() {
             @Override
@@ -78,9 +83,8 @@ public class MainActivity extends Activity {
             }
         });
 
-
+        //Tutorial
         TextButton tutorialButton = new TextButton("Tutorial", skin);
-
         tutorialButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1f), Actions.fadeIn(0.25f)));
         tutorialButton.addListener(new ChangeListener() {
             @Override
@@ -89,8 +93,8 @@ public class MainActivity extends Activity {
             }
         });
 
+        //Settings
         TextButton settingsButton = new TextButton("Settings", skin);
-
         settingsButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1.25f), Actions.fadeIn(0.25f)));
         settingsButton.addListener(new ChangeListener() {
             @Override
@@ -99,8 +103,8 @@ public class MainActivity extends Activity {
             }
         });
 
+        //Credits
         TextButton creditsButton = new TextButton("Credits", skin);
-
         creditsButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1.5f), Actions.fadeIn(0.25f)));
         creditsButton.addListener(new ChangeListener() {
             @Override
@@ -109,8 +113,8 @@ public class MainActivity extends Activity {
             }
         });
 
+        //Exit Game
         TextButton exitButton = new TextButton("Exit Game", skin);
-
         exitButton.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(1.75f), Actions.fadeIn(0.25f)));
         exitButton.addListener(new ChangeListener() {
             @Override
@@ -118,18 +122,17 @@ public class MainActivity extends Activity {
                 Gdx.app.exit();
             }
         });
+
+        //Logo
         Image imageLogo = new Image();
         imageLogo.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Title.png")))));
         imageLogo.setScaling(Scaling.fit);
 
-
-
         mainTable.add(imageLogo).center();
-
-
 
         mainTable.row();
 
+        //main menu buttons
         mainTable.add(resumeButton);
         mainTable.row();
         mainTable.add(newGameButton);
@@ -141,6 +144,8 @@ public class MainActivity extends Activity {
         mainTable.add(creditsButton);
         mainTable.row();
         mainTable.add(exitButton);
+
+        //add table to stage
         stage.addActor(mainTable);
 
             file = Gdx.files.local("gamestate.txt");
@@ -149,26 +154,10 @@ public class MainActivity extends Activity {
                 resumeButton.addAction(Actions.color(new Color(Color.DARK_GRAY)));
             }
 
-
-
-
-
+        //handle music
         music.setVolume(mastervol);                 // sets the volume to default
         music.setLooping(true);                // will repeat playback until music.stop() is called
         music.play();
-    }
-
-
-
-    @Override
-    protected void handleInput() {
-
-    }
-
-    @Override
-    public void update(float dt) {
-        //stage.act(dt);
-
     }
 
     @Override
@@ -197,6 +186,7 @@ public class MainActivity extends Activity {
         bg.dispose();
         skin.dispose();
         atlas.dispose();
+        stage.dispose();
 
     }
 

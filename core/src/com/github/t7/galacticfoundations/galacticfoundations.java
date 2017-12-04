@@ -33,7 +33,7 @@ public class galacticfoundations extends ApplicationAdapter {
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		activityManager.update(Gdx.graphics.getDeltaTime());
+		//activityManager.update(Gdx.graphics.getDeltaTime());
 		activityManager.render(batch);
 	}
 	

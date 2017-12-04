@@ -29,9 +29,6 @@ public class VictoryActivity extends Activity {
     private static final int BUTTONWIDTH = galacticfoundations.WIDTH/3;
     private Texture bg;
     private Stage stage;
-    private InputMultiplexer multiplexer;
-    private ArrayList<String> imagePaths = new ArrayList<String>();
-    private int currentSlide = 0;
 
     //Variables for creating buttons
     private TextureAtlas atlas;
@@ -41,10 +38,7 @@ public class VictoryActivity extends Activity {
         super(activityManager);
         viewport.apply();
 
-        // Add tutorial images to imagePaths
-
-
-
+        //victory screen
         bg = new Texture("victorybg.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         stage = new Stage(viewport);
@@ -54,7 +48,6 @@ public class VictoryActivity extends Activity {
         skin = new Skin(Gdx.files.internal("skin\\GameBoardHUD_skin\\star-soldier-ui.json"), atlas);
 
         //Define next and prev buttons
-
         TextButton backButton = new TextButton("Confirm", skin);
         backButton.addAction(Actions.sequence(Actions.alpha(0),Actions.delay(0.25f), Actions.fadeIn(0.40f)));
 
@@ -68,38 +61,24 @@ public class VictoryActivity extends Activity {
             }
         });
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
-            galacticfoundations.backpressed=true;
-            activityManager.set(new MainActivity(activityManager)); // go to main menu if back button pressed
-        }
-
         //Table of buttons
         Table table = new Table();
         table.setFillParent(true);
         table.bottom().padBottom(5);
-
-
         table.add(backButton).expandX().width(BUTTONWIDTH);
+
+        //add table to stage
         stage.addActor(table);
 
-        multiplexer = new InputMultiplexer();
-        Gdx.input.setInputProcessor(multiplexer);
-        multiplexer.addProcessor(stage);
 
+        Gdx.input.setInputProcessor(stage);
     }
 
     /* Overrides */
     @Override
 
-    public void resize(int width, int height) {
+    public void resize(int width, int height) {}
 
-    }
-
-    @Override
-    protected void handleInput() {}
-
-    @Override
-    public void update(float dt) {}
 
     @Override
     public void render(SpriteBatch sb) {
@@ -122,6 +101,7 @@ public class VictoryActivity extends Activity {
 
     @Override
     public void dispose() {
-
+        bg.dispose();
+        stage.dispose();
     }
 }

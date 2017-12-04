@@ -26,7 +26,5 @@ public class ActivityManager {
 
     public Activity peek(){return activities.peek();}
 
-    public void update(float dt){activities.peek().update(dt);}
-
     public void render(SpriteBatch sb){activities.peek().render(sb);}
 }

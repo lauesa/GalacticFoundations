@@ -120,11 +120,11 @@ public class TutorialActivity extends Activity {
 
     public void resize(int width, int height) {}
 
-    @Override
-    protected void handleInput() {}
-
-    @Override
-    public void update(float dt) {}
+//    @Override
+//    protected void handleInput() {}
+//
+//    @Override
+//    public void update(float dt) {}
 
     @Override
     public void render(SpriteBatch sb) {

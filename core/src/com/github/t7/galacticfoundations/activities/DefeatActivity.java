@@ -31,9 +31,6 @@ public class DefeatActivity extends Activity {
     private static final int BUTTONWIDTH = galacticfoundations.WIDTH/3;
     private Texture bg;
     private Stage stage;
-    private InputMultiplexer multiplexer;
-    private ArrayList<String> imagePaths = new ArrayList<String>();
-    private int currentSlide = 0;
 
     //Variables for creating buttons
     private TextureAtlas atlas;
@@ -43,10 +40,7 @@ public class DefeatActivity extends Activity {
         super(activityManager);
         viewport.apply();
 
-        // Add tutorial images to imagePaths
-
-
-
+        //Defeat Image
         bg = new Texture("defeat_bg.png");
         cam.setToOrtho(false, galacticfoundations.WIDTH, galacticfoundations.HEIGHT);
         stage = new Stage(viewport);
@@ -79,32 +73,19 @@ public class DefeatActivity extends Activity {
             }
         });
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
-            galacticfoundations.backpressed=true;
-            activityManager.set(new MainActivity(activityManager)); // go to main menu if back button pressed
-        }
-        FileHandle file = Gdx.files.local("gamestate.txt");
-        Gdx.files.local("gamestate.txt").delete();
-        if(!file.exists()){
-           System.out.println("Failure to Exist");
-        }
 
 
         //Table of buttons
         Table table = new Table();
         table.setFillParent(true);
         table.bottom().padBottom(5);
-
-
         table.add(againButton).expandX().width(BUTTONWIDTH);
         table.add(quitButton).expandX().width(BUTTONWIDTH);
+
+        //add table to stage
         stage.addActor(table);
 
-        multiplexer = new InputMultiplexer();
-        Gdx.input.setInputProcessor(multiplexer);
-        multiplexer.addProcessor(stage);
-
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     /* Overrides */
@@ -112,11 +93,6 @@ public class DefeatActivity extends Activity {
 
     public void resize(int width, int height) {}
 
-    @Override
-    protected void handleInput() {}
-
-    @Override
-    public void update(float dt) {}
 
     @Override
     public void render(SpriteBatch sb) {
@@ -139,6 +115,7 @@ public class DefeatActivity extends Activity {
 
     @Override
     public void dispose() {
-
+        bg.dispose();
+        stage.dispose();
     }
 }

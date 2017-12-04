@@ -24,9 +24,12 @@ public abstract class Activity {
         mouse = new Vector3();
     }
 
-    protected abstract void handleInput();
-    public abstract void update(float dt);
+    //render assets to screen
     public abstract void render(SpriteBatch sb);
+
+    //Free memory used by variables that cannot be freed automatically
     public abstract void dispose();
+
+    //called when screen is resized
     public abstract void resize(int width, int height);
 }

@@ -243,18 +243,16 @@ public class GameboardActivity extends Activity {
         
     }
 
-    @Override
-    protected void handleInput() {
+//    @Override
+//    protected void handleInput() {
+//
+//    }
 
-    }
-
-    @Override
-    public void update(float dt) {
-
-
-
-
-    }
+//    @Override
+//    public void update(float dt) {
+//
+//
+//    }
     //overide getactors
     @Override
     public void render(SpriteBatch sb) {
@@ -1029,7 +1027,7 @@ public class GameboardActivity extends Activity {
 
         //Place Base Tiles
         placeTileAt(130, 220, HexState.PLAYER_ACTIVE, Hex.HexType.BASE);
-        placeTileAt(400, 600, HexState.AI_ACTIVE, Hex.HexType.BASE);
+        placeTileAt(400, 600, HexState.AI_INACTIVE, Hex.HexType.BASE);
 
         //Place Special Tiles at
         //placeTileAt(300, 440, HexState.UNOWNED, Hex.HexType.SPECIAL);
