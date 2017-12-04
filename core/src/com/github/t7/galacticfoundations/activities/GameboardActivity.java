@@ -979,7 +979,6 @@ public class GameboardActivity extends Activity {
         }
         else if(mode == BoardMode.MENU){
             //go to menu!!!
-            //activityManager.set(new MainActivity(activityManager));
             activityManager.set(new MainActivity(activityManager));
         }
     }
