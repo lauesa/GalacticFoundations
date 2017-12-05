@@ -1,11 +1,8 @@
 package com.github.t7.galacticfoundations.hud;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -13,13 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.t7.galacticfoundations.activities.GameboardActivity;
-import com.github.t7.galacticfoundations.activities.MainActivity;
 import com.github.t7.galacticfoundations.actors.Hex;
 import com.github.t7.galacticfoundations.galacticfoundations;
 import com.github.t7.galacticfoundations.states.HexState;
@@ -189,7 +183,7 @@ public class GameboardHUD implements Disposable{
     public void addPoints(int points){
         currentPoints += points;
         updatePointsLabel();
-        System.out.printf("\nCurrent Points: %d\n", currentPoints);
+        //System.out.printf("\nCurrent Points: %d\n", currentPoints);
     }
 
     //obtain current point value for functionality in game board

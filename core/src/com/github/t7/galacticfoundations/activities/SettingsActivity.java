@@ -4,7 +4,6 @@ package com.github.t7.galacticfoundations.activities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -17,10 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
 import com.github.t7.galacticfoundations.galacticfoundations;
 
 /**
@@ -32,7 +29,6 @@ public class SettingsActivity extends Activity {
         private static final int BUTTONWIDTH = galacticfoundations.WIDTH/3;
         private Texture bg;
         private Stage stage;
-        private InputMultiplexer multiplexer;
 
         //Variables for creating buttons
         private TextureAtlas atlas;
@@ -102,9 +98,7 @@ public class SettingsActivity extends Activity {
             table.add(backButton);
             stage.addActor(table);
 
-            multiplexer = new InputMultiplexer();
-            Gdx.input.setInputProcessor(multiplexer);
-            multiplexer.addProcessor(stage);
+            Gdx.input.setInputProcessor(stage);
 
             slider.addListener(new ChangeListener() {
                 public void changed (ChangeEvent event, Actor actor) {
@@ -120,12 +114,6 @@ public class SettingsActivity extends Activity {
         @Override
 
         public void resize(int width, int height) {}
-
-//        @Override
-//        protected void handleInput() {}
-//
-//        @Override
-//        public void update(float dt) {}
 
         @Override
         public void render(SpriteBatch sb) {
@@ -146,6 +134,8 @@ public class SettingsActivity extends Activity {
 
         @Override
         public void dispose() {
+            bg.dispose();
+            stage.dispose();
 
         }
     }

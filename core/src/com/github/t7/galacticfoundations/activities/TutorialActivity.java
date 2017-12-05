@@ -1,11 +1,7 @@
 package com.github.t7.galacticfoundations.activities;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -28,7 +24,6 @@ public class TutorialActivity extends Activity {
     private static final int BUTTONWIDTH = galacticfoundations.WIDTH/3;
     private Texture bg;
     private Stage stage;
-    private InputMultiplexer multiplexer;
     private ArrayList<String> imagePaths = new ArrayList<String>();
     private int currentSlide = 0;
     private boolean end = false;
@@ -110,21 +105,14 @@ public class TutorialActivity extends Activity {
         table.add(nextButton).expandX().width(BUTTONWIDTH);
         stage.addActor(table);
 
-        multiplexer = new InputMultiplexer();
-        Gdx.input.setInputProcessor(multiplexer);
-        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(stage);
     }
 
     /* Overrides */
     @Override
-
     public void resize(int width, int height) {}
 
-//    @Override
-//    protected void handleInput() {}
-//
-//    @Override
-//    public void update(float dt) {}
+
 
     @Override
     public void render(SpriteBatch sb) {
@@ -145,6 +133,7 @@ public class TutorialActivity extends Activity {
 
     @Override
     public void dispose() {
-
+        bg.dispose();
+        stage.dispose();
     }
 }

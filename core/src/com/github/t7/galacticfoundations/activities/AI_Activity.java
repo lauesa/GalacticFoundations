@@ -3,16 +3,11 @@ package com.github.t7.galacticfoundations.activities;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.github.t7.galacticfoundations.actors.Hex;
-import com.github.t7.galacticfoundations.activities.GameboardActivity;
-
-import java.util.Collections;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 import com.badlogic.gdx.math.Vector2;
 import com.github.t7.galacticfoundations.states.HexState;
 
-import static com.github.t7.galacticfoundations.activities.GameboardActivity.*;
 
 /**
  * Created by Borzantag on 11/25/2017.
