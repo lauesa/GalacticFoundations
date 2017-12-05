@@ -2,33 +2,20 @@ package com.github.t7.galacticfoundations.states;
 
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;
-import com.github.t7.galacticfoundations.activities.GameboardActivity;
-import com.github.t7.galacticfoundations.activities.MainActivity;
-import com.github.t7.galacticfoundations.activities.VictoryActivity;
 import com.github.t7.galacticfoundations.actors.Hex;
-
-/**
- * Created by Warren on 11/28/2017.
- */
 
 public enum HexState implements State<Hex> {
     UNOWNED(){
         @Override
         public void enter(Hex entity) {
             entity.enterUnowned();
-
         }
 
         @Override
-        public void update(Hex entity) {
-
-        }
+        public void update(Hex entity) {}
 
         @Override
-        public void exit(Hex entity) {
-            entity.exitUnowned();
-
-        }
+        public void exit(Hex entity) {}
 
         @Override
         public boolean onMessage(Hex entity, Telegram telegram) {
@@ -39,20 +26,13 @@ public enum HexState implements State<Hex> {
         @Override
         public void enter(Hex entity) {
             entity.enterPlayerActivated();
-
         }
 
         @Override
-        public void update(Hex entity) {
-
-        }
+        public void update(Hex entity) {}
 
         @Override
-        public void exit(Hex entity) {
-            entity.exitPlayerActivated();
-
-
-        }
+        public void exit(Hex entity) {}
 
         @Override
         public boolean onMessage(Hex entity, Telegram telegram) {
@@ -66,15 +46,10 @@ public enum HexState implements State<Hex> {
         }
 
         @Override
-        public void update(Hex entity) {
-
-        }
+        public void update(Hex entity) {}
 
         @Override
-        public void exit(Hex entity) {
-            entity.exitPlayerDeactivated();
-
-        }
+        public void exit(Hex entity) {}
 
         @Override
         public boolean onMessage(Hex entity, Telegram telegram) {
@@ -85,19 +60,13 @@ public enum HexState implements State<Hex> {
         @Override
         public void enter(Hex entity) {
             entity.enterAiActivated();
-
         }
 
         @Override
-        public void update(Hex entity) {
-
-        }
+        public void update(Hex entity) {}
 
         @Override
-        public void exit(Hex entity) {
-            entity.exitAiActivated();
-
-        }
+        public void exit(Hex entity) {}
 
         @Override
         public boolean onMessage(Hex entity, Telegram telegram) {
@@ -108,19 +77,13 @@ public enum HexState implements State<Hex> {
         @Override
         public void enter(Hex entity) {
             entity.enterAiDeactivated();
-
         }
 
         @Override
-        public void update(Hex entity) {
-
-        }
+        public void update(Hex entity) {}
 
         @Override
-        public void exit(Hex entity) {
-            entity.exitAiDeactivated();
-
-        }
+        public void exit(Hex entity) {}
 
         @Override
         public boolean onMessage(Hex entity, Telegram telegram) {

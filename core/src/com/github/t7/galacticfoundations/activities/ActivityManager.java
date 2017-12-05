@@ -4,10 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.Stack;
 
-/**
- * Created by Warren on 11/18/2017.
- */
-
 public class ActivityManager {
     private Stack<Activity> activities;
 

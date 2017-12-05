@@ -1,120 +1,75 @@
 package com.github.t7.galacticfoundations.actors;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.github.t7.galacticfoundations.activities.ActivityManager;
-import com.github.t7.galacticfoundations.activities.GameboardActivity;
 import com.github.t7.galacticfoundations.states.HexState;
 
-
-import static com.github.t7.galacticfoundations.actors.Hex.HexType.GENERAL;
-import static com.github.t7.galacticfoundations.actors.Hex.HexType.SPECIAL;
-
-/**
- * Created by Warren on 11/20/2017.
- */
-
 public class Hex extends Actor {
+    //Pixel Maps for highlight and fortify
     private Pixmap highlightPixmap;
     private Pixmap fortifyPixmap;
 
-    protected Texture texture;
+    //asset textures
+    private Texture texture;
     private Texture defaultTexture;
+
+    //generated texture variants
     private Texture highlightTexture;
     private Texture fortifyTexture;
     private Texture fortifyHighlightTexture;
-    protected Vector2 position;
+
+    //State Machine that manages who controls Hex
     private StateMachine<Hex, HexState> stateMachine;
+
+    //position
     private float x;
     private float y;
-    private boolean foritifed;
+
+    //Is Hex fortified
+    private boolean fortifed;
+
+    //Number of points the Hex is worth
     private int value;
+
+    //Is Hex able to attack
     private boolean canAttack;
 
-
+    //Enum for the types of Hexes defined here
     public enum HexType {
         GENERAL,
         SPECIAL,
-        BASE;
-    };
-    protected HexType hexType;
-//    public enum HexState{
-//        UNOWNED,
-//        PLAYER_ACTIVE,
-//        PLAYER_INACTIVE,
-//        AI_ACTIVE,
-//        AI_INACTIVE;
-//    };
-//  protected HexState hexState;
+        BASE
+    }
+    private HexType hexType;
+
+    //Used by AI to get current state
     @Override
     public String toString() {
         //function has been altered for save state
         return "" + hexType + " " + stateMachine.getCurrentState() + " ";
     }
 
-
-
-
-
     public Hex(HexType type, float x, float y) {
         super();
         setHexType(type);
         this.x = x;
         this.y = y;
-        position = new Vector2(x, y);
+        //position = new Vector2(x, y);
         stateMachine = new DefaultStateMachine<Hex, HexState>(this, HexState.UNOWNED);
-        foritifed = false;
+        fortifed = false;
         canAttack = true;
 
         setPosition(x, y);
         setState(HexState.UNOWNED);
         setOrigin(texture.getWidth()/2, texture.getHeight()/2);
         setName("Hex");
-
-
-/**Old Event Listener, remove when positive gameboard level logic works **/
-//        addListener( new ActorGestureListener() {
-//            @Override
-//            public void tap(InputEvent event, float x, float y, int count, int button) {
-//                super.tap(event, x, y, count, button);
-//                if (checkBounds(event.getTarget().getOriginX(), event.getTarget().getOriginY(), x, y)) {
-//                    //dragged = false;
-//                    Vector2 currentCoords = new Vector2(x,y);
-//                    Vector2 stageCoords = localToStageCoordinates(currentCoords);
-//                    System.out.println("Tapped");
-//                    System.out.printf("%f", stageCoords.x);
-//                    Actor toTheLeft = getParent().hit(stageCoords.x-getWidth()/2, stageCoords.y,true);
-//                    toTheLeft.setName("Left Actor");
-//                    System.out.printf("Current Actor Name: %s\n Left Actor Name: %s", getName(), toTheLeft.getName());
-//
-//
-//                    //System.out.printf("%s\n", event.getTarget().getName());
-//
-//                }
-//            }
-//        });
-
-
-
-
     }
-
 
 
     @Override
@@ -122,88 +77,28 @@ public class Hex extends Actor {
         batch.draw(texture, getX(), getY());
     }
 
-    public void setState(HexState state){
-        stateMachine.changeState(state);
-//        if(texture != null){
-//            texture.dispose();
-//        }
-//        hexState = state;
-//        switch (state){
-//            case UNOWNED:{
-////                pixmap = new Pixmap(new FileHandle("blanktile.png"));
-////                defaultTexture = new Texture(pixmap);
-////                texture = new Texture(pixmap);
-////                generateHighlight();
-////                highlightTexture = new Texture(pixmap);
-////                break;
-//
-//            }
-//            case PLAYER_ACTIVE:{
-//                texture = new Texture("greentile.png");
-//                break;
-//            }
-//            case PLAYER_INACTIVE:{
-//                texture = new Texture("darkgreentile.png");
-//                break;
-//            }
-//            case AI_ACTIVE:{
-//                texture = new Texture("redtile.png");
-//                break;
-//            }
-//            case AI_INACTIVE:{
-//                texture = new Texture("darkredtile.png");
-//                break;
-//            }
-//        }
-//
-//        this.setBounds(getX(), getY(), texture.getWidth(), texture.getHeight());
-    }
+    public void setState(HexState state){stateMachine.changeState(state);}
 
-
-
-    //Check if a click is within a hex
-//    public boolean checkBounds(float originX, float originY, float x, float y){
-//        double radius = texture.getWidth()/2;
-//        double deltaX = Math.abs(x - originX);
-//        double deltaY = Math.abs(y - originY);
-//        //Find distance from origin
-//        double distance = Math.sqrt((Math.pow(deltaX,2)+Math.pow(deltaY,2)));
-//
-//        //Determine the distance within bounds
-//        double angleRads = Math.atan2(deltaY, deltaX);
-//
-//
-//        double angleDegrees = Math.toDegrees(angleRads) % 60;
-//
-//        double boundary = (Math.sqrt(3)*radius) / (Math.sqrt(3)*(Math.cos(Math.toRadians(angleDegrees)) + Math.sin(Math.toRadians(angleDegrees))));;
-//        //System.out.printf("Degrees %f, Distance: %f, Boundary: %f, radius: %f\n", angleDegrees, distance, boundary, radius);
-//        if(distance <= boundary){return true;}
-//        else{
-//            return false;
-//        }
-//
-//    }
-
+    //Depending on fortification, toggles use of highlight texture
     public void highlight(boolean isOn){
         if(isOn){
-            if(foritifed){
+            if(fortifed){
                 texture = fortifyHighlightTexture;
             }
             else{
                 texture = highlightTexture;
             }
-
         }else{
-            if(foritifed){
+            if(fortifed){
                 texture = fortifyTexture;
             }
             else{
                 texture = defaultTexture;
             }
-
         }
     }
 
+    //Handles the action of fortifying a Hex, manages state and texture
     public void setFortify(boolean isOn){
         if(isOn){
             if(getState() == HexState.PLAYER_ACTIVE){
@@ -212,19 +107,19 @@ public class Hex extends Actor {
             else if(getState() == HexState.AI_ACTIVE){
                 setState(HexState.AI_INACTIVE);
             }
-            foritifed = true;
+            fortifed = true;
             texture = fortifyTexture;
-
-
         }else{
-            foritifed = false;
+            fortifed = false;
             texture = defaultTexture;
         }
     }
 
+    //Generates all highlight and fortify texture variants using original assets and PixMaps
     private void generateColorMods(){
         Color color = new Color();
 
+        //Generate Highlight texture
         for (int x = 0; x < highlightPixmap.getWidth(); x++)
         {
             for (int y = 0; y < highlightPixmap.getHeight(); y++)
@@ -242,7 +137,8 @@ public class Hex extends Actor {
         }
         highlightTexture = new Texture(highlightPixmap);
 
-        for (int x = 0; x < highlightPixmap.getWidth(); x++)
+        //Generate Fortify texture
+        for (int x = 0; x < fortifyPixmap.getWidth(); x++)
         {
             for (int y = 0; y < fortifyPixmap.getHeight(); y++)
             {
@@ -259,6 +155,7 @@ public class Hex extends Actor {
         }
         fortifyTexture = new Texture(fortifyPixmap);
 
+        //Generate highlight texture for fortify texture
         for (int x = 0; x < fortifyPixmap.getWidth(); x++)
         {
             for (int y = 0; y < fortifyPixmap.getHeight(); y++)
@@ -277,15 +174,14 @@ public class Hex extends Actor {
         fortifyHighlightTexture = new Texture(fortifyPixmap);
     }
 
+    //The following 'enter' functions are called when Hex enters a new state
+    //These functions generate and set the new textures for that state
     public void enterUnowned(){
         if(hexType == HexType.SPECIAL){
             generateNewTextureSet("blankSRtile.png");
         } else {
             generateNewTextureSet("blanktile.png");
         }
-    }
-
-    public void exitUnowned(){
     }
     public void enterPlayerActivated(){
         if(hexType == HexType.SPECIAL){
@@ -297,9 +193,6 @@ public class Hex extends Actor {
         }
 
     }
-    public void exitPlayerActivated(){
-
-    }
     public void enterPlayerDeactivated(){
         if (hexType == HexType.BASE){
             generateNewTextureSet("darkbasetile.png");
@@ -308,9 +201,6 @@ public class Hex extends Actor {
         } else {
             generateNewTextureSet("darkgreentile.png");
         }
-    }
-    public void exitPlayerDeactivated(){
-
     }
     public void enterAiActivated(){
         if(hexType == HexType.BASE){
@@ -322,11 +212,6 @@ public class Hex extends Actor {
         else{
             generateNewTextureSet("redtile.png");
         }
-
-
-    }
-    public void exitAiActivated(){
-
     }
     public void enterAiDeactivated(){
         if(hexType == HexType.BASE){
@@ -338,13 +223,9 @@ public class Hex extends Actor {
         else{
             generateNewTextureSet("darkredtile.png");
         }
-
-    }
-    public void exitAiDeactivated(){
-        //generateNewTextureSet("darkredtile.png");
-
     }
 
+    //Disposes of old textures and generates new from a filename
     private void generateNewTextureSet(String filepath){
         if(highlightPixmap != null){
             highlightPixmap.dispose();
@@ -365,19 +246,26 @@ public class Hex extends Actor {
         highlightPixmap = new Pixmap(Gdx.files.internal(filepath));
         fortifyPixmap = new Pixmap(Gdx.files.internal(filepath));
         defaultTexture = new Texture(highlightPixmap);
-        //texture = new Texture(highlightPixmap);
+
+        //populate the new textures
         generateColorMods();
-        if(!foritifed){
+
+        //set starting texture
+        if(!fortifed){
             texture = defaultTexture;
         }else{
             texture = fortifyTexture;
         }
-        //highlightTexture = new Texture(highlightPixmap);
+
+        //update Hex bounds
         this.setBounds(getX(), getY(), texture.getWidth(), texture.getHeight());
     }
 
     public HexState getState(){return stateMachine.getCurrentState();}
 
+    public HexType getHexType(){return hexType;}
+
+    //sets the Hex type and updates Hex value
     public void setHexType(HexType type){
         hexType = type;
         if(type == HexType.GENERAL){
@@ -393,10 +281,8 @@ public class Hex extends Actor {
     public int getValue(){return value;}
 
     public boolean getFortifyStatus(){
-        return foritifed;
+        return fortifed;
     }
-
-    public HexType getHexType(){return hexType;}
 
     public boolean getCanAttack(){
         return canAttack;
@@ -405,7 +291,5 @@ public class Hex extends Actor {
     public void setCanAttack(boolean state){
         canAttack = state;
     }
-
-
 
 }

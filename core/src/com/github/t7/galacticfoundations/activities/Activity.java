@@ -7,9 +7,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.t7.galacticfoundations.galacticfoundations;
 
-/**
- * Created by Warren on 11/18/2017.
- */
+
 
 public abstract class Activity {
     protected OrthographicCamera cam;
