@@ -66,4 +66,4 @@ Each hexagon can be used for one action each turn, after which it will "deactiva
  - [Scott Laue](https://github.com/lauesa)  
  - [Warren Smith](https://github.com/Dubyahs)  
  - [Jake Nissely](https://github.com/jakenissley)
- - [Kevin Williams)(https://github.com/Borzantag)
+ - [Kevin Williams](https://github.com/Borzantag)
