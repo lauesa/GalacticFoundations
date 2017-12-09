@@ -66,4 +66,24 @@ Each hexagon can be used for one action each turn, after which it will "deactiva
  - [Scott Laue](https://github.com/lauesa)  
  - [Warren Smith](https://github.com/Dubyahs)  
  - [Jake Nissley](https://github.com/jakenissley)
- - [Kevin Williams](https://github.com/Borzantag)
+ - [Kevin Williams](https://github.com/Borzantag)  
+ 
+ ## Acknowledgements ##  
+ #### Music: ####
+"RACING MENU" by **Eric Matyas**  
+[www.soundimage.org](www.soundimage.org)  
+
+#### Images: ####  
+**Game Backround:**  
+Mars Images by **James Hastings-Trew**  
+Image Page: [http://planetpixelemporium.com/mars.html](http://planetpixelemporium.com/mars.html)  
+Permissions: [http://planetpixelemporium.com/planets.html](http://planetpixelemporium.com/planets.html)  
+**Sprite Assets:**  
+Hexagon Pack by **Kenney**  
+[https://kenney.nl/assets](https://kenney.nl/assets)  
+
+#### UI Skins ####  
+"Quantum Horison UI" by **Raymond "Raeleus" Buckley**  
+[https://github.com/czyzby/gdx-skins/tree/master/quantum-horizon](https://github.com/czyzby/gdx-skins/tree/master/quantum-horizon)  
+"Star Soldier UI" by **Raymond "Raeleus" Buckley**  
+[https://github.com/czyzby/gdx-skins/tree/master/star-soldier](https://github.com/czyzby/gdx-skins/tree/master/star-soldier)  
