@@ -9,7 +9,7 @@ Galactic Foundations is a mobile strategy game made using the libGDX library.
 This game was developed primarily for use on Android, however a desktop version is available.
 
 ## Details
-This was term project for an undergraduate level Software Engineering course.
+This was a term project for an undergraduate level Software Engineering course.
 The gameplay concept for Galactic Foundations was designed by the team from scratch,
 prioritizing strategy and simplicity above other factors.
 
@@ -30,7 +30,7 @@ Your territory is green, while your opponents territory is red.
 
 #### Objective ####
 Destroy the opponent's base by expanding your territory within range and attacking your opponent.
-You lose of your opponent destroys your base first.
+You lose if your opponent destroys your base first.
 
 #### Types of Hexes ####
 There are three types of hexagons you can control:
@@ -39,7 +39,7 @@ There are three types of hexagons you can control:
  - General Hexagons, worth 2 points each
 
 #### Points System ####
-At the beginnning of each players turn, the player will have all hexagons with a connection to their base "reactivated", meaning the hexagon
+At the beginnning of each player's turn, the player will have all hexagons with a connection to their base "reactivated", meaning the hexagon
 will light up, and its value will be added to your points total.
 
 #### Actions ####
@@ -63,7 +63,7 @@ Each hexagon can be used for one action each turn, after which it will "deactiva
 [Desktop](https://github.com/lauesa/GalacticFoundations/raw/master/Binder/Galactic%20Foundations.jar)  
 *Note:* Galactic Foundations.jar will create a text file named "gamestate.txt", this contains save data.
 ## Authors ##
- - Scott Laue  
+ - [Scott Laue](https://github.com/lauesa)  
  - [Warren Smith](https://github.com/Dubyahs)  
- - Jake Nissley
- - Kevin Williams
+ - [Jake Nissely](https://github.com/jakenissley)
+ - [Kevin Williams)(https://github.com/Borzantag)
