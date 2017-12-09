@@ -71,7 +71,7 @@ Each hexagon can be used for one action each turn, after which it will "deactiva
  ## Acknowledgements ##  
  #### Music: ####
 "RACING MENU" by **Eric Matyas**  
-[www.soundimage.org](www.soundimage.org)  
+[http://www.soundimage.org](http://www.soundimage.org)  
 
 #### Images: ####  
 **Game Backround:**  
