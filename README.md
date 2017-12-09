@@ -82,7 +82,7 @@ Permissions: [http://planetpixelemporium.com/planets.html](http://planetpixelemp
 Hexagon Pack by **Kenney**  
 [https://kenney.nl/assets](https://kenney.nl/assets)  
 
-#### UI Skins ####  
+#### UI Skins: ####  
 "Quantum Horison UI" by **Raymond "Raeleus" Buckley**  
 [https://github.com/czyzby/gdx-skins/tree/master/quantum-horizon](https://github.com/czyzby/gdx-skins/tree/master/quantum-horizon)  
 "Star Soldier UI" by **Raymond "Raeleus" Buckley**  
