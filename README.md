@@ -20,8 +20,8 @@ The purpose of this project was to understand and implement the stages of conven
 This project was developed using the Waterfall method and consisted of four main stages:
 
  - Design a simple game for Android mobile devices.  
- - Software Requirements Analysis <inlcude link  
- - Test Cases <include link  
+ - Software Requirements Analysis    
+ - Test Cases  
  - Implementation  
 
 ## How To Play ##
