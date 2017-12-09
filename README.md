@@ -56,11 +56,12 @@ Each hexagon can be used for one action each turn, after which it will "deactiva
  A ray attack will remove enemy control of up to three hexagons in a line of the direction of the attack. If the attack reaches a fortified hexagon,
  the attack will be stopped there.  
  - Stockpile:  
- The "STO" option stockpiles the player's points and begins the opponents turn.
+ The "STO" option stockpiles the player's points and begins the opponents turn.  
  
-##Check it out!##
-[Android]  
-[Destop](https://github.com/lauesa/GalacticFoundations/raw/master/Binder/Galactic%20Foundations.jar)  
+## Check it out\! ##  
+[Android](https://github.com/lauesa/GalacticFoundations/raw/master/Binder/Galactic%20Foundations.apk)  
+[Desktop](https://github.com/lauesa/GalacticFoundations/raw/master/Binder/Galactic%20Foundations.jar)  
+*Note:* Galactic Foundations.jar will create a text file named "gamestate.txt", this contains save data.
 ## Authors ##
  - Scott Laue  
  - [Warren Smith](https://github.com/Dubyahs)  
